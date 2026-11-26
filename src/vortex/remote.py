@@ -6,6 +6,7 @@ import os
 
 from .assistant import answer_planner_call, planner_tool, _unique_object
 from .workflow import Status
+from .security import _SECRET, _ASSIGN_SECRET
 
 _ENDPOINTS = {
     "openai": ("api.openai.com", "/v1/responses", "OPENAI_API_KEY"),
@@ -120,6 +121,13 @@ def run_remote_planner(provider: str, model: str, task: str, *, api_key: str | N
     if transport is not None and not callable(transport):
         raise TypeError("Transport must be callable")
 
+    # Network approval does not authorize accidental credential disclosure.
+    def sensitive(value):
+        return api_key in value or bool(_SECRET.search(value) or _ASSIGN_SECRET.search(value))
+
+    if sensitive(task) or sensitive(model):
+        return {"status": Status.BLOCKED, "reason": "Possible credential in remote planning input"}
+
     send = _post if transport is None else transport
     history = [{"role": "user", "content": task}]
     usage = []
@@ -132,6 +140,7 @@ def run_remote_planner(provider: str, model: str, task: str, *, api_key: str | N
                   "transport": "https" if transport is None else "injected",
                   "attempted_requests": attempted, "received_responses": len(usage),
                   "planner_calls": calls, "usage_by_response": usage,
+                  "scope": "untrusted planning text; no execution or delivery authorization",
                   "usage_source": "provider_reported" if transport is None else "injected_test",
                   "usage_complete": len(usage) == attempted and attempted > 0 and
                   all("input_tokens" in row and "output_tokens" in row for row in usage)}
@@ -165,6 +174,9 @@ def run_remote_planner(provider: str, model: str, task: str, *, api_key: str | N
             return result(Status.FAILED, "Invalid provider response")
         usage.append(_usage(provider, response))
         try:
+            # Provider content is untrusted; do not replay or surface credential-like strings.
+            if sensitive(json.dumps(response, ensure_ascii=False, allow_nan=False)):
+                return result(Status.BLOCKED, "Possible credential in provider response")
             if provider == "openai":
                 if response.get("status") != "completed":
                     return result(Status.BLOCKED, "Provider response was incomplete")

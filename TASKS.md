@@ -91,3 +91,7 @@
 
 - [x] Definir permissões privadas em arquivos e diretórios de saída dos módulos principais.
 - [ ] Validar CI da revisão de privacidade e configurar ACLs Windows em ambiente real.
+
+- [x] Recuperar checkpoint 6.11 e confirmar CI sem repetir implementação.
+- [x] Adicionar scanner de histórico alcançável e bloqueio de credenciais conhecidas em tráfego remoto.
+- [ ] Validar 6.12 e revisar evidências de histórico; implantar verificador e gate obrigatório nos hosts.

@@ -51,3 +51,7 @@ Fase 6.8: CI 45882300851 aprovado, 102 testes aprovados e 3 ignorados, quatro jo
 Fase 6.10: política v2 exige registros de evidência reais, não vazios, vinculados ao hash de cada revisão, em diretório separado. Publicação em staging privado, rechecagem de bytes, lock cooperativo e rename final. CI pendente. Nenhum verificador externo implantado; host deve integrar gate e isolar execução.
 
 Fase 6.11: saídas locais de mídia, ZIP, lotes, APK e prévias HTML passam a usar permissões POSIX privadas por padrão. Windows depende da ACL do host. CI da fase 6.9 aprovado (106 testes, 3 ignorados). Fases 6.10 e 6.11 aguardam confirmação. Não equivale a criptografia ou isolamento do usuário local.
+
+## Fase 6.12 — recuperação e fronteira remota
+
+HEAD 2aaecf2 e CI 45882770153 reconfirmados: 110 aprovados, 3 ignorados, quatro jobs aprovados. Política v2 e permissões privadas validadas localmente em CI; nenhuma perda de commits. Scanner de objetos Git alcançáveis e barreira de credenciais em comunicação remota adicionados. Checkout não preserva credenciais. Novo CI pendente. Auditoria integral, verificador independente, integração obrigatória de entrega, licenças e sandbox continuam em aberto.

@@ -170,3 +170,7 @@ CI 45882300851 (3f3e9e9): 105 testes descobertos, 102 aprovados, 3 ignorados, qu
 Fase 6.10 adiciona teste de logs ausentes/adulterados, não inclusão de evidências na entrega e falha de rename sem diretório final. CI pendente; testes usam registros e chave sintéticos, não auditoria externa real.
 
 CI 45882508405 (bb98add): 109 testes encontrados, 106 aprovados, 3 ignorados, quatro jobs aprovados. Fase 6.11 testa criação privada, não sobrescrita, publicação de mídia e extração ZIP sob umask permissivo. CI pendente.
+
+## Recuperação 6.11 / candidato 6.12
+
+CI 45882770153, 2aaecf2: 113 testes descobertos, 110 aprovados, 3 ignorados; quatro jobs aprovados. Novos testes de histórico com credencial sintética removida em commit posterior, clone shallow e bloqueio de credenciais em entrada/resposta remota aguardam CI. Nenhum resultado do scanner de histórico real declarado antes de execução.

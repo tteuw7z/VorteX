@@ -86,3 +86,7 @@ Política 2 rejeita hashes desacompanhados de logs reais. Evidências ficam fora
 ## Fase 6.11 — privacidade das saídas
 
 Arquivos novos com criação exclusiva 0600, diretórios privados 0700 e restrição antes de publicar mídia via hardlink. Não alterar ACL de Windows sem suporte específico. Permissões não substituem criptografia, autorização ou sandbox.
+
+## Fase 6.12 — recuperação
+
+Não repetir checkpoints comprovados. A varredura de histórico falha fechada se houver limites ou cobertura incompleta, verifica objetos Git localmente alcançáveis e não imprime valores. Checkout sem persistência de credenciais. Bloquear padrões conhecidos e a chave de API exata no texto remoto; não alegar DLP completa. Texto do modelo não autoriza execução nem entrega.

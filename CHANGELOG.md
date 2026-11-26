@@ -97,3 +97,9 @@
 ## Fase 6.11 — candidato
 
 - Permissões privadas nas saídas POSIX de mídia, ZIP, lotes, Android e HTML.
+
+## Fase 6.12 — candidato
+
+- Varredura limitada de objetos Git alcançáveis, sem revelar conteúdo dos achados.
+- Checkout sem credenciais persistentes; barreira de padrões de credenciais na comunicação remota.
+- Reconciliação do estado de 6.11 com CI real.

@@ -73,3 +73,5 @@ Fase 6.8 validada em CI (102 aprovados). Fase 6.9 fortalece aprovação por dige
 Fase 6.10: política v2 implementada com evidência real e staging privado; CI pendente. Atestado independente e integração real continuam bloqueios.
 
 Fase 6.11: privacidade de arquivos de saída em POSIX reforçada; ACLs Windows e proteção em repouso por criptografia permanecem dependentes da configuração e dos requisitos do host.
+
+Fase 6.11 validada (110 aprovados). Fase 6.12 adiciona varredura de histórico e filtro limitado de credenciais remotas; CI pendente. Não substitui auditoria completa ou autorização de entrega.

@@ -139,3 +139,25 @@ class HTTPSBoundaryTests(unittest.TestCase):
             with self.assertRaisesRegex(RemotePlannerError, "invalid JSON"):
                 _post("openai", "test-key", {}, 5)
             connection.close.assert_called_once()
+
+
+class RemotePrivacyTests(unittest.TestCase):
+    def test_remote_input_with_credentials_is_blocked_without_network(self):
+        send = Mock()
+        for task in ("Use " + "ghp_" + "Z" * 36, "Use the fixture-key"):
+            report = run_remote_planner("openai", "model", task, api_key="fixture-key",
+                                        approved=True, transport=send)
+            self.assertEqual(report["status"], Status.BLOCKED)
+            self.assertNotIn("fixture-key", json.dumps(report))
+        send.assert_not_called()
+
+    def test_provider_secret_not_replayed_or_printed(self):
+        secret = "ghp_" + "Z" * 36
+        call = {"type": "function_call", "name": "vortex_plan", "call_id": "c1",
+                "arguments": json.dumps({"task": secret, "agent_limit": 1})}
+        send = Mock(return_value={"status": "completed", "output": [call]})
+        report = run_remote_planner("openai", "model", "Android", api_key="fixture-key",
+                                    approved=True, transport=send)
+        self.assertEqual(report["status"], Status.BLOCKED)
+        self.assertNotIn(secret, json.dumps(report))
+        send.assert_called_once()
