@@ -74,3 +74,7 @@ Fixar Actions em hashes completos que foram observados no CI 45869077696. Atuali
 ## Fase 6.8 — segurança antes de entrega
 
 Default deny. Separar candidato de entrega autorizada e exigir evidência independente ligada ao digest de bytes, escopo, política e validade. HMAC exige chave fora do gerador; não há CLI de autoassinatura. Não confundir ausência de alertas com aprovação. Gate não substitui sandbox, análise dinâmica ou revisão especializada. Mudanças deliberadas de compatibilidade: Gradle requer confiança explícita; rótulos de aprovação distintos; banco POSIX com permissões privadas.
+
+## Fase 6.9 — fronteiras de execução
+
+Exigir digest do manifesto revisado antes de preparar comandos, inclusive na API Python. Expor argv no plano. Reduzir ambiente de subprocessos por allowlist e bloquear encaminhamento das credenciais reservadas; não alegar sandbox. Rejeitar caminhos de dispositivos, colisões Unicode e credenciais em nomes. HTMLParser para atributos perigosos e limite de volume de alertas.

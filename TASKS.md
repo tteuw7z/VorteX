@@ -80,3 +80,8 @@
 - [x] Implementar política de entrega fail-closed e verificação de atestado associado ao hash dos bytes.
 - [x] Exigir aprovação de confiança Gradle, isolar permissões de aprendizagem POSIX e impedir colisões de aprovação/JSON duplicado.
 - [ ] Validar CI, integrar verificador independente e obrigar gate nos hosts; concluir auditoria de histórico, dependências e demais superfícies.
+
+- [x] Validar gate e proteções internas em CI 45882300851.
+- [x] Vincular aprovações ao digest do manifesto e minimizar ambiente de ferramentas.
+- [x] Reforçar caminhos portáveis e scanner HTML.
+- [ ] Revalidar 6.9, implantar verificador independente e integrar gate a todos os caminhos de entrega.

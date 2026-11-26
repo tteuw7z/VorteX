@@ -6,6 +6,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 import time
 import unittest
+from unittest.mock import patch
 
 from vortex.security import audit, publish, _canonical
 from vortex.learning import LearningEngine
@@ -122,7 +123,7 @@ class InternalSecurityTests(unittest.TestCase):
             manifest.write_text('{"version":1,"steps":[],"steps":[{"id":"x","argv":["a","b"]}]}')
             calls = []
             with self.assertRaises(ValueError):
-                execute_manifest(manifest, lambda argv: calls.append(argv))
+                execute_manifest(manifest, lambda argv: calls.append(argv), simulate=True)
             self.assertEqual(calls, [])
 
     @unittest.skipUnless(os.name == "posix", "POSIX permissions required")
@@ -135,3 +136,68 @@ class InternalSecurityTests(unittest.TestCase):
             path.chmod(0o644)
             with self.assertRaisesRegex(ValueError, "permissions must be private"):
                 engine.recall()
+
+
+class ProcessAndManifestSecurityTests(unittest.TestCase):
+    def test_child_environment_does_not_inherit_secrets(self):
+        from vortex.process_env import tool_environment
+        from vortex.media import _run_tool
+        from vortex.android import _run
+        from subprocess import CompletedProcess
+        secrets = {"OPENAI_API_KEY": "fixture-openai", "VORTEX_DELIVERY_KEY_HEX": "fixture-reviewer",
+                   "GITHUB_TOKEN": "fixture-github", "UNRELATED_SECRET": "fixture-unrelated"}
+        with patch.dict(os.environ, {"PATH": os.defpath, **secrets}, clear=True):
+            self.assertFalse(set(secrets) & tool_environment().keys())
+            with self.assertRaises(ValueError):
+                tool_environment(extra=["VORTEX_DELIVERY_KEY_HEX"])
+            with patch("vortex.media.shutil.which", return_value="/trusted/ffmpeg"), patch(
+                    "vortex.media.subprocess.run", return_value=CompletedProcess([], 0, "", "")) as run:
+                _run_tool("ffmpeg", [], "fixture")
+                self.assertFalse(set(secrets) & run.call_args.kwargs["env"].keys())
+            with patch("vortex.android.subprocess.run",
+                       return_value=CompletedProcess([], 0, "", "")) as run:
+                _run("/trusted/aapt2", [], step="fixture")
+                self.assertFalse(set(secrets) & run.call_args.kwargs["env"].keys())
+
+    def test_changed_manifest_cannot_reuse_approval(self):
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "flow.json"
+            def write(value):
+                path.write_text(json.dumps({"version": 1, "steps": [
+                    {"id": "review", "argv": ["archive", value]}]}))
+            writes = []
+            def prepare(argv):
+                return "archive", lambda: writes.append(argv) or {"status": "SUCCESS"}
+            write("original")
+            plan = execute_manifest(path, prepare, simulate=True)
+            self.assertEqual(plan["steps"][0]["argv"], ["archive", "original"])
+            write("changed")
+            result = execute_manifest(path, prepare, approvals=["review"],
+                                      expected_sha256=plan["manifest_sha256"])
+            self.assertEqual(result["status"], "BLOCKED")
+            self.assertEqual(writes, [])
+            current = execute_manifest(path, prepare, simulate=True)
+            result = execute_manifest(path, prepare, approvals=["review"],
+                                      expected_sha256=current["manifest_sha256"])
+            self.assertEqual(result["status"], "SUCCESS")
+            self.assertEqual(writes, [("archive", "changed")])
+
+
+class PortableArtifactSecurityTests(unittest.TestCase):
+    def test_script_urls_and_secret_in_filename_are_blocked(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "index.html").write_text('<a href="java&#115;cript:alert(1)">Unsafe</a>')
+            report = audit(root, "website")
+            self.assertIn("WEB_SCRIPT_URL", {item["rule"] for item in report["findings"]})
+            (root / ("ghp_" + "Z" * 36 + ".txt")).touch()
+            with self.assertRaisesRegex(ValueError, "possible credential"):
+                audit(root, "website")
+
+    @unittest.skipIf(os.name == "nt", "Windows itself rejects device paths")
+    def test_reserved_windows_names_are_rejected(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "NUL.txt").touch()
+            with self.assertRaisesRegex(ValueError, "reserved device"):
+                audit(root, "script")

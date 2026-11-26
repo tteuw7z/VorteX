@@ -11,6 +11,7 @@ import subprocess
 from tempfile import TemporaryDirectory
 
 from .evidence import file_sha256
+from .process_env import tool_environment
 
 # Playlist and script demuxers are deliberately absent. Local paths alone do
 # not prevent an input playlist from dereferencing other files.
@@ -43,7 +44,7 @@ def _run_tool(name: str, args, operation: str, *, cwd=None, timeout=300) -> subp
     if executable is None:
         raise FileNotFoundError(f"{name} is required for {operation}")
     try:
-        result = subprocess.run([executable, *args], cwd=cwd, stdin=subprocess.DEVNULL,
+        result = subprocess.run([executable, *args], cwd=cwd, stdin=subprocess.DEVNULL, env=tool_environment(),
                                 capture_output=True, encoding="utf-8", errors="replace", timeout=timeout)
     except subprocess.TimeoutExpired as exc:
         raise ValueError(f"{name} timed out during {operation}") from exc

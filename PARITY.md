@@ -67,3 +67,5 @@ Fase 6.5: efeitos explícitos aprovados em render sintético e comparação de p
 Fase 6.6: detecção de graves e flash automático passaram em áudio sintético real e render a 60 fps (CI 45869077696). Fase 6.7 reconfirmou inventário privado e verificou padrões comuns de credenciais em 57 arquivos públicos do candidato; nenhum match. Isso não comprova privacidade integral nem substitui revisão de histórico/licenças. Paridade e validações externas seguem abertas.
 
 Fase 6.8: segurança de entrega ganha gate executável local, scanner heurístico e atestado autenticado independente. Não há verificador implantado ou integração obrigatória de todos os hosts. Controles de Gradle, aprendizagem e automação reforçados. CI pendente; cobertura e auditoria integral ainda abertas.
+
+Fase 6.8 validada em CI (102 aprovados). Fase 6.9 fortalece aprovação por digest, ambiente de subprocessos e scanner. Sem validação independente de toda a segurança, sandbox real ou gate obrigatório no host.

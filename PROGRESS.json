@@ -85,7 +85,7 @@
   "phase_4_implementation": "3d749ef75741ed6aae03f69eab67135b319513ab",
   "phase_5_baseline": "f7de4c57eb9a05425469f5948d3c1dfa442db1dd",
   "phase_5_implementation": "645baca9d860728eed56e79b2a7b0d4da2abd748",
-  "checkpoint": "6.8-security-first",
+  "checkpoint": "6.9-security-boundaries",
   "review_4_1": {
     "status": "complete",
     "baseline": "f0daf2820e49fafc079e8bfd0f68704c675c7052",
@@ -123,14 +123,11 @@
       "scope": "explicit noncontextual pure adapters, one workflow, maximum 128 successful entries"
     },
     "validated_ci": {
-      "run": 45869077696,
-      "commit": "0da86f89d603fde382adcb87ef34bd50dfa836a2",
-      "passed": 92,
+      "run": 45882300851,
+      "commit": "3f3e9e955c020b7df59f890540495a2a373e5ae2",
+      "passed": 102,
       "skipped": 3,
-      "result": "success",
-      "planner_baseline_us": 15.5032378,
-      "planner_candidate_us": 11.3740297,
-      "plans_equal": true
+      "result": "success"
     },
     "planner_index": {
       "status": "validated_ci",
@@ -173,10 +170,17 @@
         "full history, sensitive data, dependency licenses and runtime audit remain open"
       ],
       "delivery_gate": {
-        "status": "implemented_pending_ci",
+        "status": "validated_local_ci",
         "independent_verifier_deployed": false,
         "host_enforcement": false,
-        "scope": "bounded static inspection and authenticated exact-byte publishing"
+        "scope": "bounded static inspection and authenticated exact-byte publishing",
+        "run": 45882300851
+      },
+      "boundaries": {
+        "status": "implemented_pending_ci",
+        "manifest_digest": true,
+        "minimal_child_environment": true,
+        "portable_artifact_paths": true
       }
     }
   }

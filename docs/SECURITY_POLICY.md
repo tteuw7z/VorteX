@@ -21,3 +21,7 @@ Gradle runs executable project logic. A private copy is not a sandbox. Explicit 
 ## Release rule
 
 If a required check is missing, a security issue is unresolved, evidence is unavailable, or review scope is uncertain: BLOCKED. Report findings and missing checks without exposing sensitive data. Never claim zero vulnerabilities or guaranteed security. A clean static audit is not certification.
+
+## Additional internal protections (6.9)
+
+Approval requires the exact manifest SHA-256 returned by planning, alongside unique per-stage labels; a changed manifest is blocked before preparing any command. The plan exposes argv for review. Approval does not bind mutable input-file content or authenticate the operator. Media/SDK subprocesses use a minimal environment, reserved verifier/provider credentials cannot be explicitly forwarded through Gradle. Tools may still read host files or access the network; execute untrusted inputs/builds in externally isolated hosts. Static artifact scanning additionally rejects reserved Windows device paths, normalization collisions, credentials in filenames and script URLs; reports are bounded. These checks are incomplete and do not replace independent review.

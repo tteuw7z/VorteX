@@ -12,6 +12,7 @@ from tempfile import TemporaryDirectory
 from zipfile import ZipFile
 
 from .evidence import file_sha256
+from .process_env import tool_environment
 
 
 _ELF_BY_ABI = {
@@ -56,7 +57,7 @@ class AndroidTools:
 
 def _run(program, args, *, step, cwd=None, env=None, timeout=120):
     try:
-        result = subprocess.run([program, *map(str, args)], cwd=cwd, env=env,
+        result = subprocess.run([program, *map(str, args)], cwd=cwd, env=tool_environment() if env is None else env,
                                 capture_output=True, text=True, errors="replace", check=False,
                                 stdin=subprocess.DEVNULL, timeout=timeout)
     except subprocess.TimeoutExpired as exc:
@@ -187,6 +188,8 @@ def build_apk(project: Path, destination: Path, tools: AndroidTools, *, module="
             raise ValueError(f"Requested environment variable is unset: {name}")
     if trusted_project is not True:
         raise ValueError("Gradle executes project code; explicit trusted_project approval is required")
+    # Validate that requested variables cannot expose reserved credentials.
+    tool_environment(extra=forwarded)
     project = project.resolve(strict=True)
     if not any((project / name).is_file() for name in ("settings.gradle", "settings.gradle.kts")):
         raise ValueError("Expected an Android Gradle project with settings.gradle or settings.gradle.kts")
@@ -212,8 +215,7 @@ def build_apk(project: Path, destination: Path, tools: AndroidTools, *, module="
         if not gradle:
             raise FileNotFoundError("No Gradle executable or usable Gradle wrapper is available")
 
-        env_keys = ("PATH", "HOME", "JAVA_HOME", "GRADLE_USER_HOME", "TMPDIR", "LANG", "LC_ALL")
-        environ = {key: os.environ[key] for key in (*env_keys, *forwarded) if key in os.environ}
+        environ = tool_environment(extra=(*forwarded, "GRADLE_USER_HOME"))
         environ.update(ANDROID_HOME=str(tools.sdk), ANDROID_SDK_ROOT=str(tools.sdk))
         capitalized = variant.capitalize()
         tasks = [f":{module}:assemble{capitalized}"]
@@ -264,7 +266,7 @@ def build_fixture(destination: Path, tools: AndroidTools, *, api: int = 35) -> d
         _run(aligner, ["4", unsigned, aligned], step="APK alignment")
         key = root / "fixture.p12"
         pass_var = "VORTEX_EPHEMERAL_APK_PASS"
-        signing_env = dict(os.environ)
+        signing_env = tool_environment()
         signing_env[pass_var] = secrets.token_urlsafe(32)
         _run(keytool, ["-genkeypair", "-noprompt", "-keystore", key, "-storetype", "PKCS12",
                        "-alias", "vortex-fixture", "-keyalg", "RSA", "-keysize", 2048,

@@ -45,3 +45,5 @@ Próximas prioridades: auditoria granular de capacidades e segurança/licenças,
 ## Fase 6.8 — segurança como bloqueio de entrega
 
 CI do checkpoint b70f76c aprovado (45869306182). Gate local para publicação de artefatos, scanner limitado e atestado HMAC independente obrigatório; sem atestado ou com alertas, BLOCKED. Sem verificador externo implantado nem interceptação de entregas do host. Gradle exige confiança explícita, aprovações não podem colidir, manifesto limitado e sem chaves duplicadas, aprendizagem privada em POSIX. Validar CI do candidato. Não declarar auditoria integral concluída.
+
+Fase 6.8: CI 45882300851 aprovado, 102 testes aprovados e 3 ignorados, quatro jobs aprovados. Fase 6.9 vincula aprovação aos bytes do manifesto, reduz ambiente de subprocessos, reforça caminhos e scanner HTML. Novo CI pendente; sem sandbox ou verificador independente implantado. Migração: CLI automation run exige --manifest-sha256.

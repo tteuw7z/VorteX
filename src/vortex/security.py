@@ -9,6 +9,8 @@ import re
 import shutil
 import stat
 import time
+import unicodedata
+from html.parser import HTMLParser
 from dataclasses import dataclass
 
 POLICY_VERSION = 1
@@ -37,7 +39,6 @@ _WEB_RULES = (
     ("WEB_UNSAFE_HTML", re.compile(r"\b(?:innerHTML|outerHTML)\s*=|\bdocument\.write\s*\(|\bdangerouslySetInnerHTML\b")),
     ("WEB_EVAL", re.compile(r"\beval\s*\(|\bnew\s+Function\s*\(")),
     ("WEB_TOKEN_STORAGE", re.compile(r"\b(?:localStorage|sessionStorage)\.setItem\s*\(\s*['\"][^'\"]*(?:token|secret|password)[^'\"]*['\"]", re.I)),
-    ("WEB_INLINE_HANDLER", re.compile(r"<[^>]*\son[a-z]+\s*=", re.I)),
 )
 _TEXT_SUFFIXES = {".py", ".pyi", ".js", ".jsx", ".ts", ".tsx", ".mjs", ".cjs", ".html",
                   ".htm", ".css", ".json", ".toml", ".yaml", ".yml", ".xml", ".md", ".txt",
@@ -107,6 +108,26 @@ def _python_findings(path, data):
     return findings
 
 
+class _HTMLReview(HTMLParser):
+    def __init__(self, path):
+        super().__init__(convert_charrefs=True)
+        self.path = path
+        self.findings = []
+
+    def handle_starttag(self, tag, attrs):
+        if len(self.findings) >= 100:
+            return
+        for name, value in attrs:
+            if name.startswith("on"):
+                self.findings.append(_finding(self.path, "WEB_INLINE_HANDLER", self.getpos()[0]))
+            if name in {"href", "src", "action", "formaction", "xlink:href"} and value:
+                normalized = "".join(c for c in value if ord(c) > 32).casefold()
+                if normalized.startswith("javascript:"):
+                    self.findings.append(_finding(self.path, "WEB_SCRIPT_URL", self.getpos()[0]))
+            if len(self.findings) >= 100:
+                break
+
+
 def _scan(path, data):
     findings = []
     suffix = Path(path).suffix.lower()
@@ -117,16 +138,26 @@ def _scan(path, data):
         findings.append(_finding(path, "KEY_MATERIAL_FILE"))
     # Check ASCII secret formats even inside a binary. Do not output matching strings.
     text = data.decode("utf-8", errors="replace")
-    for match in _SECRET.finditer(text):
+    # Bound report volume even for pathological candidate content.
+    from itertools import islice
+    for match in islice(_SECRET.finditer(text), 100):
         findings.append(_finding(path, "POSSIBLE_CREDENTIAL", text.count("\n", 0, match.start()) + 1))
-    for match in _ASSIGN_SECRET.finditer(text):
+    for match in islice(_ASSIGN_SECRET.finditer(text), 100):
         findings.append(_finding(path, "HARDCODED_SECRET", text.count("\n", 0, match.start()) + 1))
     if suffix in {".py", ".pyi"}:
-        findings.extend(_python_findings(path, data))
+        findings.extend(_python_findings(path, data)[:100])
     if suffix in _WEB_SUFFIXES:
         for rule, pattern in _WEB_RULES:
-            for match in pattern.finditer(text):
+            for match in islice(pattern.finditer(text), 100):
                 findings.append(_finding(path, rule, text.count("\n", 0, match.start()) + 1))
+    if suffix in {".html", ".htm"}:
+        parser = _HTMLReview(path)
+        try:
+            parser.feed(text)
+            parser.close()
+        except (ValueError, RecursionError):
+            findings.append(_finding(path, "WEB_INVALID_MARKUP"))
+        findings.extend(parser.findings)
     return findings, suffix not in {".py", ".pyi"} | _WEB_SUFFIXES
 
 
@@ -170,9 +201,18 @@ def snapshot(root: Path) -> Snapshot:
             if any(part.endswith((" ", ".")) or ":" in part or "\\" in part
                    for part in path.relative_to(root).parts):
                 raise ValueError("Artifact path is not portable")
-            if relative.casefold() in names:
-                raise ValueError("Artifact has case-colliding paths")
-            names.add(relative.casefold())
+            for part in path.relative_to(root).parts:
+                if any(ord(c) < 32 or c in '<>"|?*' for c in part):
+                    raise ValueError("Artifact path contains nonportable characters")
+                stem = part.split(".", 1)[0].upper()
+                if stem in {"CON", "PRN", "AUX", "NUL", "CONIN$", "CONOUT$"} or re.fullmatch(r"(?:COM|LPT)[1-9¹²³]", stem):
+                    raise ValueError("Artifact contains a reserved device path")
+                if _SECRET.search(part):
+                    raise ValueError("Artifact path contains possible credential material")
+            folded = unicodedata.normalize("NFC", relative).casefold()
+            if folded in names:
+                raise ValueError("Artifact has case or normalization-colliding paths")
+            names.add(folded)
             if len(names) > 2 * _MAX_FILES:
                 raise ValueError("Artifact exceeds path count limit")
         for name in sorted(filenames):
@@ -184,6 +224,8 @@ def snapshot(root: Path) -> Snapshot:
             total += len(data)
             hits, limited = _scan(relative, data)
             findings.extend(hits)
+            if len(findings) > 1000:
+                raise ValueError("Artifact exceeds security finding limit; remediate in smaller batches")
             if limited:
                 unparsed.append(relative)
             files.append((relative, data))

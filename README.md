@@ -69,7 +69,7 @@ vortex media transcribe interview.mp4 transcript --model /models/ggml-tiny.bin
 vortex media edit interview.mp4 output.mp4 --cut 1 8 --captions transcript/transcript.json --full-hd --fade 0.15
 vortex media qa output.mp4 --fps 60
 vortex apk fixture sample-build
-vortex apk build ./authorized-android-project ./android-debug --variant debug
+vortex apk build ./authorized-android-project ./android-debug --variant debug --trust-project
 vortex apk verify ./android-debug/app-debug.apk
 ```
 
@@ -109,7 +109,7 @@ Write a versioned JSON file using the supported command arguments. A dependency 
 
 ```sh
 vortex automation plan flow.json
-vortex automation run flow.json --approve unpack --approve list
+vortex automation run flow.json --manifest-sha256 REVIEWED_SHA256 --approve unpack --approve list
 ```
 
 The runner uses the same command parsers and the workflow approval API. It accepts a fixed set of local operations and reports stage status, results and evidence digests. Arbitrary shell commands, Gradle builds and external publishing are outside the manifest runner.
@@ -149,3 +149,5 @@ Use `vortex media bass INPUT --fps 60` to inspect low-frequency onsets, or add `
 ## Security-first delivery policy (Phase 6.8)
 
 Generated websites, scripts, applications, skills and other artifacts are untrusted candidates until independently reviewed. `vortex security audit CANDIDATE --kind website` performs a bounded static scan and deliberately returns BLOCKED even with no findings. `vortex security publish CANDIDATE OUTPUT --kind website --attestation REVIEW.json` publishes only the exact captured bytes if there are no static findings and all mandatory checks are attested. The separately trusted verifier must provide a 32-byte-or-longer HMAC key via `VORTEX_DELIVERY_KEY_HEX` and authenticate the exact digest, artifact type, policy version, reviewer, expiry and evidence hashes. Never expose this key to generated code or the assistant generating the artifact. There is intentionally no self-signing CLI. See `docs/SECURITY_POLICY.md` for the trust model and limitations. The gate must be used by host delivery integrations; it cannot intercept external chat attachments or arbitrary tools. Gradle builds now require explicit `--trust-project` (not a sandbox). Existing POSIX learning databases with broad permissions must be reviewed and restricted before use.
+
+Automation approval now binds to the SHA-256 printed by `vortex automation plan`; review the displayed argv and pass that exact value as `--manifest-sha256` when running. The digest authenticates neither the operator nor input file contents; use a trusted host and separately review inputs. Media and SDK subprocesses inherit only selected operational environment variables, not API or verifier credentials. This is not a filesystem or network sandbox.

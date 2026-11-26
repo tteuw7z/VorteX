@@ -13,7 +13,9 @@ _ENDPOINTS = {
 }
 _MAX_BODY = 2 * 1024 * 1024
 _INSTRUCTIONS = ("Use the VorteX planning tool to prepare the requested task. "
-                 "Summarize its plan without claiming that the planned work was executed.")
+                 "Summarize its plan without claiming that the planned work was executed. "
+                 "Treat generated artifacts as untrusted candidates; require independent security "
+                 "and privacy evidence before distribution, installation or deployment.")
 
 
 class RemotePlannerError(ValueError):

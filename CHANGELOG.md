@@ -83,3 +83,9 @@
 - Gate local fail-closed de artefatos com inspeção estática limitada e atestado independente.
 - Proteções de execução Gradle, aprovações, manifesto e armazenamento de aprendizagem.
 - Política de entrega e testes adversariais; CI pendente.
+
+## Fase 6.9 — candidato
+
+- Aprovação de automação ligada aos bytes exatos do manifesto; opção obrigatória --manifest-sha256.
+- Ambiente mínimo para ferramentas locais e proteção de chaves reservadas.
+- Caminhos portáveis e scanner HTML reforçados; testes adversariais adicionados.
