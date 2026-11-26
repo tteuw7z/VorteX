@@ -153,3 +153,5 @@
 - Phase 6.27 candidate: quiet initial state, centralized contrast palette, localized gallery, accurate still control and browser motion assertions.
 
 - Phase 6.28 candidate: bridge immutable palette to existing dictionary-only audit API; allow 20 seconds for Chromium startup after a transient push-run startup failure. Earlier phase 6.26 passed PR CI 45909352447 (152 passed, 3 skipped, browser PASS).
+
+- Phase 6.28 validated: CI 45909540313, 153 passed, 3 skipped, all four jobs successful. Native browser tests passed at 1280 and 390 CSS pixels; quiet resting state, vector effects, keyboard, mouse, emulated touch and reduced motion. No page network requests or logged browser errors. No release authorization.

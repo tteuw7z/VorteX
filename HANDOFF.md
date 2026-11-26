@@ -72,3 +72,7 @@ Candidato: contrato SKILL.md, sessão Python local, CLI chat, menus estruturados
 ## Latest verified checkpoint (6.21)
 
 Continue from code commit 6938dc52d581dcbba7bd86d52a35822cd43dacb7 or its documentation-only successor, preserving phase 6.21. Push CI 45907237193 completed successfully across four jobs; 144 passed, 3 skipped. The Spector pipeline uses existing planner, coordinator and authenticated delivery gate, bounded trusted repair, separate test classes, database/API evidence and conservative static checks. No independent reviewer/sandbox is deployed. Do not copy private source material or claim actual provider savings, exhaustive study, full parity, universal delivery enforcement or zero vulnerabilities. Draft PR #1 remains unmerged.
+
+## Motion UI checkpoint 6.28
+
+Continue from 97ea53fe569d6452b83b9e9f9b5d99f070d51b85 or its documentation-only successor. CI 45909540313: 153 passed, 3 skipped, all four jobs passed including headless Chromium. Python generates script-free native HTML/CSS menu and ten control examples. Five bounded motion presets and five fixed vector motifs, escaped text, private candidate outputs and CSP. Added motion designer and UI interaction tester planning profiles; no runtime JS or new Python runtime dependencies. The interface is an offline read-only candidate, not an installed ChatGPT interface, not a released product. Keep independent gate and all prior security requirements intact.

@@ -111,3 +111,6 @@
 - [x] Validate phase 6.17 Spector pipeline and policy 4 (CI 45906687959).
 - [x] Validate phase 6.18–6.21 trusted checks, repair loop, compatibility and database/API gates (CI 45907237193).
 - [ ] Deploy independent reviewer, execution isolation and universal host enforcement; verify live provider token savings, complete source coverage and broader parity.
+
+- [x] Build Motion UI, reusable controls, vector accents, planning profiles and headless browser checks (phase 6.28, CI 45909540313).
+- [ ] Verify on physical phone, Safari/Firefox, assistive technology and trusted chat host; independently authorize delivery before production use.
