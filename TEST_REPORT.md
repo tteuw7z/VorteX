@@ -168,3 +168,5 @@ Casos de bloqueio sem atestado, assinatura errada, evidência faltante, expiraç
 CI 45882300851 (3f3e9e9): 105 testes descobertos, 102 aprovados, 3 ignorados, quatro jobs aprovados. Fase 6.9 adiciona testes de troca do manifesto, não herança de credenciais, URL de script, nome contendo credencial e caminhos reservados; novo CI pendente.
 
 Fase 6.10 adiciona teste de logs ausentes/adulterados, não inclusão de evidências na entrega e falha de rename sem diretório final. CI pendente; testes usam registros e chave sintéticos, não auditoria externa real.
+
+CI 45882508405 (bb98add): 109 testes encontrados, 106 aprovados, 3 ignorados, quatro jobs aprovados. Fase 6.11 testa criação privada, não sobrescrita, publicação de mídia e extração ZIP sob umask permissivo. CI pendente.

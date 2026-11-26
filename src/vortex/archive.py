@@ -14,6 +14,7 @@ import unicodedata
 import zipfile
 from zipfile import BadZipFile, ZIP_BZIP2, ZIP_DEFLATED, ZIP_STORED, ZipFile, ZipInfo
 import zlib
+from .private_io import private_open
 
 MAX_ENTRIES = 10_000
 MAX_BYTES = 2_000_000_000
@@ -218,12 +219,12 @@ def extract_archive(path: Path, destination: Path, *, max_entries: int = MAX_ENT
             unpacked = Path(temp) / "contents"
             unpacked.mkdir(mode=0o700)
             for directory in sorted(directories):
-                (unpacked / directory).mkdir()
+                (unpacked / directory).mkdir(mode=0o700)
             for name, info in entries.items():
                 if info.is_dir():
                     _read_member(archive, info, None)
                 else:
-                    with (unpacked / name).open("xb") as output:
+                    with private_open(unpacked / name) as output:
                         _read_member(archive, info, output)
                     files += 1
             _publish(unpacked, target)

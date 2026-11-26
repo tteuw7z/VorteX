@@ -88,3 +88,6 @@
 
 - [x] Exigir logs reais vinculados a cada atestado e publicação em staging privado.
 - [ ] Validar política v2 em CI e implementar verificador independente/integrações reais.
+
+- [x] Definir permissões privadas em arquivos e diretórios de saída dos módulos principais.
+- [ ] Validar CI da revisão de privacidade e configurar ACLs Windows em ambiente real.

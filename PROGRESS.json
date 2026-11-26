@@ -85,7 +85,7 @@
   "phase_4_implementation": "3d749ef75741ed6aae03f69eab67135b319513ab",
   "phase_5_baseline": "f7de4c57eb9a05425469f5948d3c1dfa442db1dd",
   "phase_5_implementation": "645baca9d860728eed56e79b2a7b0d4da2abd748",
-  "checkpoint": "6.10-evidence-bound-delivery",
+  "checkpoint": "6.11-private-output",
   "review_4_1": {
     "status": "complete",
     "baseline": "f0daf2820e49fafc079e8bfd0f68704c675c7052",
@@ -123,9 +123,9 @@
       "scope": "explicit noncontextual pure adapters, one workflow, maximum 128 successful entries"
     },
     "validated_ci": {
-      "run": 45882300851,
-      "commit": "3f3e9e955c020b7df59f890540495a2a373e5ae2",
-      "passed": 102,
+      "run": 45882508405,
+      "commit": "bb98addbb232db704f8fe893833cabd2d64472ac",
+      "passed": 106,
       "skipped": 3,
       "result": "success"
     },
@@ -180,10 +180,16 @@
         "atomic_staging": true
       },
       "boundaries": {
-        "status": "implemented_pending_ci",
+        "status": "validated_local_ci",
         "manifest_digest": true,
         "minimal_child_environment": true,
-        "portable_artifact_paths": true
+        "portable_artifact_paths": true,
+        "run": 45882508405
+      },
+      "private_outputs": {
+        "status": "implemented_pending_ci",
+        "posix_modes": "0700 directories; 0600 files",
+        "scope": "archive, media, batch, Android, design"
       }
     }
   }

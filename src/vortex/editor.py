@@ -8,6 +8,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from .evidence import file_sha256
+from .private_io import restrict_file
 from .bass import detect_bass, flash_intervals
 from .effects import effect_filters, prepare_effects
 from .media import (_INPUT_OPTIONS, _cadence, _decimal, _destination, _dimensions,
@@ -240,6 +241,7 @@ def render(path: Path | str, output: Path | str, *, ranges=None, fps: int = 60,
         if (audio is not None and rendered_audio is None) or _dimensions(rendered) != (width, height):
             raise ValueError("Rendered tracks or dimensions did not match the edit")
         sha = file_sha256(staged)
+        restrict_file(staged)
         os.link(staged, destination)
     return {"output": str(destination), "sha256": sha, "source_sha256": digest,
             "fps": fps, "frames": frames, "dimensions": [width, height], "audio": audio is not None,

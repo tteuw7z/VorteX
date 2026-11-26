@@ -13,6 +13,7 @@ from zipfile import ZipFile
 
 from .evidence import file_sha256
 from .process_env import tool_environment
+from .private_io import private_open
 
 
 _ELF_BY_ABI = {
@@ -127,16 +128,16 @@ def _publish(artifacts, dest: Path, tools: AndroidTools, *, mode: str, required_
         reports.append(row)
     report = {"mode": mode, "apks": reports, "report": str(dest / "report.json")}
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.mkdir()
+    dest.mkdir(mode=0o700)
     created = []
     try:
         for file, row in zip(artifacts, reports, strict=True):
             target = Path(row["path"])
-            with file.open("rb") as source, target.open("xb") as output:
+            with file.open("rb") as source, private_open(target) as output:
                 created.append(target)
                 shutil.copyfileobj(source, output)
         manifest = Path(report["report"])
-        with manifest.open("x", encoding="utf-8") as output:
+        with private_open(manifest, text=True) as output:
             created.append(manifest)
             json.dump(report, output, ensure_ascii=False, indent=2)
             output.write("\n")

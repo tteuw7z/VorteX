@@ -93,3 +93,7 @@
 ## Fase 6.10 — candidato
 
 - Política de entrega v2: logs reais exigidos e verificados por hash, staging privado, publicação final atômica em filesystem confiável.
+
+## Fase 6.11 — candidato
+
+- Permissões privadas nas saídas POSIX de mídia, ZIP, lotes, Android e HTML.

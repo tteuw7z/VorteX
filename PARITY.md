@@ -71,3 +71,5 @@ Fase 6.8: segurança de entrega ganha gate executável local, scanner heurístic
 Fase 6.8 validada em CI (102 aprovados). Fase 6.9 fortalece aprovação por digest, ambiente de subprocessos e scanner. Sem validação independente de toda a segurança, sandbox real ou gate obrigatório no host.
 
 Fase 6.10: política v2 implementada com evidência real e staging privado; CI pendente. Atestado independente e integração real continuam bloqueios.
+
+Fase 6.11: privacidade de arquivos de saída em POSIX reforçada; ACLs Windows e proteção em repouso por criptografia permanecem dependentes da configuração e dos requisitos do host.

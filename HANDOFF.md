@@ -49,3 +49,5 @@ CI do checkpoint b70f76c aprovado (45869306182). Gate local para publicação de
 Fase 6.8: CI 45882300851 aprovado, 102 testes aprovados e 3 ignorados, quatro jobs aprovados. Fase 6.9 vincula aprovação aos bytes do manifesto, reduz ambiente de subprocessos, reforça caminhos e scanner HTML. Novo CI pendente; sem sandbox ou verificador independente implantado. Migração: CLI automation run exige --manifest-sha256.
 
 Fase 6.10: política v2 exige registros de evidência reais, não vazios, vinculados ao hash de cada revisão, em diretório separado. Publicação em staging privado, rechecagem de bytes, lock cooperativo e rename final. CI pendente. Nenhum verificador externo implantado; host deve integrar gate e isolar execução.
+
+Fase 6.11: saídas locais de mídia, ZIP, lotes, APK e prévias HTML passam a usar permissões POSIX privadas por padrão. Windows depende da ACL do host. CI da fase 6.9 aprovado (106 testes, 3 ignorados). Fases 6.10 e 6.11 aguardam confirmação. Não equivale a criptografia ou isolamento do usuário local.

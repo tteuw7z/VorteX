@@ -234,3 +234,44 @@ class PortableArtifactSecurityTests(unittest.TestCase):
             (root / "NUL.txt").touch()
             with self.assertRaisesRegex(ValueError, "reserved device"):
                 audit(root, "script")
+
+
+@unittest.skipUnless(os.name == "posix", "POSIX permissions required")
+class PrivateOutputTests(unittest.TestCase):
+    def test_private_creation_and_media_publication_under_permissive_umask(self):
+        from vortex.private_io import private_open
+        from vortex.media import _publish_directory
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            previous = os.umask(0)
+            try:
+                with private_open(root / "private.txt", text=True) as stream:
+                    stream.write("private data")
+                self.assertEqual((root / "private.txt").stat().st_mode & 0o777, 0o600)
+                with self.assertRaises(FileExistsError):
+                    private_open(root / "private.txt")
+                source = root / "staging"
+                source.mkdir()
+                (source / "transcript.txt").write_text("private transcript")
+                _publish_directory(source, root / "published")
+                self.assertEqual((root / "published").stat().st_mode & 0o777, 0o700)
+                self.assertEqual((root / "published" / "transcript.txt").stat().st_mode & 0o777, 0o600)
+            finally:
+                os.umask(previous)
+
+    def test_extracted_files_private_under_permissive_umask(self):
+        from zipfile import ZipFile
+        from vortex.archive import extract_archive
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            archive = root / "input.zip"
+            with ZipFile(archive, "w") as stream:
+                stream.writestr("nested/private.txt", "private data")
+            previous = os.umask(0)
+            try:
+                extract_archive(archive, root / "output")
+                self.assertEqual((root / "output").stat().st_mode & 0o777, 0o700)
+                self.assertEqual((root / "output" / "nested").stat().st_mode & 0o777, 0o700)
+                self.assertEqual((root / "output" / "nested/private.txt").stat().st_mode & 0o777, 0o600)
+            finally:
+                os.umask(previous)

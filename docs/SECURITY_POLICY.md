@@ -27,3 +27,7 @@ If a required check is missing, a security issue is unresolved, evidence is unav
 Approval requires the exact manifest SHA-256 returned by planning, alongside unique per-stage labels; a changed manifest is blocked before preparing any command. The plan exposes argv for review. Approval does not bind mutable input-file content or authenticate the operator. Media/SDK subprocesses use a minimal environment, reserved verifier/provider credentials cannot be explicitly forwarded through Gradle. Tools may still read host files or access the network; execute untrusted inputs/builds in externally isolated hosts. Static artifact scanning additionally rejects reserved Windows device paths, normalization collisions, credentials in filenames and script URLs; reports are bounded. These checks are incomplete and do not replace independent review.
 
 Policy version 2 additionally requires actual evidence logs, not just digest strings. Evidence and candidate/delivery trees must be disjoint; no review logs are copied to the released files. Old version 1 attestations are rejected.
+
+### Privacidade de arquivos locais (6.11)
+
+Saídas novas dos adaptadores principais usam permissões 0600 e diretórios 0700 em POSIX. No Windows, configure ACLs privadas no diretório de trabalho e de saída antes de processar dados. Não é criptografia em repouso e não impede acesso por outros processos da mesma conta ou administradores.
