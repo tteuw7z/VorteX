@@ -10,6 +10,7 @@ from .discipline import prepare_task
 from .motion import PRESETS, stylesheet
 from .private_io import private_open
 from .security import audit as audit_security
+from .ui_components import Controls
 
 COLORS = {
     "background": "#0d0b14", "surface": "#191426", "raised": "#241b36",
@@ -56,10 +57,24 @@ input[type=text],select{width:100%;min-height:48px;background:var(--raised);bord
 fieldset{min-width:0;border:1px solid var(--line);border-radius:12px;padding:8px 12px}
 legend{color:var(--muted)}
 progress{width:100%;height:18px;accent-color:var(--accent)}
+.switch-field input{position:absolute;opacity:0;width:52px;height:40px;margin:0;cursor:pointer}
+.switch-track{width:50px;height:30px;border:2px solid var(--line);border-radius:24px;flex:none;background:var(--raised);position:relative;pointer-events:none}
+.switch-track::after{content:"";position:absolute;left:4px;top:4px;width:18px;height:18px;border-radius:50%;background:var(--accent)}
+.switch-field input:checked+.switch-track{background:var(--button)}
+.switch-field input:checked+.switch-track::after{left:24px;animation:vx-pop 350ms linear both}
+.switch-field input:focus-visible+.switch-track{outline:3px solid var(--accent);outline-offset:3px}
+.choice-segmented .choices,.choice-rating .choices{display:flex;flex-wrap:wrap;gap:6px}
+.choice-segmented .field,.choice-rating .field{border:1px solid var(--line);border-radius:12px;padding:4px 8px;min-height:44px}
+.choice-segmented .field:has(input:checked),.choice-rating .field:has(input:checked){background:var(--button)}
+.choice-rating .field{min-width:52px;justify-content:center}
+.notice summary::after{content:none}.notice .content{border-left:3px solid var(--accent);padding:10px 12px}
+.gallery-card h2{margin-bottom:10px;color:var(--accent);font-size:.85rem;letter-spacing:.08em;text-transform:uppercase}
+.gallery-card p{margin-top:8px}
+@media(forced-colors:active){.switch-field input{position:static;opacity:1;width:22px;height:22px}.switch-track{display:none}}
 footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);color:var(--muted);font-size:.85rem}
 .effect{display:inline-block;position:relative;min-width:0}
 .effect::before,.effect::after{pointer-events:none;position:absolute;content:"";inset:-8px;border:2px solid var(--accent);border-radius:14px;transform:scale(0);visibility:hidden}
-.effect::after{inset:-12px;border-style:dashed;border-color:var(--line)}
+.effect::after{inset:-12px;border-style:dashed;border-color:var(--line);border-radius:3px 20px 3px 20px}
 details[open]>summary .effect{animation:vx-impact 420ms linear both}
 details[open]>summary .effect::before,.field:has(input:checked) .effect::before{animation:vx-ring 420ms linear both}
 details[open]>summary .effect::after,.field:has(input:checked) .effect::after{animation:vx-shards 420ms linear both}
@@ -159,15 +174,25 @@ def render_gallery(*, locale="pt-BR", still=False):
     labels = (("Alternar", "Escolher", "Intensidade", "Texto de teste", "Progresso de exemplo", "Detalhes", "Abrir / fechar")
               if pt else ("Toggle", "Choose", "Intensity", "Test text", "Example progress", "Details", "Open / close"))
     toggle, choose, intensity, text, progress, details, open_close = labels
+    factory = Controls()
     controls = (
-        '<label class="field"><input type="checkbox" role="switch"><span class="effect">' + toggle + '</span></label>',
-        '<fieldset><legend>' + choose + '</legend><label class="field"><input type="radio" name="choice" value="a"><span class="effect">A</span></label><label class="field"><input type="radio" name="choice" value="b"><span class="effect">B</span></label></fieldset>',
-        '<label class="field-column">' + intensity + '<input type="range" min="0" max="100" value="40"></label>',
-        '<label class="field-column">' + text + '<input type="text" maxlength="80" autocomplete="off"></label>',
-        '<label class="field-column">' + progress + ' · 60%<progress value="60" max="100">60%</progress></label>',
-        '<details class="panel"><summary><span class="effect">' + open_close + '</span></summary><p>' + details + '</p></details>',
+        ("Switch", factory.toggle("demo-switch", toggle)),
+        ("Radio", factory.radio("choice", choose, ("A", "B"))),
+        ("Slider", factory.slider("demo-range", intensity)),
+        ("Input", factory.text("demo-text", text)),
+        ("Progress", factory.progress("demo-progress", progress)),
+        ("Disclosure", factory.disclosure("demo-details", open_close, details)),
+        ("Select", factory.select("demo-select", "Tema" if pt else "Theme", ("Violet", "Graphite"))),
+        ("Segmented", factory.radio("demo-segment", "Vista" if pt else "View",
+                                    ("Menu", "Lab", "Info"), selected=0, style="segmented")),
+        ("Rating", factory.radio("demo-rating", "Avaliação" if pt else "Rating",
+                                 ("1 ★", "2 ★", "3 ★", "4 ★", "5 ★"), style="rating")),
+        ("Notice", factory.notice("demo-notice", "Ver aviso" if pt else "Show notice",
+                                  "Ação local, sem execução externa." if pt else "Local interaction, no external execution.")),
     )
-    content = '<section class="layout">' + "".join('<div class="panel">' + c + '</div>' for c in controls) + '</section>'
+    content = '<section class="layout">' + "".join(
+        '<div class="panel gallery-card"><h2>' + name + '</h2>' + control + '</div>'
+        for name, control in controls) + '</section>'
     return _page(_hero(title, subtitle, pt=pt) + content + '<footer>VorteX · Motion UI</footer>',
                  locale=lang, title=title, still=still)
 

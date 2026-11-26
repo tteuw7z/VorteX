@@ -142,3 +142,5 @@
 - Phase 6.22 candidate: original Python motion presets, native offline menu and control gallery, reduced motion, CSP, contrast validation, two planning profiles and regression tests. No production authorization.
 
 - Phase 6.23 candidate: headless Chromium keyboard, emulated-touch, viewport, motion preference and CSP tests; synthetic screenshot evidence. CI pending.
+
+- Phase 6.24 candidate: reusable safe native-control factories, ten gallery examples, unique IDs, checked bounds and original violet switch styling. CI pending.

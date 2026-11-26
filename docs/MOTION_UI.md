@@ -13,3 +13,7 @@ Test at 390px and desktop, keyboard and pointer/touch, reduced motion and final 
 ## Browser evidence
 
 CI runs a test-only Node 22+ DevTools harness against installed Chromium. It generates actual Python candidates, uses native CDP keyboard and emulated touch events, checks CSS CSP, motion preferences and no page network traffic, and captures screenshots. Node is not a runtime dependency. Evidence is synthetic and does not authorize publication.
+
+## Reusable controls
+
+`Controls` owns a page-local ID registry and exposes toggle, radio (regular, segmented, rating), slider, text, select, progress, disclosure and notice builders. Every user label is escaped, numeric bounds are checked, and duplicate or unsafe IDs fail before rendering. The gallery contains ten examples; the progress is explicitly a sample, the notice is a user-triggered disclosure, and no controls submit a form or alter the host. Native radio semantics are retained for segmented/rating presentations; no false ARIA tab semantics.

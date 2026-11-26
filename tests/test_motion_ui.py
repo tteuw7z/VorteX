@@ -74,3 +74,38 @@ class MotionUITests(unittest.TestCase):
         self.assertTrue({"motion designer", "ui interaction tester"} <= roles("design UI motion"))
         from vortex.skills import SkillEngine
         self.assertNotIn("motion designer", roles("UI motion", skills=SkillEngine(enabled=["android"])))
+
+    def test_control_factories_escape_and_reject_invalid_attributes(self):
+        from vortex.ui_components import Controls
+        c = Controls()
+        markup = c.toggle("demo", '<img src=x onerror=alert(1)>')
+        self.assertIn("&lt;img", markup)
+        self.assertNotIn("<img", markup)
+        for id in ("demo", "motion-off", 'x" onclick="bad', "A"):
+            with self.assertRaises(ValueError):
+                c.toggle(id, "Label")
+        with self.assertRaises(ValueError):
+            c.radio("group", "Choices", ["A", "B"], selected=True)
+        with self.assertRaises(ValueError):
+            c.slider("slider", "Range", value=101)
+        with self.assertRaises(ValueError):
+            c.progress("progress", "Progress", value=-1)
+        self.assertIn('name="group"', c.radio("group", "Choices", ["<A>", "B"]))
+        with self.assertRaises(ValueError):
+            c.text("group-0", "Collision")
+        self.assertIn("&lt;A&gt;", c.select("select", "Theme", ["<A>", "B"]))
+
+    def test_gallery_has_ten_unique_native_examples(self):
+        class IDs(HTMLParser):
+            def __init__(self):
+                super().__init__()
+                self.ids = []
+            def handle_starttag(self, tag, attrs):
+                self.ids.extend(value for name, value in attrs if name == "id")
+        parser = IDs()
+        html = render_gallery()
+        parser.feed(html)
+        self.assertEqual(len(parser.ids), len(set(parser.ids)))
+        self.assertEqual(html.count('class="panel gallery-card"'), 10)
+        self.assertIn("<select", html)
+        self.assertIn('class="choice-rating"', html)
