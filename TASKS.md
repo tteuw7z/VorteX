@@ -28,6 +28,16 @@
 - [x] Study → Build → Check com evidência complementar separada.
 - [x] Automação local por DAG, adaptadores de subprocesso, CLI integrado e GitHub Actions.
 
+
+## Fase 4.1 — revisão antes da Fase 6
+
+- [x] Conferir o baseline público f0daf28 e revisar as pendências registradas nas fases 4 e 5.
+- [x] Corrigir snapshot da DAG, histórico de fallback, resultado inválido, Unicode e cenários bilíngues de roteamento.
+- [x] Verificar ZIP, CLI, Core e adaptadores de protocolo em Linux, macOS e Windows.
+- [x] Ler texto visível em mídia real sintética. Testar transcrição em EN/PT/FR, render e cadência. Registrar as falhas de detecção e reconhecimento.
+- [x] Verificar tamanho, hash, assinatura e arquitetura de APK ARM64 sintético com SDK e Gradle.
+- [x] Medir latência sobre as mesmas tarefas na base e no código revisado.
+
 ## Próximas etapas
 
 - [x] Fase 4. Revisar arquitetura e dependências, integrar resultados de CLI/DAG e rotas técnicas, unificar origem temporal e reconciliar a matriz.

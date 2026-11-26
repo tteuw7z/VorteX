@@ -34,3 +34,11 @@
 20. Cada resultado de etapa pode registrar tentativas anteriores com evidências e artefatos. Dependentes recebem somente os artefatos do resultado final bem-sucedido. O chamador precisa declarar explicitamente uma alternativa e indicar se a repetição é segura.
 21. O lote prepara todas as saídas em diretório temporário no mesmo sistema de arquivos. Reutiliza a publicação exclusiva do ZIP depois de fechar o manifesto. Saídas parciais são publicadas quando o manifesto consegue identificar os vídeos com falha.
 22. Os adaptadores de assistente traduzem chamadas de planejamento em memória. Transporte, credenciais e contagem de tokens ficam com o host. [OpenAI Responses](https://developers.openai.com/api/docs/guides/function-calling) · [Anthropic Messages](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview)
+
+## Fase 4.1
+
+23. O grafo mantém cópias imutáveis das dependências e alternativas. Resultados inválidos entram no histórico ao usar uma alternativa marcada como segura. A automação exige objeto ou lista JSON.
+24. O limite dos adaptadores é definido em caracteres da tarefa. O envelope Responses admite a expansão dos escapes JSON. A CLI usa escapes JSON para tornar previsível a saída em codificações legadas.
+25. O OCR é ativado por idioma e lê somente quadros amostrados. Usa Tesseract e dados já instalados no host. O relatório separa texto visível de reconhecimento de fala. O modelo Whisper conserva sinalização de revisão e não trata o marcador [BLANK_AUDIO] como fala.
+26. MacOS e Windows executam regressões de Core, ZIP, CLI, DAG e envelopes. No Windows, a fixture de ZIP grava o nome literal para testar a mesma entrada do Linux. O motor Android continua dependente de SDK e host compatíveis.
+27. A verificação ARM64 confirma cabeçalho ELF e assinatura do pacote. O aceite da execução nativa requer um aparelho ou emulador ARM64 e uma aplicação de teste que invoque a biblioteca. Tesseract, SDK, compiladores, Whisper e pesos permanecem externos ao pacote. [Tesseract](https://github.com/tesseract-ocr/tesseract/blob/main/LICENSE) · [Android ABIs](https://developer.android.com/ndk/guides/abis)

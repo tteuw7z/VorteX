@@ -49,13 +49,36 @@
         "Anthropic Messages"
       ],
       "authenticated_host_calls": 0
+    },
+    "phase_4_1": {
+      "local_passed": 72,
+      "local_skipped": 0,
+      "technical_ci_run": 45825375788,
+      "technical_ci_result": "success",
+      "portable_core_platforms": [
+        "linux",
+        "macos",
+        "windows"
+      ],
+      "android_arm64_verified": [
+        "sdk-fixture",
+        "gradle-debug",
+        "gradle-release"
+      ],
+      "android_device_runs": 0,
+      "authenticated_provider_calls": 0,
+      "local_planning_median_us": {
+        "baseline": 12.72,
+        "phase_4_1": 12.72
+      }
     }
   },
   "next": {
     "phase": 6,
     "model": "Astra 6.2",
     "effort": "Max",
-    "trigger": "Continuar"
+    "trigger": "Explicit user authorization for phase 6",
+    "authorization_required": true
   },
   "phase_2_baseline": "decbafdacca3dadfd746e09905d0e30c4affc122",
   "phase_3_baseline": "eb562b0a7a2f24816450b110fb021a49d83d7aa9",
@@ -63,5 +86,17 @@
   "phase_4_baseline": "813787c5a930768742d01f64f103025cca0c4a96",
   "phase_4_implementation": "3d749ef75741ed6aae03f69eab67135b319513ab",
   "phase_5_baseline": "f7de4c57eb9a05425469f5948d3c1dfa442db1dd",
-  "phase_5_implementation": "645baca9d860728eed56e79b2a7b0d4da2abd748"
+  "phase_5_implementation": "645baca9d860728eed56e79b2a7b0d4da2abd748",
+  "checkpoint": "4.1",
+  "review_4_1": {
+    "status": "complete",
+    "baseline": "f0daf2820e49fafc079e8bfd0f68704c675c7052",
+    "technical_commits": [
+      "f13bf3c32e6abc04186a995ff4ce6e12e71e72ed",
+      "ee6fe34f05fff4fbc3f639a59c813f85c8574463",
+      "c910c324d49a19c6b0450f4ac3a91a7b1e14512c"
+    ],
+    "phase_6_ready_to_start": true,
+    "full_parity": false
+  }
 }

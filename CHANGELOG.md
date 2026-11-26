@@ -1,5 +1,13 @@
 # Changelog
 
+
+## 2026-11-26 — Operação VORTEX, Fase 4.1
+
+- A DAG preserva as dependências validadas e registra a tentativa inválida antes de usar um fallback autorizado. Retornos técnicos sem relatório falham.
+- A CLI mantém JSON legível por máquinas em terminais com codificação legada. Responses e Messages aceitam tarefas Unicode com o mesmo limite de caracteres.
+- A inspeção de mídia lê texto visível em quadros amostrados via Tesseract opcional. Lotes ZIP inspecionam a árvore extraída. O reconhecimento diferencia o marcador de áudio vazio da fala transcrita.
+- A verificação de APK valida a classe, máquina e tipo de objeto ELF. O CI executa regressões do núcleo, ZIP e portabilidade em macOS e Windows.
+
 ## 2026-11-26 — Operação VORTEX, Fase 5
 
 - Roteamento composto português/inglês e melhor distribuição de especialistas com orçamento limitado.

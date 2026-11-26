@@ -1,5 +1,35 @@
 # Testes e evidências
 
+## Fase 4.1
+
+CPython 3.15.2 em Linux x86-64, com pacote instalado. **72 de 72 testes locais passaram** em 40,140 s. Foram habilitados FFmpeg 7.1.5, Tesseract 5.5.0, SDK Android 35, Build Tools 35.0.0, Gradle 8.9 e whisper.cpp 1.8.3. O [CI do commit técnico c910c32](https://github.com/tteuw7z/VorteX/actions/runs/45825375788) aprovou Linux, a fixture Android separada e as suítes de portabilidade em macOS e Windows. Na suíte Linux do runner passaram 69 testes, com 3 integrações opt-in cobertas localmente.
+
+| Ensaio | Resultado observado |
+| --- | --- |
+| Revisão independente de Core/CLI | Foram reproduzidas quatro falhas no baseline. Regressões passam para alteração da lista externa de dependências, relatório escalar inválido, tarefa com 6.006 caracteres com emoji nas duas APIs locais e inventário JSON com stdout cp1252. |
+| Fallback e roteamento | Relatório sem evidência entra no histórico e uma alternativa autorizada pode concluir a etapa. Oito casos PT/EN verificam seleção e limite de papéis. |
+| GitHub Actions em três sistemas | O primeiro CI achou que o escritor de fixtures convertia a barra invertida no Windows. A fixture foi corrigida para gravar o nome literal. No CI técnico final os cinco módulos portáveis passaram nos dois runners adicionais. |
+| Lote ZIP com OCR, ASR e render | Um MP4 íntegro com nome Unicode, fala sintética PT e texto visível, mais um arquivo corrompido. Lote devolveu código 1 e PARTIAL com 1 de 2 completos. Tesseract leu VORTEX TEST com timecodes. O JSON da transcrição gerou render H.264/AAC 1920×1080 com 180 quadros, 43 intervalos de legenda e cadência 60 fps confirmada por QA. SHA-256 do render: f080031441357289fcd22131d08d401f0287e420a5a9da17bb02243cbc57a7b8. |
+| Áudio vazio | Whisper retornou [BLANK_AUDIO] para vídeo sintético com faixa silenciosa. Após a correção, o mesmo arquivo gerou speech_recognized=false e zero segmentos de fala. |
+| Android ARM64 por SDK | Zig 0.17.1 compilou uma função original mínima em ELF64 AArch64 ET_DYN. AAPT2, zipalign e apksigner empacotaram, alinharam e assinaram com chave descartável. O VorteX confirmou ABI e esquemas v1/v2/v3. SHA-256: 511f0ffce319de34b115fc84a4325c8088ac629ba9b79450be74ee797cb99aea. |
+| Android ARM64 por Gradle | AGP 8.7.3, Gradle 8.9 e Java 21. APKs debug e release com a biblioteca AArch64 passaram no verificador e registraram v1/v2. A primeira tentativa release offline terminou com saída 1. A repetição com repositórios habilitados passou. SHA-256 debug: 2427b05bdc07cd81e4cac2020f2d30b798aa41e0ea551e97f7a7058b64e9e5c3. Release: 5cccce1ab09c68066da94073ecb3eebf7842cc7e9e1e6ebd1d13569a77d7bafc. Foi usada assinatura de teste. |
+| Latência do planejador | 12,72 µs por tarefa tanto em f0daf28 quanto na revisão, em sete séries alternadas de 7.000 pares PT/EN por versão na mesma máquina. O CI técnico mediu 16,66 µs por tarefa no seu runner. Sem telemetria de tokens dos provedores. |
+
+### Reconhecimento multilíngue real com áudio de teste
+
+EN foi exercitado na suíte com fala sintética via flite, inferência local e render. PT e FR foram sintetizados com eSpeak NG e processados por whisper.cpp em MP4. As contagens são edições de palavras após normalizar caixa e pontuação, divididas pelo total de palavras da referência. O resultado pode ultrapassar 100% quando há inserções.
+
+| Modelo e configuração | PT, idioma reportado e erros | FR, idioma reportado e erros |
+| --- | --- | --- |
+| base, automático | la · 21/16 | ms · 14/14 |
+| base, explícito | pt · 7/16 | fr · 15/14 |
+| small, automático | es · 10/16 | ro · 13/14 |
+| small, explícito | pt · 0/16 | fr · 5/14 |
+
+Pesos base SHA-256 60ed5bc3dd14eea856493d334349b405782ddcaf0028d4b5df4088345fba2efe. Pesos small SHA-256 1be3a9b2063867b937e64e2ec7483364a79917e157fa98c5d94b5c1fffea987b. A amostra PT com idioma explícito ainda recebeu sinalização de baixa confiança em dois trechos. A precisão geral, detecção automática e tempo acústico por grafema continuam sem aceite.
+
+Nenhuma chamada autenticada foi realizada aos provedores de IA. Testes em aparelho e outros binários nativos fora de Linux permanecem pendentes. O relatório registra apenas fixtures originais, dados sintéticos e hashes públicos dos insumos de teste.
+
 ## Fase 5
 
 [CI da implementação final](https://github.com/tteuw7z/VorteX/actions/runs/45819556837), CPython 3.15.2. A suíte executou em 1,845 s. Dos 63 testes descobertos, 60 passaram e 3 foram pulados (integrações locais opcionais de SDK, Gradle e ASR). O job Android separado compilou, assinou e verificou a fixture. A validação desta fase ocorreu no runner GitHub Actions.
