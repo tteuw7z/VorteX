@@ -35,8 +35,24 @@ jobs:
         with:
           distribution: temurin
           java-version: '17'
-      - name: Prepare Android SDK
-        run: sdkmanager 'platforms;android-35' 'build-tools;35.0.0'
+      - name: Provision pinned Android SDK
+        run: |
+          sdk="$RUNNER_TEMP/vortex-android-sdk"
+          work="$RUNNER_TEMP/vortex-sdk-downloads"
+          mkdir -p "$sdk/build-tools" "$sdk/platforms" "$work"
+          cd "$work"
+          curl --fail --silent --show-error --location --retry 3 --max-time 300 \
+            https://dl.google.com/android/repository/build-tools_r35_linux.zip -o tools.zip
+          curl --fail --silent --show-error --location --retry 3 --max-time 300 \
+            https://dl.google.com/android/repository/platform-35_r02.zip -o platform.zip
+          sha256sum --check <<'SUMS'
+          bd3a4966912eb8b30ed0d00b0cda6b6543b949d5ffe00bea54c04c81e1561d88  tools.zip
+          0988cacad01b38a18a47bac14a0695f246bc76c1b06c0eeb8eb0dc825ab0c8e0  platform.zip
+          SUMS
+          unzip -q tools.zip -d "$sdk/build-tools"
+          mv "$sdk/build-tools/android-15" "$sdk/build-tools/35.0.0"
+          unzip -q platform.zip -d "$sdk/platforms"
+          printf 'ANDROID_HOME=%s\nANDROID_SDK_ROOT=%s\n' "$sdk" "$sdk" >> "$GITHUB_ENV"
       - run: python -m pip install .
       - name: Build, sign and reverify synthetic APK
         run: |
