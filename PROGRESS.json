@@ -1,6 +1,6 @@
 {
   "operation": "VORTEX",
-  "phase": 2,
+  "phase": 3,
   "status": "complete",
   "audit_date": "2026-11-26",
   "public_baseline": "88af0d61e2309984b14ae17d3cc53ce5fc2e0868",
@@ -15,13 +15,27 @@
     "reference_unit_passed": 50,
     "public_unit_passed": 4,
     "public_baseline_ci": "success",
-    "phase_2_unit_passed": 15
+    "phase_2_unit_passed": 15,
+    "phase_3_local_passed": 54,
+    "phase_3_zip_videos": 17,
+    "phase_3_apk_fixtures": [
+      "sdk",
+      "gradle-debug",
+      "gradle-release"
+    ],
+    "phase_3_technical_ci": {
+      "run": 45775863338,
+      "result": "success",
+      "apk_artifact": 15095504078
+    }
   },
   "next": {
-    "phase": 3,
-    "model": "Sol 6.2",
-    "effort": "Max",
+    "phase": 4,
+    "model": "Astra 6.2",
+    "effort": "Medium",
     "trigger": "Continuar"
   },
-  "phase_2_baseline": "decbafdacca3dadfd746e09905d0e30c4affc122"
+  "phase_2_baseline": "decbafdacca3dadfd746e09905d0e30c4affc122",
+  "phase_3_baseline": "eb562b0a7a2f24816450b110fb021a49d83d7aa9",
+  "phase_3_implementation": "1491b0ef1f120afc8d7085c30ec1ac17a8235ad9"
 }

@@ -18,9 +18,19 @@
 - [x] Learning Engine: registro local opt-in, evidência, deduplicação por capacidade e exclusão de dados.
 - [x] Configuração, estratégia de dependências e testes unitários no Python alvo.
 
-## Fases 3–6
+## Fase 3 — motores técnicos
 
-- [ ] Fase 3: Android, mídia/ASR, ZIP, editor, design, pesquisa, engenharia, automação e integrações reais.
-- [ ] Fase 4: integrar motores, revisar contratos, redundâncias e matriz.
-- [ ] Fase 5: regressão, portabilidade, desempenho e segurança defensiva.
-- [ ] Fase 6: auditoria final, builds/artefatos reais, licenças, versão e release.
+- [x] Compilador APK com Android SDK e Gradle, assinatura verificada e evidência por hash.
+- [x] Inspeção audiovisual, amostragem por cena e tempo, QA da cadência e editor com cortes, fades e legendas.
+- [x] ASR local via `whisper-cli`, saída TXT/JSON/SRT/ASS e render real com fala sintética.
+- [x] Inventário, extração segura, substituição e inspeção de 17 vídeos de um ZIP sintético.
+- [x] Auditoria de contraste e prévia HTML, pesquisa local com proveniência e engenharia estática.
+- [x] Study → Build → Check com evidência complementar separada.
+- [x] Automação local por DAG, adaptadores de subprocesso, CLI integrado e GitHub Actions.
+
+## Próximas etapas
+
+- [ ] Fase 4. Revisar arquitetura, contratos, integração, dependências e matriz de equivalência.
+- [ ] Fase 5. Ajustar roteamento, desempenho, regressões e portabilidade entre assistentes.
+- [ ] Fase 6. Auditar arquitetura, segurança, privacidade e licenças. Validar builds e mídia finais e preparar release.
+- [ ] Registrar separadamente as capacidades ainda parciais, incluindo interpretação semântica de cenas, render de efeitos avançados, provedores externos, testes Android em aparelho e casos de ASR multilingue.

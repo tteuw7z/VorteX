@@ -1,20 +1,16 @@
 # Handoff da Operação VORTEX
 
-Fase 2 concluída em 26/11/2026. Ao receber **Continuar**, retome na Fase 3 (Sol 6.2 Max). Leia PROGRESS, PARITY, DECISIONS, TASKS e TEST_REPORT. Confira o HEAD atual e preserve alterações concorrentes. Use os resultados da Fase 1 sem refazer o inventário.
+Fase 3 concluída em 26/11/2026. Ao receber **Continuar**, retome na Fase 4 com Astra 6.2 Medium. Confira o HEAD da `main`, leia PROGRESS, PARITY, DECISIONS, TASKS e TEST_REPORT. Reaproveite as evidências das fases anteriores. Os testes de integração usam apenas materiais sintéticos.
 
-## Interfaces entregues
+## Componentes a integrar e revisar
 
-- `vortex.core.Engine` mantém `register` e `run` e acrescenta `run_workflow` para `Workflow` e `Stage`. Callbacks podem receber artefatos de dependência com `with_context=True`. O contrato de sucesso do workflow exige evidência e dados JSON.
-- `SkillEngine` filtra o catálogo antes do ranking. `AgentEngine` seleciona papéis distintos e carrega perfis originais sob demanda. `knowledge` pode carregar aprendizagem somente das capacidades selecionadas.
-- `ContextEngine` preserva o checkpoint e devolve uma visão reduzida reversível em memória. `LearningEngine` persiste explicitamente técnicas e proveniência via SQLite.
-- `--config` é TOML explícito. `plan`, `inventory` e a versão 0.1.0 mantêm a interface anterior.
+- `archive` protege o ZIP original e valida antes de publicar a saída. `media batch` reutiliza extração, descoberta, FFprobe, quadros e ASR opcional. A cobertura é registrada por vídeo.
+- `media`, `transcription`, `subtitles` e `editor` compartilham o contrato de tempo da faixa primária e o hash da fonte. A revisão deve confirmar as fronteiras entre origem, cortes, quadros importados e faixa progressiva.
+- `android` resolve SDK e Gradle locais. APK, versão, assinatura, certificado e SHA-256 são verificados antes da publicação em pasta nova. Builds Gradle usam uma cópia do projeto. O artefato SDK do CI é sintético e tem chave descartável.
+- `engineering rebuild` separa evidência primária, fonte complementar e candidato compilado. `design` valida apenas os pares declarados. `research` confere ocorrência e origem de excertos, com a interpretação atribuída a quem fornece o manifesto.
+- `automation` conecta os comandos permitidos ao DAG da Fase 2. As saídas são JSON, com hashes e status por etapa. Audite consistência de exit codes, evidência, caminhos e retornos parciais. Reavalie se os mecanismos de publicação e hashing devem compartilhar implementação.
+- Dependências Python da execução permanecem vazias. SDK/Gradle/Java, FFmpeg/FFprobe e Whisper são ferramentas instaladas pelo host. O ASR local evita depender de wheels incompatíveis com CPython 3.15.2. Preserve esta fronteira ao decidir a integração entre assistentes.
 
-## Ordem sugerida da Fase 3
+## Lacunas para a revisão
 
-1. Usar o contrato do Engine com adaptadores técnicos. Estender o inventário ZIP para extração/reempacotamento seguro e testar com fixtures autorizadas.
-2. Implementar Android em Python chamando ferramentas reais do SDK/Gradle. Criar fixture pública original, usar outputs isolados, verificar assinatura, ABI e digest. Gradle/apksigner estavam ausentes no ambiente da Fase 1. Separar build debug e assinatura de release.
-3. Integrar probe e pipeline audiovisual com dados sintéticos. A tentativa binária de faster-whisper no Linux cp315 falhou na Fase 1. Verificar disponibilidade atual por plataforma ou validar um backend isolado com contrato claro. Testar fala, tempos, áudio e render real.
-4. Implementar ferramentas de editor, design, pesquisa, engenharia defensiva e automação como adaptadores separados. Aplicar estudo, implementação original e verificação no fluxo Craft Anything/REA. Verificar licença, configuração e autorização de ferramentas externas.
-5. Usar CI para casos reproduzíveis. Atualizar a matriz, testes e handoff antes de fechar a fase.
-
-Exigir prova para execução real. Preservar as fronteiras de autorização e os dados privados. Mantêm-se pendentes a execução externa de agentes e a validação de ponta a ponta dos adaptadores técnicos.
+Confirme licenças e compatibilidade de ferramentas se houver distribuição futura. O Android real foi validado com APKs sintéticos; as variantes de aplicativos com ABI nativa e a instalação física exigem evidência própria. O ASR real foi validado em fala sintética em inglês com revisão sinalizada. Descrição semântica de cenas, provas de 100% de cobertura, análise acústica exata por grafema, voz, efeitos 3D completos e conectores SaaS autenticados permanecem fora da validação atual. Portabilidade e métricas de desempenho seguem para revisão e testes em fases posteriores.

@@ -1,5 +1,12 @@
 # Changelog
 
+## 2026-11-26 — Operação VORTEX, Fase 3
+
+- Compilador APK e verificação de assinatura e arquitetura com Android SDK e Gradle.
+- Extração e reempacotamento ZIP, lote de mídia, QA por quadro, ASR local e editor.
+- Auditoria de design, pesquisa por evidência, engenharia estática, reconstrução e automação.
+- CI com fixture Android sintética, relatórios, matriz e handoff.
+
 ## 2026-11-26 — Operação VORTEX, Fase 2
 
 - Núcleo de workflows validados, contratos de resultados, aprovações e evidência.

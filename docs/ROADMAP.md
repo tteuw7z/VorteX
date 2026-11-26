@@ -1,19 +1,20 @@
 # Roadmap
 
-This public implementation is written independently. Do not import private conversations, credentials, media, or third-party code without permission and license review.
+The public framework implements original Python logic under Apache-2.0. Local executables and caller-supplied models are separate dependencies.
 
-## 0.1 foundation
-- Deterministic, bounded skill planning and role selection.
-- Explicit adapter registration and approval checks.
-- Read-only ZIP inventory and CLI.
-- Regression tests and Python 3.15.2 CI.
+## Delivered
 
-## Next milestones (not yet implemented)
-- Actual Android build adapter with Gradle/SDK prerequisites, signature validation and isolated output.
-- Local media inspection, transcription and rendering adapters; record provenance and uncertainty.
-- Research provider interfaces with citations and evidence checks.
-- Context budget measurement and reversible compaction.
-- Extensible agent profiles, workflow DAG validation, explicit permissions and artifact contracts.
-- Design, education and security workflows with measurable acceptance tests.
-- Host integration for ChatGPT and other assistants; no claim of automatic installation.
-- Optional dependencies tested against the target Python before enabling them.
+- Core workflow execution with evidence, approvals, roles, skill selection, context and local learning.
+- ZIP inspection, extraction and repacking.
+- Local probe, frames, batch, speech transcription and video editing.
+- APK compilation and verification using installed Android tools.
+- Contrast and token preview, exact evidence intake, static reconstruction checks and manifest automation.
+- Python 3.15.2 tests and an Android SDK fixture workflow.
+
+## Next milestones
+
+- Phase 4. Review operating contracts across engines and verify parity gaps.
+- Phase 5. Exercise integration, defensive regression, performance and assistant portability.
+- Phase 6. Review licenses, verify release artifacts and prepare the public release.
+
+See [PARITY.md](../PARITY.md), [TEST_REPORT.md](../TEST_REPORT.md) and [HANDOFF.md](../HANDOFF.md) for scope and measured coverage.
