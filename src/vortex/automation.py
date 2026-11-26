@@ -1,0 +1,92 @@
+"""Execute declarative local jobs with the existing workflow engine."""
+from collections.abc import Callable, Collection
+from dataclasses import asdict
+import hashlib
+import json
+from pathlib import Path
+from zipfile import BadZipFile
+
+from .core import Engine
+from .workflow import Stage, Status, Workflow
+
+
+def _strings(value, name):
+    if not isinstance(value, list) or any(not isinstance(item, str) or not item.strip()
+                                          or "\0" in item for item in value):
+        raise ValueError(f"{name} must be a list of nonempty strings")
+    return tuple(value)
+
+
+def _status(payload):
+    if isinstance(payload, dict):
+        label = str(payload.get("status", "")).upper()
+        if label in ("FAIL", "FAILED", "ERROR"):
+            return Status.FAILED
+        if label in ("BLOCKED", "UNAVAILABLE", "PARTIAL", "REVIEW_REQUIRED", "UNVERIFIED"):
+            return Status.BLOCKED
+        if label in ("PLAN_ONLY", "SIMULATED", "SIMULATION"):
+            return Status.PLANNED
+    return Status.SUCCESS
+
+
+def execute_manifest(path: Path, prepare: Callable, *, approvals: Collection[str] = (),
+                     simulate: bool = False) -> dict:
+    """Prepare all tool invocations, then execute only approved stages."""
+    spec = json.loads(path.read_text(encoding="utf-8"))
+    if not isinstance(spec, dict) or spec.keys() - {"version", "steps"}:
+        raise ValueError("Expected an automation manifest with version and steps")
+    if type(spec.get("version")) is not int or spec["version"] != 1:
+        raise ValueError("Unsupported automation manifest version")
+    steps = spec.get("steps")
+    if not isinstance(steps, list) or not steps:
+        raise ValueError("Automation requires a nonempty steps list")
+
+    stages, invocations = [], {}
+    for entry in steps:
+        if not isinstance(entry, dict) or entry.keys() - {"id", "argv", "needs", "approval"}:
+            raise ValueError("Each step may contain id, argv, needs and approval")
+        step_id, approval = entry.get("id"), entry.get("approval")
+        if not isinstance(step_id, str) or not step_id.strip() or "\0" in step_id:
+            raise ValueError("Each step needs a nonempty ID")
+        if approval is not None and (
+            not isinstance(approval, str) or not approval.strip() or "\0" in approval
+        ):
+            raise ValueError("Approval labels must be nonempty strings")
+        needs = _strings(entry.get("needs", []), "needs")
+        argv = _strings(entry.get("argv"), "argv")
+        if len(argv) < 2:
+            raise ValueError("Each step needs a local command and operation")
+        capability, invoke = prepare(argv)
+        stages.append(Stage(step_id, capability, step_id, depends_on=needs, approval=approval))
+        invocations[step_id] = invoke
+
+    workflow = Workflow(stages)
+    known_approvals = {stage.approval or stage.id for stage in workflow.stages}
+    if unknown := set(approvals) - known_approvals:
+        raise ValueError(f"Unknown stage approvals: {', '.join(sorted(unknown))}")
+    engine = Engine()
+    for capability in dict.fromkeys(stage.capability for stage in workflow.stages):
+        engine.register(capability, lambda step_id: _invoke(invocations[step_id]))
+    results = engine.run_workflow(workflow, approvals=approvals, simulate=simulate)
+    states = {result.status for result in results.values()}
+    final = (Status.FAILED if Status.FAILED in states else Status.BLOCKED if Status.BLOCKED in states
+             else Status.PLANNED if simulate else Status.SUCCESS)
+    return {"status": final, "steps": [asdict(results[stage.id]) | {"id": stage.id,
+            "needs": list(stage.depends_on), "approval": stage.approval or stage.id}
+            for stage in workflow.stages]}
+
+
+def _invoke(callback: Callable) -> dict:
+    try:
+        payload = callback()
+    except FileNotFoundError as exc:
+        return {"status": Status.BLOCKED, "reason": str(exc)}
+    except (OSError, ValueError, BadZipFile) as exc:
+        return {"status": Status.FAILED, "reason": str(exc)}
+    status = _status(payload)
+    if status != Status.SUCCESS:
+        return {"status": Status.BLOCKED if status == Status.PLANNED else status,
+                "reason": str(payload.get("reason") or payload.get("status"))}
+    encoded = json.dumps(payload, sort_keys=True, ensure_ascii=False, allow_nan=False).encode()
+    return {"status": Status.SUCCESS, "evidence": "sha256(output JSON):" + hashlib.sha256(encoded).hexdigest(),
+            "artifacts": {"output": json.loads(encoded)}}

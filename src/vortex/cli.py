@@ -8,12 +8,21 @@ from zipfile import BadZipFile
 
 from . import __version__
 from .agents import AgentEngine
+from .android_cli import add_commands as add_android_commands
+from .archive_cli import add_commands as add_archive_commands
+from .automation_cli import add_commands as add_automation_commands
 from .archive import inventory
 from .config import Config
 from .context import ContextEngine
 from .core import plan
 from .learning import LearningEngine
+from .media_cli import add_commands as add_media_commands
+from .methods_cli import add_commands as add_methods_commands
 from .skills import SkillEngine
+
+
+_TECHNICAL_COMMANDS = (add_android_commands, add_archive_commands,
+                       add_media_commands, add_methods_commands)
 
 
 def _learning(args, config):
@@ -30,6 +39,8 @@ def _learning(args, config):
 
 
 def _dispatch(args, config):
+    if handler := getattr(args, "technical_handler", None):
+        return handler(args)
     match args.command:
         case "plan" | "knowledge":
             limit = config.agent_limit if args.agent_limit is None else args.agent_limit
@@ -70,6 +81,9 @@ def main(argv=None):
         add.add_argument(name)
     learn.add_parser("list").add_argument("--capability")
     learn.add_parser("remove").add_argument("id", type=int)
+    for register in _TECHNICAL_COMMANDS:
+        register(commands)
+    add_automation_commands(commands, _TECHNICAL_COMMANDS)
     args = parser.parse_args(argv)
     try:
         config = Config.load(args.config) if args.config else Config()
@@ -77,4 +91,7 @@ def main(argv=None):
     except (ValueError, OSError, BadZipFile, sqlite3.Error) as exc:
         parser.error(str(exc))
     print(json.dumps(result, ensure_ascii=False, indent=2))
+    if getattr(args, "technical_handler", None) and isinstance(result, dict):
+        if result.get("status") in {"FAILED", "BLOCKED", "PARTIAL"}:
+            return 1
     return 0

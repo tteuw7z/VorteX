@@ -1,0 +1,68 @@
+from contextlib import redirect_stderr, redirect_stdout
+import hashlib
+import io
+import json
+from pathlib import Path
+from tempfile import TemporaryDirectory
+import unittest
+from zipfile import ZipFile
+
+from vortex.cli import main
+
+
+class AutomationTests(unittest.TestCase):
+    def run_cli(self, *args):
+        std = io.StringIO()
+        with redirect_stdout(std):
+            code = main(args)
+        return code, json.loads(std.getvalue())
+
+    def test_plan_and_approved_archive_flow(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, destination = root / "input.zip", root / "files"
+            with ZipFile(source, "w") as output:
+                output.writestr("subdir/Video.MP4", b"Candidate by extension")
+            spec = root / "flow.json"
+            spec.write_text(json.dumps({"version": 1, "steps": [
+                {"id": "videos", "argv": ["archive", "videos", str(destination)],
+                 "needs": ["extract"]},
+                {"id": "extract", "argv": ["archive", "extract", str(source), str(destination)],
+                 "approval": "write"},
+            ]}), encoding="utf-8")
+            _, plan = self.run_cli("automation", "plan", str(spec))
+            self.assertEqual(plan["status"], "PLAN_ONLY")
+            self.assertEqual([step["id"] for step in plan["steps"]], ["extract", "videos"])
+            self.assertFalse(destination.exists())
+
+            code, blocked = self.run_cli("automation", "run", str(spec), "--approve", "videos")
+            self.assertEqual((code, blocked["status"]), (1, "BLOCKED"))
+            self.assertFalse(destination.exists())
+            code, result = self.run_cli("automation", "run", str(spec), "--approve", "write",
+                                        "--approve", "videos")
+            self.assertEqual((code, result["status"]), (0, "SUCCESS"))
+            payload = result["steps"][1]["artifacts"]["output"]
+            rows = payload["candidates"] if isinstance(payload, dict) else payload
+            self.assertEqual(rows[0]["path"], "subdir/Video.MP4")
+            payload_hash = hashlib.sha256(json.dumps(payload, sort_keys=True,
+                                                     ensure_ascii=False).encode()).hexdigest()
+            self.assertEqual(result["steps"][1]["evidence"], "sha256(output JSON):" + payload_hash)
+
+    def test_invalid_step_prevents_all_effects(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            source, destination = root / "input.zip", root / "files"
+            with ZipFile(source, "w") as archive:
+                archive.writestr("sample.txt", "fixture")
+            for argv in (["apk", "build", "."], ["archive", "videos", "--help"],
+                         ["archive", "extract", str(source), str(destination), "--max-bytes", "NaN"]):
+                with self.subTest(argv=argv):
+                    spec = root / "flow.json"
+                    spec.write_text(json.dumps({"version": 1, "steps": [
+                        {"id": "extract", "argv": ["archive", "extract", str(source), str(destination)]},
+                        {"id": "next", "argv": argv},
+                    ]}), encoding="utf-8")
+                    with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as error:
+                        main(("automation", "run", str(spec), "--approve", "extract"))
+                    self.assertEqual(error.exception.code, 2)
+                    self.assertFalse(destination.exists())
