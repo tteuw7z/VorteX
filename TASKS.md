@@ -85,3 +85,6 @@
 - [x] Vincular aprovações ao digest do manifesto e minimizar ambiente de ferramentas.
 - [x] Reforçar caminhos portáveis e scanner HTML.
 - [ ] Revalidar 6.9, implantar verificador independente e integrar gate a todos os caminhos de entrega.
+
+- [x] Exigir logs reais vinculados a cada atestado e publicação em staging privado.
+- [ ] Validar política v2 em CI e implementar verificador independente/integrações reais.

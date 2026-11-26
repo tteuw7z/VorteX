@@ -69,3 +69,5 @@ Fase 6.6: detecção de graves e flash automático passaram em áudio sintético
 Fase 6.8: segurança de entrega ganha gate executável local, scanner heurístico e atestado autenticado independente. Não há verificador implantado ou integração obrigatória de todos os hosts. Controles de Gradle, aprendizagem e automação reforçados. CI pendente; cobertura e auditoria integral ainda abertas.
 
 Fase 6.8 validada em CI (102 aprovados). Fase 6.9 fortalece aprovação por digest, ambiente de subprocessos e scanner. Sem validação independente de toda a segurança, sandbox real ou gate obrigatório no host.
+
+Fase 6.10: política v2 implementada com evidência real e staging privado; CI pendente. Atestado independente e integração real continuam bloqueios.

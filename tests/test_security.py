@@ -8,7 +8,7 @@ import time
 import unittest
 from unittest.mock import patch
 
-from vortex.security import audit, publish, _canonical
+from vortex.security import audit, publish, _canonical, POLICY_VERSION
 from vortex.learning import LearningEngine
 from vortex.automation import execute_manifest
 from vortex.workflow import Stage, Workflow
@@ -22,6 +22,8 @@ class DeliveryGateTests(unittest.TestCase):
         self.candidate = self.root / "candidate"
         self.candidate.mkdir()
         self.output = self.root / "delivery"
+        self.evidence = self.root / "evidence"
+        self.evidence.mkdir()
         self.key = b"fixture-verifier-key-not-a-real-key" * 2
 
     def write(self, name, data):
@@ -31,9 +33,11 @@ class DeliveryGateTests(unittest.TestCase):
 
     def attest(self, report, **changes):
         now = int(time.time())
-        payload = {"policy_version": 1, "kind": report["kind"], "artifact_sha256": report["artifact_sha256"],
+        for name in report["required_checks"]:
+            (self.evidence / (name + ".log")).write_text("test-only evidence for " + name)
+        payload = {"policy_version": POLICY_VERSION, "kind": report["kind"], "artifact_sha256": report["artifact_sha256"],
                    "reviewer": "test fixture only", "issued_at": now - 1, "expires_at": now + 60,
-                   "checks": {name: {"status": "PASS", "evidence_sha256": "a" * 64}
+                   "checks": {name: {"status": "PASS", "evidence_sha256": hashlib.sha256((self.evidence / (name + ".log")).read_bytes()).hexdigest()}
                               for name in report["required_checks"]}}
         payload.update(changes)
         return {"payload": payload, "signature": hmac.new(self.key, _canonical(payload),
@@ -51,13 +55,13 @@ class DeliveryGateTests(unittest.TestCase):
         self.write("index.html", "<p>Hello</p>")
         report = audit(self.candidate, "website")
         attestation = self.attest(report)
-        result = publish(self.candidate, self.output, "website", attestation=attestation, key=self.key)
+        result = publish(self.candidate, self.output, "website", attestation=attestation, key=self.key, evidence_dir=self.evidence)
         self.assertEqual(result["status"], "SUCCESS")
         self.assertEqual((self.output / "index.html").read_bytes(),
                          (self.candidate / "index.html").read_bytes())
         self.assertEqual(audit(self.output, "website")["artifact_sha256"], report["artifact_sha256"])
         with self.assertRaises(FileExistsError):
-            publish(self.candidate, self.output, "website", attestation=attestation, key=self.key)
+            publish(self.candidate, self.output, "website", attestation=attestation, key=self.key, evidence_dir=self.evidence)
 
     def test_mutation_forgery_missing_check_and_expiry_block(self):
         self.write("main.py", "print('hello')")
@@ -71,10 +75,10 @@ class DeliveryGateTests(unittest.TestCase):
         ]
         for attestation, key in bad:
             self.assertEqual(publish(self.candidate, self.output, "script",
-                                     attestation=attestation, key=key)["status"], "BLOCKED")
+                                     attestation=attestation, key=key, evidence_dir=self.evidence)["status"], "BLOCKED")
         self.write("main.py", "print('changed')")
         self.assertEqual(publish(self.candidate, self.output, "script", attestation=signed,
-                                 key=self.key)["status"], "BLOCKED")
+                                 key=self.key, evidence_dir=self.evidence)["status"], "BLOCKED")
         self.assertFalse(self.output.exists())
 
     def test_findings_block_even_with_attestation_and_do_not_leak_values(self):
@@ -88,8 +92,37 @@ class DeliveryGateTests(unittest.TestCase):
                          "POSSIBLE_CREDENTIAL"} <= rules)
         self.assertNotIn(token, json.dumps(report))
         self.assertEqual(publish(self.candidate, self.output, "website",
-                                 attestation=self.attest(report), key=self.key)["status"], "BLOCKED")
+                                 attestation=self.attest(report), key=self.key, evidence_dir=self.evidence)["status"], "BLOCKED")
         self.assertFalse(self.output.exists())
+
+    def test_actual_evidence_required_and_integrity_checked(self):
+        self.write("main.py", "print('hello')")
+        report = audit(self.candidate, "script")
+        attestation = self.attest(report)
+        self.assertEqual(publish(self.candidate, self.output, "script",
+                                 attestation=attestation, key=self.key)["status"], "BLOCKED")
+        record = self.evidence / (report["required_checks"][0] + ".log")
+        original = record.read_bytes()
+        record.write_bytes(b"tampered evidence")
+        self.assertEqual(publish(self.candidate, self.output, "script",
+                                 attestation=attestation, key=self.key,
+                                 evidence_dir=self.evidence)["status"], "BLOCKED")
+        record.write_bytes(original)
+        self.assertEqual(publish(self.candidate, self.output, "script",
+                                 attestation=attestation, key=self.key,
+                                 evidence_dir=self.evidence)["status"], "SUCCESS")
+        self.assertEqual([p.name for p in self.output.iterdir()], ["main.py"])
+
+    def test_publication_failure_never_creates_final_directory(self):
+        self.write("main.py", "print('hello')")
+        report = audit(self.candidate, "script")
+        attestation = self.attest(report)
+        with patch("vortex.security.Path.rename", side_effect=OSError("test interruption")):
+            with self.assertRaises(OSError):
+                publish(self.candidate, self.output, "script", attestation=attestation,
+                        key=self.key, evidence_dir=self.evidence)
+        self.assertFalse(self.output.exists())
+        self.assertFalse(any(path.name.startswith(".vortex-") for path in self.root.iterdir()))
 
     def test_git_metadata_and_symlinks_are_rejected(self):
         self.write("main.py", "pass")

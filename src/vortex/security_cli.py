@@ -17,6 +17,7 @@ def add_commands(subparsers):
         command.add_argument("--kind", choices=tuple(_REQUIRED), required=True)
     release.add_argument("output", type=Path)
     release.add_argument("--attestation", type=Path, required=True)
+    release.add_argument("--evidence-dir", type=Path, required=True)
 
     def verify(args):
         if not args.attestation.is_file():
@@ -31,7 +32,7 @@ def add_commands(subparsers):
             key = bytes.fromhex(secret)
         except ValueError:
             key = None
-        return publish(args.candidate, args.output, args.kind, attestation=document, key=key)
+        return publish(args.candidate, args.output, args.kind, attestation=document, key=key, evidence_dir=args.evidence_dir)
 
     inspect.set_defaults(technical_handler=lambda args: audit(args.candidate, args.kind))
     release.set_defaults(technical_handler=verify)

@@ -6,14 +6,14 @@ import json
 import os
 from pathlib import Path
 import re
-import shutil
 import stat
 import time
 import unicodedata
 from html.parser import HTMLParser
 from dataclasses import dataclass
+from tempfile import TemporaryDirectory
 
-POLICY_VERSION = 1
+POLICY_VERSION = 2
 _MAX_FILE = 8 * 1024 * 1024
 _MAX_TOTAL = 32 * 1024 * 1024
 _MAX_FILES = 1000
@@ -289,7 +289,29 @@ def _attestation_valid(attestation, key, captured, kind, now):
                and _HEX.fullmatch(item["evidence_sha256"]) for item in checks.values())
 
 
-def publish(root: Path, output: Path, kind: str, *, attestation=None, key=None) -> dict:
+def _evidence_valid(directory, attestation, candidate, target):
+    if directory is None:
+        return False
+    try:
+        root = Path(directory)
+        if root.is_symlink() or not root.is_dir():
+            return False
+        root = root.resolve(strict=True)
+        for other in (candidate, target):
+            if root.is_relative_to(other) or other.is_relative_to(root):
+                return False
+        for check, record in attestation["payload"]["checks"].items():
+            data = _read_regular(root / (check + ".log"), 2 * 1024 * 1024)
+            if not data.strip() or not hmac.compare_digest(
+                    hashlib.sha256(data).hexdigest(), record["evidence_sha256"]):
+                return False
+    except (OSError, ValueError, TypeError):
+        return False
+    return True
+
+
+def publish(root: Path, output: Path, kind: str, *, attestation=None, key=None,
+            evidence_dir=None) -> dict:
     """Publish only the captured, independently attested bytes; never run artifact code."""
     if kind not in _REQUIRED:
         raise ValueError("Unknown artifact type")
@@ -303,17 +325,32 @@ def publish(root: Path, output: Path, kind: str, *, attestation=None, key=None) 
     source = Path(root).resolve(strict=True)
     if target.is_relative_to(source) or source.is_relative_to(target):
         raise ValueError("Delivery and candidate must be separate directories")
-    target.mkdir(mode=0o700)  # exclusive; never overwrite existing delivery
+    if not _evidence_valid(evidence_dir, attestation, source, target):
+        return {**report, "reason": "Independent evidence records missing, invalid or changed"}
+    # A private sibling stage is invisible at the final destination until complete.
+    # A cooperative exclusive lock prevents concurrent publishers; the parent must
+    # be trusted and not writable by untrusted processes.
+    lock = parent / (".vortex-publish-" + hashlib.sha256(os.fsencode(target.name)).hexdigest() + ".lock")
+    lock.mkdir(mode=0o700)
     try:
-        for relative, data in captured.files:
-            path = target / relative
-            path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
-            fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0), 0o600)
-            with os.fdopen(fd, "wb") as stream:
-                stream.write(data)
-    except BaseException:
-        shutil.rmtree(target)
-        raise
+        if target.exists() or target.is_symlink():
+            raise FileExistsError("Delivery destination already exists")
+        with TemporaryDirectory(prefix=".vortex-delivery-", dir=parent) as temporary:
+            stage = Path(temporary) / "artifact"
+            stage.mkdir(mode=0o700)
+            for relative, data in captured.files:
+                path = stage / relative
+                path.parent.mkdir(mode=0o700, parents=True, exist_ok=True)
+                fd = os.open(path, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0), 0o600)
+                with os.fdopen(fd, "wb") as stream:
+                    stream.write(data)
+            if snapshot(stage).digest != captured.digest:
+                raise ValueError("Staged delivery failed integrity verification")
+            if target.exists() or target.is_symlink():
+                raise FileExistsError("Delivery destination already exists")
+            stage.rename(target)
+    finally:
+        lock.rmdir()
     return {**report, "status": "SUCCESS", "reason": "Policy checks and authenticated attestation accepted",
             "output": str(target), "reviewer": attestation["payload"]["reviewer"],
             "scope": "approved snapshot under configured policy; not a guarantee of zero vulnerabilities"}

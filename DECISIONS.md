@@ -78,3 +78,7 @@ Default deny. Separar candidato de entrega autorizada e exigir evidência indepe
 ## Fase 6.9 — fronteiras de execução
 
 Exigir digest do manifesto revisado antes de preparar comandos, inclusive na API Python. Expor argv no plano. Reduzir ambiente de subprocessos por allowlist e bloquear encaminhamento das credenciais reservadas; não alegar sandbox. Rejeitar caminhos de dispositivos, colisões Unicode e credenciais em nomes. HTMLParser para atributos perigosos e limite de volume de alertas.
+
+## Fase 6.10 — evidências reais e publicação atômica
+
+Política 2 rejeita hashes desacompanhados de logs reais. Evidências ficam fora do artefato e da entrega. Assinatura autentica as conclusões do verificador, não a verdade das conclusões. Staging privado, revalidação e rename final sob lock cooperativo; requer filesystem confiável, sem escritores não autorizados. Não liberar versão final antes de validar integração do gate.

@@ -166,3 +166,5 @@ Snapshot 0da86f8: 57/57 arquivos rastreados de texto examinados para formatos co
 Casos de bloqueio sem atestado, assinatura errada, evidência faltante, expiração, alteração de bytes, tipo incorreto, credenciais sem reprodução, symlink/Git, artefato não analisado, publicação exata e sem sobrescrita; Gradle sem aprovação, permissões POSIX e colisão de aprovação/JSON. CI pendente; sem garantia de segurança integral.
 
 CI 45882300851 (3f3e9e9): 105 testes descobertos, 102 aprovados, 3 ignorados, quatro jobs aprovados. Fase 6.9 adiciona testes de troca do manifesto, não herança de credenciais, URL de script, nome contendo credencial e caminhos reservados; novo CI pendente.
+
+Fase 6.10 adiciona teste de logs ausentes/adulterados, não inclusão de evidências na entrega e falha de rename sem diretório final. CI pendente; testes usam registros e chave sintéticos, não auditoria externa real.
