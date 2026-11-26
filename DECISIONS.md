@@ -50,3 +50,7 @@ Usar descritores próprios, genéricos e compactos em vez de copiar fichas priva
 ## Fase 6.2 — cache restrito
 
 Cache não persistente, desabilitado por padrão; apenas adaptadores puros sem contexto podem optar. Cada estágio continua sujeito a aprovação e dependências. Apenas sucesso validado em JSON entra no cache, com cópias independentes e limite de 128 entradas por execução. Não reutilizar resultados de operações externas ou arquivos mutáveis. `cache_hit` identifica reutilização.
+
+## Fase 6.3 — roteamento eficiente
+
+Indexar palavras por capacidade e reutilizar o catálogo padrão evita percorrer e reconstruir todo o catálogo por solicitação. Preservar desempate pela ordem original e provar igualdade de planos em tarefas comuns antes de comparar latência. Não confundir latência com economia de tokens.

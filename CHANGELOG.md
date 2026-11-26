@@ -52,3 +52,8 @@
 
 - Cache explícito por workflow, com marcação de reutilização e isolamento de artefatos.
 - Testes de aprovações, falhas, ausência de opt-in, escopo e limites de registro.
+
+## Fase 6.3 — candidato
+
+- Catálogo padrão reutilizável e índice invertido de palavras-chave.
+- Benchmark pareado com baseline fixado e validação de equivalência nas tarefas comuns.

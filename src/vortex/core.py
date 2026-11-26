@@ -9,8 +9,11 @@ from .skills import SKILLS, Skill, SkillEngine, normalize  # Re-export legacy AP
 from .workflow import Stage, StageResult, Status, Workflow
 
 
+_DEFAULT_SKILLS = SkillEngine()
+
+
 def plan(task: str, *, agent_limit: int = 3, skills: SkillEngine | None = None) -> dict:
-    selected = (skills or SkillEngine()).select(task)
+    selected = (_DEFAULT_SKILLS if skills is None else skills).select(task)
     agents = AgentEngine().select(selected, limit=agent_limit)
     return {"status": Status.PLANNED, "skills": [asdict(skill) for skill in selected],
             "agents": list(agents), "fallback": not selected}

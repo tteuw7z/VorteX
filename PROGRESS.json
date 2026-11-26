@@ -85,7 +85,7 @@
   "phase_4_implementation": "3d749ef75741ed6aae03f69eab67135b319513ab",
   "phase_5_baseline": "f7de4c57eb9a05425469f5948d3c1dfa442db1dd",
   "phase_5_implementation": "645baca9d860728eed56e79b2a7b0d4da2abd748",
-  "checkpoint": "6.2-cache",
+  "checkpoint": "6.3-planner-index",
   "review_4_1": {
     "status": "complete",
     "baseline": "f0daf2820e49fafc079e8bfd0f68704c675c7052",
@@ -103,9 +103,10 @@
     "catalog": {
       "capabilities": 19,
       "profiles": 22,
-      "scope": "planning only; external execution not implied"
+      "scope": "planning only; external execution not implied",
+      "status": "validated_ci"
     },
-    "ci_status": "revalidation_pending",
+    "ci_status": "candidate_revalidation_pending",
     "full_parity": false,
     "authenticated_provider_calls": 0,
     "android_device_runs": 0,
@@ -118,8 +119,20 @@
       "android_fixture": "success"
     },
     "cache": {
-      "status": "implemented_pending_ci",
+      "status": "validated_ci",
       "scope": "explicit noncontextual pure adapters, one workflow, maximum 128 successful entries"
+    },
+    "validated_ci": {
+      "run": 45868236196,
+      "commit": "a622fb4f7b192250a507a5b704b7a0754eafac1e",
+      "passed": 77,
+      "skipped": 3,
+      "result": "success",
+      "planner_median_us": 30.27
+    },
+    "planner_index": {
+      "status": "implemented_pending_ci",
+      "benchmark": "paired baseline and candidate on same runner"
     }
   }
 }

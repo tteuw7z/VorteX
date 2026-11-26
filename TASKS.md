@@ -56,3 +56,7 @@
 
 - [x] Implementar cache opt-in, limitado à execução e a adaptadores puros sem contexto.
 - [ ] Validar cache, medir ganho em tarefas equivalentes e auditar demais componentes.
+
+- [x] Validar catálogo e cache em CI (a622fb4).
+- [x] Implementar índice invertido e benchmark pareado para tarefas comuns.
+- [ ] Validar otimização e registrar medição.

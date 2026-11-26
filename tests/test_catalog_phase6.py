@@ -2,7 +2,8 @@
 import unittest
 from vortex.agents import AgentEngine
 from vortex.core import Engine, plan
-from vortex.skills import SKILLS, SkillEngine
+from vortex.skills import SKILLS, Skill, SkillEngine, normalize
+import re
 from vortex.workflow import Status
 
 
@@ -37,3 +38,21 @@ class CatalogReconciliationTests(unittest.TestCase):
     def test_explicit_configuration_still_limits_catalog(self):
         self.assertTrue(plan("Review budget", skills=SkillEngine(enabled=["android"]))["fallback"])
         self.assertLessEqual(len(plan("Python Android finance marketing sales", agent_limit=2)["agents"]), 2)
+
+    def test_index_preserves_reference_scoring_and_catalog_order(self):
+        custom = (
+            Skill("one", ("alpha", "alpha", "beta"), ("reviewer",), ("check",)),
+            Skill("two", ("alpha", "gamma"), ("reviewer",), ("check",)),
+            Skill("three", ("gamma",), ("reviewer",), ("check",)),
+        )
+        for skills in (SKILLS, custom):
+            for enabled in (None, [], [skills[0].name]):
+                active = [s for s in skills if enabled is None or s.name in enabled]
+                engine = SkillEngine(skills, enabled=enabled)
+                for task in ("alpha beta gamma alpha", "gamma alpha", "ÁLPHA", "Audit Android security",
+                             "Legendar vídeos ZIP", "Experiência imersiva", "Obrigado"):
+                    words = set(re.findall(r"\w+", normalize(task)))
+                    expected = sorted(active, key=lambda s: -len(words.intersection(s.keywords)))
+                    expected = [s for s in expected if words.intersection(s.keywords)]
+                    for limit in (1, 2, 3):
+                        self.assertEqual(engine.select(task, limit=limit), tuple(expected[:limit]))

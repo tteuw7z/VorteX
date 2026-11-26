@@ -39,6 +39,13 @@ jobs:
           samples = repeat(lambda: [plan(task, agent_limit=2) for task in tasks], number=1000, repeat=5)
           print(f"Median planning latency per task (microseconds): {median(samples) * 500:.2f}")
           PY
+      - name: Compare common planning tasks on same runner
+        run: |
+          baseline=314ac4a4b2ed68e3945ec33e0d9cfc406181ee2c
+          git fetch --no-tags --depth=1 origin "$baseline"
+          mkdir "$RUNNER_TEMP/vortex-baseline"
+          git archive "$baseline" | tar -x -C "$RUNNER_TEMP/vortex-baseline"
+          python scripts/benchmark_planning.py "$RUNNER_TEMP/vortex-baseline" "$GITHUB_WORKSPACE"
       - run: vortex plan "compile APK Android"
   portable-core:
     strategy:

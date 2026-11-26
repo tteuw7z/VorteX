@@ -132,3 +132,7 @@ CI 45868049061, commit 06cb01b: 77 testes descobertos, 73 aprovados, 1 erro no c
 ## Fase 6.2 — testes adicionados (a executar)
 
 Testes de contagem real de chamadas, isolamento de artefatos, aprovação de cada estágio, reinicialização de cache por workflow, não reutilização de falhas e validação de opt-in. Não implica medição de tokens faturados.
+
+## Validação Fase 6.2
+
+CI 45868236196, a622fb4: 80 testes descobertos, 77 aprovados, 3 ignorados; todos os quatro jobs aprovados. Mediana do planejamento 30,27 µs/tarefa no job Linux. Fase 6.3 adiciona regressão de equivalência de pontuação e comparação pareada no mesmo runner; resultado pendente.

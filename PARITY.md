@@ -55,3 +55,5 @@
 19 capacidades de planejamento, 22 perfis originais. Finanças, informações de saúde, marketing, vendas, produto, projetos, jogos, GIS, experiências espaciais e suporte ganham rotas bilíngues limitadas. São descritores e perfis de planejamento; não equivalem a execução de ferramentas especializadas ou a cobertura integral das fichas da referência. Testes do candidato ainda aguardam CI. A paridade integral permanece aberta.
 
 Fase 6.2: cache em processo agora implementado para adaptadores puros explicitamente habilitados, limitado a 128 resultados bem-sucedidos por workflow. Não reutiliza falhas, arquivos mutáveis ou operações externas por padrão. Validação e ganho medido ainda pendentes.
+
+Fase 6.3: catálogo e cache passaram no CI 45868236196 (77 aprovados, 3 ignorados). Otimização por índice invertido implementada; ganho exige comparação pareada no CI. Nenhuma telemetria de tokens reais foi coletada.

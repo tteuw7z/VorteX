@@ -60,11 +60,19 @@ class SkillEngine:
             raise ValueError(f"Unknown skills: {', '.join(sorted(unknown))}")
         self.names = frozenset(selected)
         self._skills = tuple(skill for skill in source if skill.name in selected)
+        index: dict[str, list[int]] = {}
+        for position, skill in enumerate(self._skills):
+            for keyword in set(skill.keywords):
+                index.setdefault(keyword, []).append(position)
+        self._keyword_index = {keyword: tuple(positions) for keyword, positions in index.items()}
 
     def select(self, task: str, *, limit: int = 3) -> tuple[Skill, ...]:
         if not task.strip() or type(limit) is not int or limit < 1:
             raise ValueError("Nonempty task and positive skill limit required")
         tokens = set(re.findall(r"\w+", normalize(task)))
-        scores = [(len(tokens.intersection(s.keywords)), s) for s in self._skills]
-        ranked = sorted(scores, key=lambda match: -match[0])
-        return tuple(s for score, s in ranked if score > 0)[:limit]
+        scores: dict[int, int] = {}
+        for token in tokens:
+            for position in self._keyword_index.get(token, ()):
+                scores[position] = scores.get(position, 0) + 1
+        ranked = sorted(scores, key=lambda position: (-scores[position], position))
+        return tuple(self._skills[position] for position in ranked[:limit])
