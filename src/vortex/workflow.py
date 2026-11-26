@@ -1,0 +1,58 @@
+"""Types and validation for an executable workflow graph."""
+from dataclasses import dataclass, field
+from enum import StrEnum
+from graphlib import TopologicalSorter
+from typing import Iterable
+
+
+class Status(StrEnum):
+    PLANNED = "PLAN_ONLY"
+    SUCCESS = "SUCCESS"
+    BLOCKED = "BLOCKED"
+    FAILED = "FAILED"
+
+
+@dataclass(frozen=True, slots=True)
+class Stage:
+    id: str
+    capability: str
+    task: str
+    depends_on: tuple[str, ...] = ()
+    approval: str | None = None
+    alternatives: tuple[str, ...] = ()
+    retry_safe: bool = False
+
+
+@dataclass(frozen=True, slots=True)
+class StageResult:
+    status: Status
+    adapter: str | None = None
+    evidence: str | None = None
+    artifacts: dict = field(default_factory=dict)
+    reason: str | None = None
+    attempted: tuple[str, ...] = ()
+
+
+@dataclass(frozen=True, slots=True, init=False)
+class Workflow:
+    stages: tuple[Stage, ...]
+
+    def __init__(self, stages: Iterable[Stage]):
+        entries = tuple(stages)
+        index = {stage.id: stage for stage in entries}
+        if not entries or len(index) != len(entries):
+            raise ValueError("Workflow needs nonempty, unique stages")
+        for stage in entries:
+            fields = (stage.id, stage.capability, stage.task)
+            if any(not field.strip() for field in fields):
+                raise ValueError("Stage ID, capability and task are required")
+            if stage.approval is not None and not stage.approval.strip():
+                raise ValueError("Approval label cannot be empty")
+            if unknown := set(stage.depends_on) - index.keys():
+                raise ValueError(f"Unknown dependencies for {stage.id}: {', '.join(sorted(unknown))}")
+            access = (stage.capability, *stage.alternatives)
+            if any(not name.strip() for name in access) or len(access) != len(set(access)):
+                raise ValueError("Alternatives must be distinct nonempty capabilities")
+        graph = {stage.id: stage.depends_on for stage in entries}
+        ordered = tuple(index[stage_id] for stage_id in TopologicalSorter(graph).static_order())
+        object.__setattr__(self, "stages", ordered)
