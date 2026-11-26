@@ -63,3 +63,7 @@
 
 - [x] Implementar transporte HTTPS e ciclo limitado de planejamento com aprovação explícita.
 - [ ] Validar contratos e fronteiras HTTPS em CI; executar validação autenticada somente com autorização e credenciais adequadas.
+
+- [x] Validar índice e transporte em CI, sem alegar chamadas autenticadas.
+- [x] Implementar flash, shake rotacional, blur e contraste por intervalos explícitos de saída.
+- [ ] Validar renderização dos efeitos, detecção de graves e demais lacunas.

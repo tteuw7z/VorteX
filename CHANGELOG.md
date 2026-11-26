@@ -62,3 +62,8 @@
 
 - Transporte HTTPS para OpenAI Responses e Anthropic Messages, com aprovação explícita, limite de execução e telemetria por resposta.
 - Testes de protocolo injetado, fronteira HTTPS simulada, bloqueio de ferramentas não autorizadas e ausência de retries.
+
+## Fase 6.5 — candidato
+
+- Flash, shake rotacional, blur e contraste em timeline explícita, com validação de limites e relatório de quadros.
+- Testes de renderização comparando pixels decodificados e cadência; CI pendente.

@@ -59,3 +59,5 @@ Fase 6.2: cache em processo agora implementado para adaptadores puros explicitam
 Fase 6.3: catálogo e cache passaram no CI 45868236196 (77 aprovados, 3 ignorados). Otimização por índice invertido implementada; ganho exige comparação pareada no CI. Nenhuma telemetria de tokens reais foi coletada.
 
 Fase 6.4: transporte de OpenAI Responses/Anthropic Messages e coleta de uso por resposta implementados no código. Somente testes locais de protocolo e fronteira HTTPS previstos neste commit. Zero chamadas autenticadas; integração real e economia faturada permanecem não comprovadas.
+
+Fase 6.3/6.4: CI aprovou o índice e contratos locais HTTPS; mediana pareada de 14,63 para 10,88 µs/tarefa com planos iguais. Fase 6.5 adiciona efeitos explícitos de flash, shake rotacional, blur e contraste, ainda pendentes de validação. Sincronização automática musical, transições avançadas e descrição semântica continuam abertas.

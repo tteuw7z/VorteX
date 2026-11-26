@@ -139,3 +139,7 @@ vortex host anthropic MODEL_ID "Plan a ZIP analysis" --approve-network
 Use `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`; do not commit keys or place them in arguments. The HTTPS transport uses fixed endpoints, no redirects or automatic retries, a bounded number of requests and output tokens, and per-response usage reported by the service. It sends task text and planning results to the chosen provider. Do not send private information without authorization. The OpenAI client disables response storage and replays tool-loop state; provider retention policies still apply. The model can invoke only the local planning tool, not technical execution. Contract tests use injected responses and mocked HTTPS; live credentials, model compatibility and billing telemetry remain unverified.
 
 Protocol references: https://developers.openai.com/api/docs/guides/function-calling and https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.
+
+### Frame-aligned visual effects
+
+Repeat `--effect KIND START END STRENGTH` with `vortex media edit` to apply flash, small rotational shake or blur in output seconds (not source-cut time). Strength is normalized to (0,1]; durations are 3 frames to 2 seconds. Flash and shake use a bounded pulse; flash starts must be at least one third of a second apart. `--contrast 1.2` applies an explicit contrast multiplier. These controls do not yet detect music beats or perform motion-aware transitions automatically.

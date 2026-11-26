@@ -8,6 +8,7 @@ from tempfile import TemporaryDirectory
 import unittest
 
 from vortex.editor import render
+from vortex.effects import prepare_effects
 from vortex.media import check_media, extract_frames, probe
 from vortex.media_cli import add_commands
 from vortex.subtitles import Cue, Word, progressive_ass, read_srt
@@ -138,6 +139,44 @@ class MediaIntegrationTests(unittest.TestCase):
             render(self.source, output)
         self.assertEqual(probe(output)["source_sha256"], info["sha256"])
 
+    def test_frame_aligned_flash_shake_and_blur_render(self):
+        ffmpeg("-f", "lavfi", "-i", "testsrc2=s=160x90:r=60:d=1.5",
+               "-f", "lavfi", "-i", "sine=frequency=80:sample_rate=48000:duration=1.5",
+               "-c:v", "libx264", "-pix_fmt", "yuv420p", "-c:a", "aac", str(self.source))
+        baseline = self.root / "baseline.mp4"
+        output = self.root / "effects.mp4"
+        render(self.source, baseline)
+        report = render(self.source, output, effects=[
+            ("flash", ".2", ".4", ".8"),
+            ("shake", ".6", ".85", ".8"),
+            ("blur", "1", "1.25", "1"),
+        ])
+        self.assertEqual([(e["kind"], e["start_frame"], e["end_frame_exclusive"])
+                          for e in report["effects"]],
+                         [("flash", 12, 24), ("shake", 36, 51), ("blur", 60, 75)])
+        self.assertEqual(report["frames"], 90)
+        self.assertEqual(check_media(output)["status"], "SUCCESS")
+        base, edited = self.frames_for(baseline), self.frames_for(output)
+        size = 160 * 90
+        def frame(raw, n):
+            return raw[n * size:(n + 1) * size]
+        def difference(n):
+            return sum(abs(a - b) for a, b in zip(frame(base, n), frame(edited, n))) / size
+        # Compare actual decoded video, not just generated filter text.
+        self.assertLess(difference(5), 5)
+        self.assertGreater(sum(frame(edited, 18)) / size - sum(frame(base, 18)) / size, 20)
+        self.assertGreater(max(difference(n) for n in range(38, 49)), 1.5)
+        self.assertGreater(difference(65), 2)
+        self.assertLess(difference(85), 5)
+
+    def test_effect_validation_precedes_render(self):
+        ffmpeg("-f", "lavfi", "-i", "color=c=black:s=160x90:r=30:d=1",
+               "-c:v", "libx264", str(self.source))
+        output = self.root / "effects.mp4"
+        with self.assertRaises(ValueError):
+            render(self.source, output, effects=[("flash", "0", "2", "1")])
+        self.assertFalse(output.exists())
+
     def test_validation_detects_wrong_fps_and_silent_video(self):
         ffmpeg("-f", "lavfi", "-i", "color=c=black:s=160x90:r=30:d=0.4",
                "-c:v", "libx264", str(self.source))
@@ -184,3 +223,22 @@ class MediaIntegrationTests(unittest.TestCase):
         add_commands(parser.add_subparsers())
         args = parser.parse_args(["media", "probe", str(self.source)])
         self.assertEqual(args.technical_handler(args)["video"]["avg_fps"], 30)
+
+
+class EffectsValidationTests(unittest.TestCase):
+    def test_effects_reject_invalid_bounds_strength_and_injection(self):
+        for effects in (
+            [("flash", "0", ".01", "1")],
+            [("flash", "0", "1", "NaN")],
+            [("blur", "0", "1", "2")],
+            [("rotate;evil", "0", "1", "1")],
+            [("shake", "0", ".4", "1"), ("shake", ".2", ".5", "1")],
+            [("flash", "0", ".1", "1"), ("flash", ".15", ".25", "1")],
+        ):
+            with self.subTest(effects=effects), self.assertRaises(ValueError):
+                prepare_effects(effects, 60, 120)
+    def test_same_kind_can_repeat_with_separation(self):
+        effects = prepare_effects([("flash", ".5", ".7", ".5"),
+                                   ("flash", "0", ".2", ".5")], 60, 60)
+        self.assertEqual([(e.start_frame, e.end_frame_exclusive) for e in effects],
+                         [(0, 12), (30, 42)])

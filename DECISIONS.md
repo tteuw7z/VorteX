@@ -58,3 +58,7 @@ Indexar palavras por capacidade e reutilizar o catálogo padrão evita percorrer
 ## Fase 6.4 — transporte remoto
 
 Usar biblioteca padrão http.client com endpoints HTTPS fixos, sem redirecionamento ou retries automáticos. Exigir aprovação explícita e credencial do processo. O modelo pode executar apenas o planejador de leitura; a CLI remota não entra na automação técnica. Limitar tamanho, tempo, rodadas e tokens de saída. Uso vem das respostas, separado de transporte injetado. Sem armazenar respostas no cliente; OpenAI store=false não implica garantia de retenção zero pelo provedor.
+
+## Fase 6.5 — efeitos por quadros
+
+Aceitar apenas efeitos conhecidos com intervalos numéricos de saída, força limitada e duração de 3 quadros a 2 s. Flash triangular e shake rotacional leve; não permitir sobreposição de efeitos do mesmo tipo nem flashes com início a menos de 1/3 s de distância. O limite não é garantia clínica de segurança. Efeitos antecedem fades e legendas. Sem detecção automática de batidas neste checkpoint.

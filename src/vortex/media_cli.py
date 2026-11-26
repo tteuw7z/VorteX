@@ -18,7 +18,7 @@ def _edit(args):
         ranges = [(args.start or "0", args.end)]
     return render(args.source, args.output, ranges=ranges, fps=args.fps,
                   captions=args.captions, full_hd=args.full_hd, monochrome=args.monochrome,
-                  fade=args.fade)
+                  fade=args.fade, effects=args.effect, contrast=args.contrast)
 
 
 def add_commands(subparsers):
@@ -77,4 +77,7 @@ def add_commands(subparsers):
     edit.add_argument("--full-hd", action="store_true", help="Fit to landscape or portrait Full HD")
     edit.add_argument("--monochrome", action="store_true")
     edit.add_argument("--fade", default="0", help="Audio and video fades in seconds")
+    edit.add_argument("--effect", action="append", nargs=4, metavar=("KIND", "START", "END", "STRENGTH"),
+                      help="Flash, shake or blur over output seconds, strength (0,1]; repeatable")
+    edit.add_argument("--contrast", default="1", help="Contrast multiplier from 0.8 to 1.4")
     edit.set_defaults(technical_handler=_edit)

@@ -8,6 +8,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from .evidence import file_sha256
+from .effects import effect_filters, prepare_effects
 from .media import (_INPUT_OPTIONS, _cadence, _decimal, _destination, _dimensions,
                     _local_file, _media_info, _primary_tracks, _run_tool, _timeline)
 from .subtitles import Cue, Word, progressive_ass, read_srt
@@ -80,7 +81,8 @@ def _seconds_text(milliseconds: int) -> str:
 
 def _filter_graph(cuts: tuple[Cut, ...], fps: int, origin: Decimal, video: dict,
                   audio: dict | None, width: int, height: int,
-                  captions: bool, monochrome: bool, fade_seconds: Decimal) -> str:
+                  captions: bool, monochrome: bool, fade_seconds: Decimal,
+                  effects=(), contrast: Decimal = Decimal(1)) -> str:
     count = len(cuts)
     graph = []
     video_in = (f"[0:{video['index']}]setpts=PTS-({origin:f})/TB,"
@@ -127,6 +129,9 @@ def _filter_graph(cuts: tuple[Cut, ...], fps: int, origin: Decimal, video: dict,
     ]
     if monochrome:
         filters.append("hue=s=0")
+    if contrast != 1:
+        filters.append(f"eq=contrast={contrast:f}")
+    filters.extend(effect_filters(effects, fps))
     total = Decimal(sum(cut.frames for cut in cuts)) / fps
     if fade_seconds:
         tail = total - fade_seconds
@@ -145,7 +150,7 @@ def _filter_graph(cuts: tuple[Cut, ...], fps: int, origin: Decimal, video: dict,
 
 def render(path: Path | str, output: Path | str, *, ranges=None, fps: int = 60,
            captions: Path | str | None = None, full_hd: bool = False,
-           monochrome: bool = False, fade=0) -> dict:
+           monochrome: bool = False, fade=0, effects=None, contrast=1) -> dict:
     if fps not in (24, 25, 30, 48, 50, 60):
         raise ValueError("Unsupported render frame rate")
     file = _local_file(path)
@@ -161,6 +166,10 @@ def render(path: Path | str, output: Path | str, *, ranges=None, fps: int = 60,
         raise ValueError("A known positive video duration is required")
     cuts = _cuts(ranges, duration, fps)
     frames = sum(cut.frames for cut in cuts)
+    applied_effects = prepare_effects(effects, fps, frames)
+    contrast_value = _decimal(contrast)
+    if not Decimal('0.8') <= contrast_value <= Decimal('1.4'):
+        raise ValueError("Contrast must be between 0.8 and 1.4")
     fade_seconds = _decimal(fade)
     if not 0 <= fade_seconds * 2 <= Decimal(frames) / fps:
         raise ValueError("Fade must be nonnegative and at most half the output duration")
@@ -189,7 +198,7 @@ def render(path: Path | str, output: Path | str, *, ranges=None, fps: int = 60,
             ass, timeline = progressive_ass(cues, fps, width, height)
             (work / "captions.ass").write_text(ass, encoding="utf-8")
         filters = _filter_graph(cuts, fps, origin, video, audio, width, height, bool(cues),
-                                monochrome, fade_seconds)
+                                monochrome, fade_seconds, applied_effects, contrast_value)
         args = ["-nostdin", "-hide_banner", "-v", "error", *_INPUT_OPTIONS, "-copyts",
                 "-i", str(file), "-filter_complex", filters, "-map", "[outv]"]
         if audio is not None:
@@ -213,5 +222,9 @@ def render(path: Path | str, output: Path | str, *, ranges=None, fps: int = 60,
             "fps": fps, "frames": frames, "dimensions": [width, height], "audio": audio is not None,
             "cuts": [{"start_ms": cut.start_ms, "end_ms": cut.end_ms, "frames": cut.frames}
                      for cut in cuts],
+            "effects": [{"kind": item.kind, "start_frame": item.start_frame,
+                         "end_frame_exclusive": item.end_frame_exclusive,
+                         "strength": float(item.strength)} for item in applied_effects],
+            "contrast": float(contrast_value),
             "caption_cues": len(cues), "caption_intervals": len(timeline),
             "caption_timing": "estimated grapheme times" if timeline else None}

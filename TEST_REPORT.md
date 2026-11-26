@@ -140,3 +140,11 @@ CI 45868236196, a622fb4: 80 testes descobertos, 77 aprovados, 3 ignorados; todos
 ## Fase 6.4 — testes adicionados (a executar)
 
 Ciclos locais de ferramenta nos dois protocolos, preservação de IDs e itens, uso por resposta, aprovação, credencial, limites, falhas, endpoints fixos e rejeição de redirects/JSON duplicado. Respostas injetadas e HTTPS mockado não comprovam transporte autenticado ao vivo.
+
+## Validação Fase 6.4
+
+CI 45868607929, 612afce: 89 testes descobertos, 86 aprovados, 3 ignorados; quatro jobs aprovados. Benchmark pareado: 14,6327 → 10,8773 µs/tarefa, planos comuns iguais. Oito testes de transporte/protocolo passaram, sem chamadas autenticadas.
+
+## Fase 6.5 — testes adicionados
+
+Render sintético a 60 fps com efeitos e áudio, comparação de pixels em quadros ativos/inativos, cadência, limites e rejeição de intervalos inválidos. Nenhum resultado do candidato declarado aprovado antes de CI.
