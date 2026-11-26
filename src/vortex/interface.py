@@ -10,7 +10,7 @@ from .discipline import prepare_task
 from .motion import PRESETS, stylesheet
 from .private_io import private_open
 from .security import audit as audit_security
-from .ui_components import Controls
+from .ui_components import Controls, effect_label
 
 COLORS = {
     "background": "#0d0b14", "surface": "#191426", "raised": "#241b36",
@@ -37,7 +37,7 @@ p{overflow-wrap:anywhere}.muted{color:var(--muted)}
 summary{cursor:pointer;min-height:48px;display:flex;align-items:center;gap:12px;list-style:none;padding:4px;position:relative}
 summary::-webkit-details-marker{display:none}
 summary:active,.action:active{transform:scale(.97,.92)}
-summary::after{content:"+";margin-left:auto;font-size:1.5rem;color:var(--accent)}
+summary>.effect{font-weight:650}summary::after{content:"+";margin-left:auto;font-size:1.5rem;color:var(--accent)}
 details[open]>summary::after{content:"−"}
 .number{font-size:.78rem;color:var(--accent);font-variant-numeric:tabular-nums;border:1px solid var(--line);border-radius:10px;padding:6px 9px}
 .panel ul{display:grid;gap:8px;grid-template-columns:repeat(auto-fit,minmax(min(100%,15rem),1fr));padding:12px 0 0;margin:0;list-style:none}
@@ -61,7 +61,7 @@ progress{width:100%;height:18px;accent-color:var(--accent)}
 .switch-track{width:50px;height:30px;border:2px solid var(--line);border-radius:24px;flex:none;background:var(--raised);position:relative;pointer-events:none}
 .switch-track::after{content:"";position:absolute;left:4px;top:4px;width:18px;height:18px;border-radius:50%;background:var(--accent)}
 .switch-field input:checked+.switch-track{background:var(--button)}
-.switch-field input:checked+.switch-track::after{left:24px;animation:vx-pop 350ms linear both}
+.switch-field input:checked+.switch-track::after{left:24px;animation:vx-pop var(--vx-pop-ms) linear both}
 .switch-field input:focus-visible+.switch-track{outline:3px solid var(--accent);outline-offset:3px}
 .choice-segmented .choices,.choice-rating .choices{display:flex;flex-wrap:wrap;gap:6px}
 .choice-segmented .field,.choice-rating .field{border:1px solid var(--line);border-radius:12px;padding:4px 8px;min-height:44px}
@@ -75,12 +75,18 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);color:v
 .effect{display:inline-block;position:relative;min-width:0}
 .effect::before,.effect::after{pointer-events:none;position:absolute;content:"";inset:-8px;border:2px solid var(--accent);border-radius:14px;transform:scale(0);visibility:hidden}
 .effect::after{inset:-12px;border-style:dashed;border-color:var(--line);border-radius:3px 20px 3px 20px}
-details[open]>summary .effect{animation:vx-impact 420ms linear both}
+details[open]>summary .effect{animation:vx-impact var(--vx-impact-ms) linear both}
 details[open]>summary .effect::before,.field:has(input:checked) .effect::before{animation:vx-ring 420ms linear both}
 details[open]>summary .effect::after,.field:has(input:checked) .effect::after{animation:vx-shards 420ms linear both}
-.field:has(input:checked) .effect{animation:vx-pop 350ms linear both}
-details[open] .content{animation:vx-slide 460ms linear both}
-.action:focus-visible{animation:vx-spark 300ms linear both}
+.field:has(input:checked) .effect{animation:vx-pop var(--vx-pop-ms) linear both}
+details[open] .content{animation:vx-slide var(--vx-slide-ms) linear both}
+.action:focus-visible{animation:vx-spark var(--vx-spark-ms) linear both}
+.fx{position:absolute;width:58px;height:58px;right:-24px;top:-34px;pointer-events:none;visibility:hidden;transform:scale(0);overflow:visible}
+.fx-fill{fill:#4a3278;stroke:var(--accent);stroke-width:2.5;stroke-linejoin:round}
+.fx-line{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round}
+.fx-accent{fill:#e2c6ff;stroke:var(--line);stroke-width:1.5;stroke-linejoin:round}
+details[open]>summary .fx,.field:has(input:checked) .fx{animation:vx-vector var(--vx-impact-ms) linear both}
+@keyframes vx-vector{0%{visibility:visible;transform:translate(0,7px) scale(.25) rotate(-8deg)}22%{transform:translate(10px,-5px) scale(1) rotate(0)}60%{transform:translate(14px,-10px) scale(.85) rotate(7deg)}100%{visibility:hidden;transform:translate(20px,-16px) scale(0) rotate(12deg)}}
 @keyframes vx-ring{0%{visibility:visible;transform:scale(.75)}55%{transform:scale(1.15)}100%{visibility:hidden;transform:scale(1.25);border-width:0}}
 @keyframes vx-shards{0%{visibility:visible;transform:rotate(-8deg) scale(.8)}60%{transform:rotate(5deg) scale(1.22)}100%{visibility:hidden;transform:rotate(8deg) scale(1.35);border-width:0}}
 body:has(#motion-off:checked) *,body:has(#motion-off:checked) *::before,body:has(#motion-off:checked) *::after,.still *,.still *::before,.still *::after{animation:none!important;transition:none!important;transform:none!important}
@@ -150,8 +156,8 @@ def render_menu(*, locale="pt-BR", session=None, still=False):
         section = view.handle(item["id"])
         panels.append('<details class="panel" id="section-' + escape(item["id"]) +
                       '"><summary><span class="number" aria-hidden="true">' + f"{index:02d}" +
-                      '</span><span class="effect"><strong>' + escape(item["label"]) +
-                      '</strong></span></summary><div class="content">' +
+                      '</span>' + effect_label(item["label"], motif=("shards", "slash", "ring", "spark", "cloud", "ring")[index - 1]) +
+                      '</summary><div class="content">' +
                       _rows(section["entries"], "Nenhuma ferramenta vinculada." if pt else "No bound tools.") +
                       '</div></details>')
     title = "Menu VorteX" if pt else "VorteX menu"

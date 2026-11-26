@@ -1,6 +1,7 @@
 """Native offline control factories. All caller-supplied strings are plain text."""
 from html import escape
 import re
+from .motion import motif_svg
 
 
 _ID = re.compile(r"[a-z][a-z0-9-]{0,47}")
@@ -10,6 +11,11 @@ def _text(value):
     if not isinstance(value, str) or not 1 <= len(value) <= 256:
         raise ValueError("Expected 1 to 256 characters of plain text")
     return escape(value, quote=True)
+
+
+def effect_label(label, *, motif="shards"):
+    """Decorate escaped text with a non-interactive, aria-hidden vector motif."""
+    return '<span class="effect">' + _text(label) + motif_svg(motif) + '</span>'
 
 
 class Controls:
@@ -27,11 +33,11 @@ class Controls:
     def toggle(self, id, label, *, checked=False):
         if type(checked) is not bool:
             raise ValueError("Checked state must be boolean")
-        label = _text(label)
+        label = effect_label(label, motif="ring")
         self._reserve(id)
         return (f'<label class="field switch-field" for="{id}"><input type="checkbox" role="switch" id="{id}"'
                 + (" checked" if checked else "") + f'><span class="switch-track" aria-hidden="true"></span>'
-                + f'<span class="effect">{label}</span></label>')
+                + f'{label}</label>')
 
     def radio(self, id, label, choices, *, selected=None, style="radio"):
         if not isinstance(style, str) or style not in {"radio", "segmented", "rating"}:
@@ -39,7 +45,8 @@ class Controls:
         label = _text(label)
         if not isinstance(choices, (list, tuple)) or not 2 <= len(choices) <= 8:
             raise ValueError("Radio groups require 2 to 8 labels")
-        labels = [_text(choice) for choice in choices]
+        motif = {"radio": "ring", "segmented": "slash", "rating": "spark"}[style]
+        labels = [effect_label(choice, motif=motif) for choice in choices]
         if selected is not None and (type(selected) is not int or not 0 <= selected < len(labels)):
             raise ValueError("Invalid selected index")
         ids = tuple(f"{id}-{i}" for i in range(len(labels)))
@@ -48,7 +55,7 @@ class Controls:
         for i, choice in enumerate(labels):
             checked = " checked" if selected == i else ""
             options.append(f'<label class="field" for="{ids[i]}"><input id="{ids[i]}" type="radio"'
-                           f' name="{id}" value="{i}"{checked}><span class="effect">{choice}</span></label>')
+                           f' name="{id}" value="{i}"{checked}>{choice}</label>')
         return f'<fieldset class="choice-{style}"><legend>{label}</legend><div class="choices">' + "".join(options) + "</div></fieldset>"
 
     def slider(self, id, label, *, value=40, maximum=100):
@@ -81,12 +88,12 @@ class Controls:
         return f'<label class="field-column" for="{id}">{label} · {value}%<progress id="{id}" value="{value}" max="100">{value}%</progress></label>'
 
     def disclosure(self, id, label, detail):
-        label, detail = _text(label), _text(detail)
+        label, detail = effect_label(label, motif="slash"), _text(detail)
         self._reserve(id)
-        return f'<details id="{id}"><summary><span class="effect">{label}</span></summary><p class="content muted">{detail}</p></details>'
+        return f'<details id="{id}"><summary>{label}</summary><p class="content muted">{detail}</p></details>'
 
     def notice(self, id, label, detail):
         """A user-triggered disclosure, not a fabricated live notification."""
-        label, detail = _text(label), _text(detail)
+        label, detail = effect_label(label, motif="cloud"), _text(detail)
         self._reserve(id)
-        return f'<details class="notice" id="{id}"><summary><span class="action effect">{label}</span></summary><p class="content muted">{detail}</p></details>'
+        return f'<details class="notice" id="{id}"><summary><span class="action">{label}</span></summary><p class="content muted">{detail}</p></details>'

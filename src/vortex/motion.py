@@ -61,5 +61,24 @@ PRESETS = MappingProxyType({
 })
 
 
+# Fixed, original vector motifs. Never interpolate caller-supplied path data.
+_MOTIFS = MappingProxyType({
+    "shards": '<path class="fx-fill" d="M38 31 44 12 49 29 66 18 58 37 78 39 61 48 69 67 49 56 41 75 35 56 15 64 25 46 7 39 27 35 19 18Z"/><path class="fx-accent" d="M73 9 79 4 77 17Z M8 68 3 77 17 74Z"/><path class="fx-line" d="M39 22 43 7 M58 59 70 72 M12 24 3 19"/>',
+    "ring": '<circle class="fx-line" cx="40" cy="40" r="25"/><path class="fx-fill" d="M11 37 20 24 25 36 20 49Z M60 49 70 36 76 48 66 60Z"/><path class="fx-accent" d="M40 3 45 14 40 20 35 14Z M40 60 45 66 40 77 35 66Z"/>',
+    "slash": '<path class="fx-fill" d="M9 53Q25 12 70 11Q43 24 31 49Q47 47 71 29Q54 64 9 70Z"/><path class="fx-line" d="M6 38 25 19 M58 65 74 52"/><path class="fx-accent" d="M65 6 76 3 72 13Z"/>',
+    "spark": '<path class="fx-fill" d="M40 5 48 30 74 40 48 50 40 75 32 50 6 40 32 30Z"/><path class="fx-accent" d="M66 9 70 18 79 22 70 26 66 35 62 26 53 22 62 18Z"/>',
+    "cloud": '<path class="fx-fill" d="M11 49Q2 36 17 28Q18 14 32 18Q44 6 57 21Q73 18 75 35Q83 48 69 55Q65 69 49 64Q34 75 24 61Q7 64 11 49Z"/><path class="fx-line" d="M25 29Q34 23 43 30 M48 48Q57 43 64 48"/>',
+})
+
+
+def motif_svg(name):
+    if not isinstance(name, str) or name not in _MOTIFS:
+        raise ValueError("Unknown motion motif")
+    return ('<svg class="fx fx-' + name + '" viewBox="0 0 80 80" aria-hidden="true" focusable="false">' +
+            _MOTIFS[name] + '</svg>')
+
+
 def stylesheet():
-    return "\n".join(preset.keyframes(name) for name, preset in PRESETS.items())
+    durations = ":root{" + "".join(f"--vx-{name}-ms:{preset.duration_ms}ms;"
+                                   for name, preset in PRESETS.items()) + "}"
+    return durations + "\n" + "\n".join(preset.keyframes(name) for name, preset in PRESETS.items())

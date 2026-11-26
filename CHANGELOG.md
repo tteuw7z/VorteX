@@ -146,3 +146,6 @@
 - Phase 6.24 candidate: reusable safe native-control factories, ten gallery examples, unique IDs, checked bounds and original violet switch styling. CI pending.
 
 - Phase 6.25 candidate: correct Chromium keyboard event sequence after CI 45909017606 rejection; extend browser coverage and stepped animation evidence. CI pending.
+
+- Phase 6.25 validated: 151 passed, 3 skipped; actual headless Chromium interactions, no horizontal overflow at tested widths, zero page network requests, no logged browser errors (45909213133).
+- Phase 6.26 candidate: five original vector accents, shared effect labels and centralized motion durations; added vector safety and integration tests.

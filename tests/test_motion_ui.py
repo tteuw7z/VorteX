@@ -109,3 +109,15 @@ class MotionUITests(unittest.TestCase):
         self.assertEqual(html.count('class="panel gallery-card"'), 10)
         self.assertIn("<select", html)
         self.assertIn('class="choice-rating"', html)
+
+    def test_vector_motifs_are_fixed_and_decorative(self):
+        from vortex.motion import motif_svg, stylesheet
+        for name in ("shards", "ring", "slash", "spark", "cloud"):
+            markup = motif_svg(name)
+            self.assertIn('aria-hidden="true"', markup)
+            self.assertNotIn("href=", markup)
+        with self.assertRaises(ValueError):
+            motif_svg('<script>')
+        self.assertIn('--vx-impact-ms:420ms', stylesheet())
+        self.assertIn('class="fx fx-shards"', render_menu())
+        self.assertIn('class="fx fx-cloud"', render_gallery())
