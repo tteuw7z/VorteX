@@ -30,8 +30,8 @@ async function evaluate(expression) {
   if (response.exceptionDetails) throw new Error('Browser evaluation failed');
   return response.result.value;
 }
-async function waitFor(fn, label) {
-  for (let i = 0; i < 80; i++) {
+async function waitFor(fn, label, attempts = 80) {
+  for (let i = 0; i < attempts; i++) {
     try { if (await fn()) return; } catch {}
     await delay(50);
   }
@@ -89,7 +89,7 @@ try {
     const data = await readFile(join(work,'profile','DevToolsActivePort'),'utf8');
     port = Number(data.split('\n')[0]);
     return port > 0;
-  }, 'Chromium startup');
+  }, 'Chromium startup', 400);
   const info = await (await fetch('http://127.0.0.1:'+port+'/json/version')).json();
   ws = new WebSocket(info.webSocketDebuggerUrl);
   await new Promise((ok, fail) => {

@@ -151,3 +151,5 @@
 - Phase 6.26 candidate: five original vector accents, shared effect labels and centralized motion durations; added vector safety and integration tests.
 
 - Phase 6.27 candidate: quiet initial state, centralized contrast palette, localized gallery, accurate still control and browser motion assertions.
+
+- Phase 6.28 candidate: bridge immutable palette to existing dictionary-only audit API; allow 20 seconds for Chromium startup after a transient push-run startup failure. Earlier phase 6.26 passed PR CI 45909352447 (152 passed, 3 skipped, browser PASS).

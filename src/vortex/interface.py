@@ -209,7 +209,7 @@ def render_gallery(*, locale="pt-BR", still=False):
 
 
 def contrast_report():
-    return audit_design({"name": "VorteX Motion", "colors": COLORS,
+    return audit_design({"name": "VorteX Motion", "colors": dict(COLORS),
                          "contrast_pairs": [{"foreground": fg, "background": bg}
                                             for fg in ("ink", "muted", "accent", "warning")
                                             for bg in ("background", "surface", "raised", "button")]})
