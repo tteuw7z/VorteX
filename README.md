@@ -108,6 +108,15 @@ vortex automation run flow.json --approve unpack --approve list
 
 The runner uses the same command parsers and the workflow approval API. It accepts a fixed set of local operations and reports stage status, results and evidence digests. Arbitrary shell commands, Gradle builds and external publishing are outside the manifest runner.
 
+## Assistant tool hosts
+
+Use `vortex.assistant.planner_tool("openai")` in the Responses tool list or
+`planner_tool("anthropic")` in the Messages tool list. Pass one decoded tool-call
+dictionary to `answer_planner_call(provider, call)`. For Responses, send its
+return value as a function output item. For Messages, include it as a tool result
+block in the next user message. The host owns authentication and transport.
+The bridge exposes only local planning. See [contract tests](tests/test_assistant.py).
+
 ## Project status
 
 [Parity matrix](PARITY.md) · [Test report](TEST_REPORT.md) · [Next phase](HANDOFF.md)
