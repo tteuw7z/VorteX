@@ -57,6 +57,14 @@ jobs:
           git archive fe74039e2dc46656be63c71c129309aa5c33c0e2 | tar -x -C "$RUNNER_TEMP/vortex-preflight-baseline"
           python scripts/benchmark_spectors.py "$RUNNER_TEMP/vortex-preflight-baseline" "$GITHUB_WORKSPACE"
       - run: vortex plan "compile APK Android"
+      - name: Validate native Motion UI in Chromium
+        run: CHROME="$(command -v google-chrome || command -v chromium)" node scripts/check_motion_browser.mjs "$RUNNER_TEMP/vortex-motion-browser"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: vortex-motion-browser-evidence
+          path: ${{ runner.temp }}/vortex-motion-browser/
+          if-no-files-found: error
+          retention-days: 7
   portable-core:
     strategy:
       fail-fast: false

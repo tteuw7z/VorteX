@@ -9,3 +9,7 @@ The menu reads existing Conversation navigation and capabilities; it does not ac
 Motion rules: ordinary controls at rest; direct state updates; bounded spring transforms; one decorative ring/shard motif; no flashes, looping animation or audio; native keyboard, focus and reduced-motion behavior. The local checkbox disables all visual motion without affecting state. CSS and HTML are generated from fixed templates and escaped text, with hash-based CSP and no scripts or form submission. Declared palette contrast is checked using the existing design audit. Static checks do not prove complete accessibility or security.
 
 Test at 390px and desktop, keyboard and pointer/touch, reduced motion and final settled frames. Do not equate static or headless tests with real-device or screen-reader tests. Browser behavior and independent gate validation must be reported separately. 
+
+## Browser evidence
+
+CI runs a test-only Node 22+ DevTools harness against installed Chromium. It generates actual Python candidates, uses native CDP keyboard and emulated touch events, checks CSS CSP, motion preferences and no page network traffic, and captures screenshots. Node is not a runtime dependency. Evidence is synthetic and does not authorize publication.
