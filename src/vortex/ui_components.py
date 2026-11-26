@@ -19,8 +19,8 @@ class Controls:
         self._ids = {"motion-off"}
 
     def _reserve(self, *names):
-        if (len(names) != len(set(names)) or any(not isinstance(name, str)
-                or not _ID.fullmatch(name) or name in self._ids for name in names)):
+        if (any(not isinstance(name, str) or not _ID.fullmatch(name)
+                or name in self._ids for name in names) or len(names) != len(set(names))):
             raise ValueError("Invalid or duplicate control ID")
         self._ids.update(names)
 
@@ -34,7 +34,7 @@ class Controls:
                 + f'<span class="effect">{label}</span></label>')
 
     def radio(self, id, label, choices, *, selected=None, style="radio"):
-        if style not in {"radio", "segmented", "rating"}:
+        if not isinstance(style, str) or style not in {"radio", "segmented", "rating"}:
             raise ValueError("Unknown radio presentation")
         label = _text(label)
         if not isinstance(choices, (list, tuple)) or not 2 <= len(choices) <= 8:

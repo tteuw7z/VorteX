@@ -67,7 +67,9 @@ async function click(selector, touch = false) {
   }
 }
 async function key(key, code, windowsVirtualKeyCode) {
-  await request('Input.dispatchKeyEvent', {type:'rawKeyDown',key,code,windowsVirtualKeyCode});
+  const text = key === 'Enter' ? '\r' : key === ' ' ? ' ' : '';
+  await request('Input.dispatchKeyEvent', {type:text ? 'keyDown' : 'rawKeyDown',key,code,
+    windowsVirtualKeyCode, ...(text ? {text,unmodifiedText:text} : {})});
   await request('Input.dispatchKeyEvent', {type:'keyUp',key,code,windowsVirtualKeyCode});
 }
 async function screenshot(name) {
@@ -115,29 +117,39 @@ try {
   await key('Tab','Tab',9);
   assert.equal(await evaluate('document.activeElement.id'), 'motion-off');
   await key('Tab','Tab',9);
-  assert.equal(await evaluate('document.activeElement.tagName'), 'SUMMARY');
+  assert.equal(await evaluate('document.activeElement.parentElement.id'), 'section-agents');
   await key('Enter','Enter',13);
-  assert.equal(await evaluate('document.querySelector("#section-agents").open'), true);
+  await waitFor(() => evaluate('document.querySelector("#section-agents").open'), 'keyboard open');
   await delay(70);
   await screenshot('menu-desktop-impact');
   await delay(550);
   await screenshot('menu-desktop-settled');
   await key('Enter','Enter',13);
-  assert.equal(await evaluate('document.querySelector("#section-agents").open'), false);
+  await waitFor(() => evaluate('!document.querySelector("#section-agents").open'), 'keyboard close');
+  await click('#section-settings summary');
+  await waitFor(() => evaluate('document.querySelector("#section-settings").open'), 'mouse open');
+  assert.equal(await evaluate('getComputedStyle(document.querySelector("#section-settings .effect")).animationName'),'vx-impact');
+  for (const ms of [0,80,180,420]) {
+    await evaluate('document.getAnimations().forEach(a=>{a.pause();a.currentTime='+ms+'})');
+    await screenshot('motion-frame-'+ms);
+  }
+  await evaluate('document.getAnimations().forEach(a=>a.finish())');
+  await click('#section-settings summary');
+  await waitFor(() => evaluate('!document.querySelector("#section-settings").open'), 'mouse close');
 
   await navigate('menu',390,844);
   await screenshot('menu-phone-rest');
   await click('#section-functions summary',true);
-  assert.equal(await evaluate('document.querySelector("#section-functions").open'),true);
+  await waitFor(() => evaluate('document.querySelector("#section-functions").open'), 'touch open');
   assert.equal(await evaluate('document.documentElement.scrollWidth <= innerWidth'),true);
   await delay(500);
   await screenshot('menu-phone-expanded');
 
   await navigate('gallery',390,844);
   await click('input[role="switch"]',true);
-  assert.equal(await evaluate('document.querySelector("input[role=switch]").checked'),true);
+  await waitFor(() => evaluate('document.querySelector("input[role=switch]").checked'), 'switch touch');
   await click('#choice-1',true);
-  assert.equal(await evaluate('document.querySelector("#choice-1").checked'),true);
+  await waitFor(() => evaluate('document.querySelector("#choice-1").checked'), 'radio touch');
   await click('#demo-range',true);
   const oldRange = await evaluate('document.querySelector("#demo-range").valueAsNumber');
   await evaluate('document.querySelector("#demo-range").focus()');
@@ -146,13 +158,23 @@ try {
   await evaluate('document.querySelector("#demo-text").focus()');
   await request('Input.insertText',{text:'VorteX'});
   assert.equal(await evaluate('document.querySelector("#demo-text").value'),'VorteX');
+  await click('#demo-segment-1',true);
+  await waitFor(() => evaluate('document.querySelector("#demo-segment-1").checked'), 'segmented touch');
+  await click('#demo-rating-4',true);
+  await waitFor(() => evaluate('document.querySelector("#demo-rating-4").checked'), 'rating touch');
+  await evaluate('document.querySelector("#demo-select").focus()');
+  await key('ArrowDown','ArrowDown',40);
+  await waitFor(() => evaluate('document.querySelector("#demo-select").selectedIndex === 1'), 'select keyboard');
+  await click('#demo-notice summary',true);
+  await waitFor(() => evaluate('document.querySelector("#demo-notice").open'), 'notice touch');
   await click('#motion-off',true);
+  await waitFor(() => evaluate('document.querySelector("#motion-off").checked'), 'motion switch');
   assert.equal(await evaluate('getComputedStyle(document.querySelector(".field:has(input:checked) .effect")).animationName'),'none');
   await screenshot('gallery-phone-motion-off');
 
   await navigate('menu',390,844,true);
   await click('#section-security summary',true);
-  assert.equal(await evaluate('document.querySelector("#section-security").open'),true);
+  await waitFor(() => evaluate('document.querySelector("#section-security").open'), 'reduced-motion touch');
   assert.equal(await evaluate('getComputedStyle(document.querySelector("#section-security .effect")).animationName'),'none');
   await screenshot('menu-phone-reduced-motion');
 
@@ -160,8 +182,8 @@ try {
   assert.equal(errors.length,0,'Browser errors or CSP violations');
   const remote = events.filter(e=>e.method==='Network.requestWillBeSent'&&/^https?:/.test(e.params.request.url));
   assert.equal(remote.length,0,'Preview made network requests');
-  const report={status:'PASS',browser:info.Browser,widths:[1280,390],keyboard:true,touch_emulated:true,
-    range_keyboard:true,text_input:true,reduced_motion:true,local_motion_switch:true,
+  const report={status:'PASS',browser:info.Browser,widths:[1280,390],keyboard:true,mouse:true,touch_emulated:true,stepped_animation_ms:[0,80,180,420],
+    range_keyboard:true,text_input:true,segmented:true,rating:true,select_keyboard:true,notice:true,reduced_motion:true,local_motion_switch:true,
     no_horizontal_overflow:true,network_requests:remote.length,browser_errors:errors.length,
     limitations:'Headless Chromium; no physical phone, Safari, Firefox or screen reader.'};
   await writeFile(join(output,'report.json'),JSON.stringify(report,null,2)+'\n');

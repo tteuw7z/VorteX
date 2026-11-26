@@ -144,3 +144,5 @@
 - Phase 6.23 candidate: headless Chromium keyboard, emulated-touch, viewport, motion preference and CSP tests; synthetic screenshot evidence. CI pending.
 
 - Phase 6.24 candidate: reusable safe native-control factories, ten gallery examples, unique IDs, checked bounds and original violet switch styling. CI pending.
+
+- Phase 6.25 candidate: correct Chromium keyboard event sequence after CI 45909017606 rejection; extend browser coverage and stepped animation evidence. CI pending.
