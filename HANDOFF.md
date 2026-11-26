@@ -63,3 +63,8 @@ CI 45885353048 confirmou 114 aprovados, 3 ignorados, 494 objetos Git sem padrõe
 Fase 6.13: CI 45887940880 aprovado (118 aprovados, 3 ignorados, quatro jobs). Fase 6.14 expande automaticamente todos os perfis de capacidades habilitadas que correspondem a palavras da tarefa, preserva restrições explícitas, contabiliza uso remoto separadamente e acrescenta AGENTS.md. CI novo pendente; sem prova de equivalência semântica, economia real ou execução independente.
 
 Fase 6.15: coordenador Python executa preflight antes do build e ordena revisão de código, barreira estática, testes funcionais e testes de segurança. Bloqueia adaptador ausente, falha, alteração de bytes e teste pulado. Requer callbacks confiáveis e autorização de execução; não assina nem publica. Evidências de testes locais não comprovam execução independente de agentes.
+
+
+## Fase 6.16 — ativação e menu
+
+Candidato: contrato SKILL.md, sessão Python local, CLI chat, menus estruturados e fallback textual, ativação explícita sem fala automática, perfis de planejamento separados de execução vinculada, preflight automático em pedidos diretos. Testes adicionados; confirmar CI e integração real dos hosts. Sem alteração do gate de publicação. Não declarar paridade ou release 1.0.0.

@@ -14,6 +14,7 @@ from .automation_cli import add_commands as add_automation_commands
 from .archive import inventory
 from .config import Config
 from .context import ContextEngine
+from .conversation import Conversation
 from .discipline import prepare_task
 from .learning import LearningEngine
 from .remote import add_commands as add_remote_commands
@@ -57,6 +58,10 @@ def _dispatch(args, config):
                     result["learned"] = [entry for skill in result["skills"]
                                          for entry in learning.recall(skill["name"])]
             return result
+        case "chat":
+            session = Conversation(locale=args.locale, enabled=config.skills,
+                                   agent_limit=config.agent_limit)
+            return [session.handle(message) for message in args.messages]
         case "inventory":
             return inventory(args.path)
         case "context":
@@ -77,6 +82,9 @@ def main(argv=None):
         route = commands.add_parser(name)
         route.add_argument("task")
         route.add_argument("--agent-limit", type=int)
+    chat = commands.add_parser("chat", help="Inspect explicit chat activation and menu events")
+    chat.add_argument("--locale", default="en")
+    chat.add_argument("messages", nargs="+")
     commands.add_parser("inventory").add_argument("path", type=Path)
     commands.add_parser("context").add_argument("path", type=Path)
     learn = commands.add_parser("learn").add_subparsers(dest="operation", required=True)
