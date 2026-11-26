@@ -85,7 +85,7 @@
   "phase_4_implementation": "3d749ef75741ed6aae03f69eab67135b319513ab",
   "phase_5_baseline": "f7de4c57eb9a05425469f5948d3c1dfa442db1dd",
   "phase_5_implementation": "645baca9d860728eed56e79b2a7b0d4da2abd748",
-  "checkpoint": "6.15-ordered-development",
+  "checkpoint": "6.16-explicit-chat-activation",
   "review_4_1": {
     "status": "complete",
     "baseline": "f0daf2820e49fafc079e8bfd0f68704c675c7052",
@@ -102,7 +102,7 @@
     "baseline": "314ac4a4b2ed68e3945ec33e0d9cfc406181ee2c",
     "catalog": {
       "capabilities": 19,
-      "profiles": 22,
+      "profiles": 23,
       "scope": "planning only; external execution not implied",
       "status": "validated_ci"
     },
@@ -123,9 +123,9 @@
       "scope": "explicit noncontextual pure adapters, one workflow, maximum 128 successful entries"
     },
     "validated_ci": {
-      "run": 45887940880,
-      "commit": "631f8a817b75d2f884b1a31ea8268acbee3a97a8",
-      "passed": 118,
+      "run": 45888238562,
+      "commit": "80de782da1937d0a9b5e523358666848d7208a28",
+      "passed": 122,
       "skipped": 3,
       "result": "success"
     },
@@ -204,16 +204,29 @@
       }
     },
     "discipline": {
-      "status": "implemented_pending_ci",
+      "status": "validated_local_ci",
       "automatic_preflight": true,
       "code_review_policy": 3,
       "all_enabled_keyword_matches_expanded": true,
       "actual_token_savings": null,
       "independent_reviewer_deployed": false,
       "coordinator": {
-        "status": "implemented_pending_ci",
+        "status": "validated_local_ci",
         "scope": "explicit trusted host callbacks; no independent release authorization"
       }
+    },
+    "chat": {
+      "status": "implemented_pending_ci",
+      "implementation_commit": "54579e83fb4e7f1d19bfd76f4c866307fbe21536",
+      "explicit_activation": true,
+      "automatic_voice_greeting": false,
+      "structured_menu": true,
+      "text_fallback": true,
+      "host_integration_verified": false,
+      "locales": [
+        "en",
+        "pt"
+      ]
     }
   }
 }

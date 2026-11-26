@@ -104,3 +104,6 @@
 
 - [x] Implementar coordenador ordenado para integração de hosts com callbacks confiáveis.
 - [ ] Validar CI e integrar adapters reais independentes, isolamento e publicação obrigatória nos hosts.
+
+- [x] Implementar ativação explícita, saudação, menu estruturado e textual, preflight para pedidos diretos e contrato de skill portátil.
+- [ ] Validar CI e integrar menus nativos, localização e bindings confiáveis em sessões reais dos hosts.

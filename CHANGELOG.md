@@ -120,3 +120,9 @@
 ## Fase 6.15 — candidato
 
 - Coordenador Python para preflight, build, revisão por bytes, barreira estática, testes funcionais e segurança em ordem, com bloqueio antes de entrega.
+
+## Fase 6.16 — candidato
+
+- Ativação explícita por Vortex ou 🇮🇪; saudação oficial uma vez por sessão, sem fala automática.
+- Menu de agentes, funcionalidades, segurança, ferramentas, configurações e ajuda; alternativa textual; perfis de planejamento separados de execução vinculada.
+- SKILL.md, CLI chat, preflight automático em pedidos diretos e dez testes de contrato; CI multiplataforma.

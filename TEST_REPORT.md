@@ -182,3 +182,7 @@ Primeiro CI da fase 6.13 detectou duas incompatibilidades nos testes que exigiam
 CI 45887940880, 631f8a8: 121 testes descobertos, 118 aprovados, 3 ignorados, quatro jobs aprovados. Fase 6.14 acrescenta regressões de expansão automática e respeito à configuração, separação da telemetria de fixtures, e instruções de host. Novo CI pendente.
 
 Fase 6.15 adiciona testes de callbacks sintéticos para ordem de execução, bloqueio por falhas e alteração de bytes, ausência de aprovação/adaptadores e ausência de autoaprovação de entrega. CI pendente; não são testes de geração autônoma externa.
+
+CI 45888238562, 80de782: quatro jobs concluídos com sucesso; checkpoint 6.15 registrou 122 aprovados e 3 ignorados.
+
+Fase 6.16 acrescenta dez testes de saudação exata, gatilho, isolamento por sessão, navegação, escopo de execução, economia automática, validação e CLI. Execução adicionada aos jobs macOS e Windows. Integrações de chats externos não verificadas. Novo CI pendente.
