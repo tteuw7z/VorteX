@@ -15,6 +15,7 @@ from .archive import inventory
 from .config import Config
 from .context import ContextEngine
 from .core import plan
+from .discipline import prepare_task
 from .learning import LearningEngine
 from .remote import add_commands as add_remote_commands
 from .security_cli import add_commands as add_security_commands
@@ -47,7 +48,8 @@ def _dispatch(args, config):
     match args.command:
         case "plan" | "knowledge":
             limit = config.agent_limit if args.agent_limit is None else args.agent_limit
-            result = plan(args.task, agent_limit=limit, skills=SkillEngine(enabled=config.skills))
+            prepared = prepare_task(args.task, agent_limit=limit, skills=SkillEngine(enabled=config.skills))
+            result = {**prepared["route"], **{key: value for key, value in prepared.items() if key != "route"}}
             if args.command == "knowledge":
                 result["profiles"] = [asdict(profile)
                                       for profile in AgentEngine().load(result["agents"])]

@@ -55,3 +55,7 @@ Fase 6.11: saídas locais de mídia, ZIP, lotes, APK e prévias HTML passam a us
 ## Fase 6.12 — recuperação e fronteira remota
 
 HEAD 2aaecf2 e CI 45882770153 reconfirmados: 110 aprovados, 3 ignorados, quatro jobs aprovados. Política v2 e permissões privadas validadas localmente em CI; nenhuma perda de commits. Scanner de objetos Git alcançáveis e barreira de credenciais em comunicação remota adicionados. Checkout não preserva credenciais. Novo CI pendente. Auditoria integral, verificador independente, integração obrigatória de entrega, licenças e sandbox continuam em aberto.
+
+## Fase 6.13 — disciplina de programação
+
+CI 45885353048 confirmou 114 aprovados, 3 ignorados, 494 objetos Git sem padrões conhecidos. Preflight automático de economia por seleção de perfis, preservando revisores obrigatórios e informando perfis adiados, estimativa separada de uso real. Roteamento CLI e ferramenta remota usam o preflight. Política v3 exige revisão por arquivo vinculada ao hash e cobertura declarada de todos os bytes. CI pendente. Nenhum verificador independente implantado, nenhuma economia faturada ou equivalência de desempenho demonstrada.

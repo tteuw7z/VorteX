@@ -103,3 +103,8 @@
 - Varredura limitada de objetos Git alcançáveis, sem revelar conteúdo dos achados.
 - Checkout sem credenciais persistentes; barreira de padrões de credenciais na comunicação remota.
 - Reconciliação do estado de 6.11 com CI real.
+
+## Fase 6.13 — candidato
+
+- Preflight automático de economia e transparência de perfis adiados.
+- Perfil dedicado de revisão de código e inventário por bytes; política v3 exige registro de cobertura integral.

@@ -35,6 +35,12 @@ class DeliveryGateTests(unittest.TestCase):
         now = int(time.time())
         for name in report["required_checks"]:
             (self.evidence / (name + ".log")).write_text("test-only evidence for " + name)
+        from vortex.security import snapshot
+        captured = snapshot(self.candidate)
+        (self.evidence / "code_review.log").write_text(json.dumps({
+            "artifact_sha256": captured.digest, "files": [
+                {"path": name, "sha256": hashlib.sha256(data).hexdigest(),
+                 "bytes_reviewed": len(data), "status": "PASS"} for name, data in captured.files]}))
         payload = {"policy_version": POLICY_VERSION, "kind": report["kind"], "artifact_sha256": report["artifact_sha256"],
                    "reviewer": "test fixture only", "issued_at": now - 1, "expires_at": now + 60,
                    "checks": {name: {"status": "PASS", "evidence_sha256": hashlib.sha256((self.evidence / (name + ".log")).read_bytes()).hexdigest()}

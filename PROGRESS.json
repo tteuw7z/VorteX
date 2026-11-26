@@ -85,7 +85,7 @@
   "phase_4_implementation": "3d749ef75741ed6aae03f69eab67135b319513ab",
   "phase_5_baseline": "f7de4c57eb9a05425469f5948d3c1dfa442db1dd",
   "phase_5_implementation": "645baca9d860728eed56e79b2a7b0d4da2abd748",
-  "checkpoint": "6.12-history-and-remote-privacy",
+  "checkpoint": "6.13-programming-discipline",
   "review_4_1": {
     "status": "complete",
     "baseline": "f0daf2820e49fafc079e8bfd0f68704c675c7052",
@@ -123,9 +123,9 @@
       "scope": "explicit noncontextual pure adapters, one workflow, maximum 128 successful entries"
     },
     "validated_ci": {
-      "run": 45882770153,
-      "commit": "2aaecf22a2a9242902bac1a088168f3af2df6db8",
-      "passed": 110,
+      "run": 45885353048,
+      "commit": "5ecbabd635556da887cd6a53d6f8ce7bac4b1522",
+      "passed": 114,
       "skipped": 3,
       "result": "success"
     },
@@ -193,13 +193,22 @@
         "run": 45882770153
       },
       "history_scan": {
-        "status": "implemented_pending_ci",
-        "scope": "reachable refs and HEAD; bounded known-pattern scan; excludes unreachable objects and external artifacts"
+        "status": "validated_ci",
+        "objects": 494,
+        "known_pattern_matches": 0,
+        "run": 45885353048
       },
       "remote_privacy": {
-        "status": "implemented_pending_ci",
+        "status": "validated_local_ci",
         "scope": "known credential patterns and exact API key in prompt and provider response"
       }
+    },
+    "discipline": {
+      "status": "implemented_pending_ci",
+      "automatic_preflight": true,
+      "code_review_policy": 3,
+      "actual_token_savings": null,
+      "independent_reviewer_deployed": false
     }
   }
 }

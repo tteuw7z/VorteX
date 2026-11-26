@@ -90,3 +90,7 @@ Arquivos novos com criação exclusiva 0600, diretórios privados 0700 e restri�
 ## Fase 6.12 — recuperação
 
 Não repetir checkpoints comprovados. A varredura de histórico falha fechada se houver limites ou cobertura incompleta, verifica objetos Git localmente alcançáveis e não imprime valores. Checkout sem persistência de credenciais. Bloquear padrões conhecidos e a chave de API exata no texto remoto; não alegar DLP completa. Texto do modelo não autoriza execução nem entrega.
+
+## Fase 6.13 — disciplina
+
+Preferir decomposição, entrada/processamento/saída, teste de mesa, funções claras e comentários de intenção; POO somente quando justificada; integridade e minimização de dados. Não reduzir revisões para economizar tokens. Estimativa compara contexto de perfis, não cobrança real; perfis omitidos e capacidades adiadas são informados. Política v3 exige cobertura declarada e hashes de todos os arquivos, sem confundir declaração com revisão efetiva.

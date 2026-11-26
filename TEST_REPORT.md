@@ -174,3 +174,5 @@ CI 45882508405 (bb98add): 109 testes encontrados, 106 aprovados, 3 ignorados, qu
 ## Recuperação 6.11 / candidato 6.12
 
 CI 45882770153, 2aaecf2: 113 testes descobertos, 110 aprovados, 3 ignorados; quatro jobs aprovados. Novos testes de histórico com credencial sintética removida em commit posterior, clone shallow e bloqueio de credenciais em entrada/resposta remota aguardam CI. Nenhum resultado do scanner de histórico real declarado antes de execução.
+
+CI 45885353048: 117 descobertos, 114 aprovados, 3 ignorados. Scanner histórico: 494 objetos, 2.090.634 bytes, nenhum padrão conhecido. Fase 6.13 adiciona testes de economia estimada, preservação de revisores e cobertura exata de arquivos; CI pendente.

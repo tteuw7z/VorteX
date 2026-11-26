@@ -5,12 +5,16 @@ from pathlib import Path
 
 from .assistant import _unique_object
 from .security import audit, publish, _REQUIRED
+from .discipline import review_candidate
 
 
 def add_commands(subparsers):
     group = subparsers.add_parser("security", help="Inspect or gate delivery of generated artifacts")
     commands = group.add_subparsers(dest="security_operation", required=True)
     inspect = commands.add_parser("audit", help="Static inspection; cannot authorize delivery alone")
+    review = commands.add_parser("review", help="Inventory all bytes for independent code review")
+    review.add_argument("candidate", type=Path)
+    review.set_defaults(technical_handler=lambda args: review_candidate(args.candidate))
     release = commands.add_parser("publish", help="Publish an independently attested snapshot")
     for command in (inspect, release):
         command.add_argument("candidate", type=Path)

@@ -1,7 +1,7 @@
 """Host-side tool contract for the local, read-only planner."""
 import json
 
-from .core import plan
+from .discipline import prepare_task
 
 _MAX_TASK_CHARS = 8192
 # JSON can encode one non-BMP character as two six-character escapes.
@@ -55,7 +55,8 @@ def answer_planner_call(provider: str, call: dict) -> dict:
         raise ValueError("Invalid agent limit")
     if not args["task"].strip():
         raise ValueError("Empty planning task")
-    output = json.dumps(plan(**args), ensure_ascii=False)
+    prepared = prepare_task(**args)
+    output = json.dumps({**prepared['route'], **{key: value for key, value in prepared.items() if key != 'route'}}, ensure_ascii=False)
     if provider == "openai":
         return {"type": "function_call_output", "call_id": identifier, "output": output}
     return {"type": "tool_result", "tool_use_id": identifier, "content": output}

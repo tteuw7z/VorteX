@@ -15,6 +15,8 @@ class AgentProfile:
 _PROFILE_DATA = {
     "android engineer": ("Inspect Android build inputs and environment",
                          "Build result with signature evidence and artifact digest"),
+    "code reviewer": ("Review every changed file, logic, names, responsibilities and error paths",
+                      "Byte-bound file coverage, findings and reproducible review evidence"),
     "qa": ("Check acceptance criteria and regressions",
            "Verification results with commands, observations and gaps"),
     "media engineer": ("Inspect streams, timing and encoding requirements",
@@ -61,6 +63,10 @@ _PROFILE_DATA = {
 
 
 class AgentEngine:
+    def catalog(self) -> tuple[AgentProfile, ...]:
+        """Return the full catalog only for explicit comparison or inspection."""
+        return self.load(_PROFILE_DATA)
+
     def select(self, skills: Iterable[Skill], *, limit: int = 3) -> tuple[str, ...]:
         if type(limit) is not int or not 1 <= limit <= 4:
             raise ValueError("Agent limit must be between 1 and 4")

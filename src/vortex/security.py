@@ -13,13 +13,13 @@ from html.parser import HTMLParser
 from dataclasses import dataclass
 from tempfile import TemporaryDirectory
 
-POLICY_VERSION = 2
+POLICY_VERSION = 3
 _MAX_FILE = 8 * 1024 * 1024
 _MAX_TOTAL = 32 * 1024 * 1024
 _MAX_FILES = 1000
 _MAX_AGE = 7 * 86400
 _COMMON = frozenset(("threat_model", "secret_scan", "dependency_review", "privacy_review",
-                     "functional_tests", "security_tests", "manual_review"))
+                     "functional_tests", "security_tests", "manual_review", "code_review"))
 _REQUIRED = {
     "script": _COMMON | {"input_validation", "least_privilege"},
     "website": _COMMON | {"access_control", "web_security", "deployment_config"},
@@ -289,7 +289,42 @@ def _attestation_valid(attestation, key, captured, kind, now):
                and _HEX.fullmatch(item["evidence_sha256"]) for item in checks.values())
 
 
-def _evidence_valid(directory, attestation, candidate, target):
+def _review_coverage_valid(data, captured):
+    """Require one exact digest and full-byte coverage declaration per file."""
+    try:
+        # Duplicate JSON keys are rejected without importing the host planner.
+        def unique(pairs):
+            result = {}
+            for key, value in pairs:
+                if key in result:
+                    raise ValueError("Duplicate review key")
+                result[key] = value
+            return result
+        record = json.loads(data, object_pairs_hook=unique)
+        if not isinstance(record, dict) or set(record) != {"artifact_sha256", "files"}:
+            return False
+        if record["artifact_sha256"] != captured.digest or not isinstance(record["files"], list):
+            return False
+        expected = {name: (len(content), hashlib.sha256(content).hexdigest())
+                    for name, content in captured.files}
+        seen = set()
+        for row in record["files"]:
+            if not isinstance(row, dict) or set(row) != {"path", "sha256", "bytes_reviewed", "status"}:
+                return False
+            path = row["path"]
+            if not isinstance(path, str) or path in seen or path not in expected:
+                return False
+            size, digest = expected[path]
+            if (type(row["bytes_reviewed"]) is not int or row["bytes_reviewed"] != size
+                    or row["sha256"] != digest or row["status"] != "PASS"):
+                return False
+            seen.add(path)
+        return seen == set(expected)
+    except (ValueError, TypeError, RecursionError):
+        return False
+
+
+def _evidence_valid(directory, attestation, candidate, target, captured):
     if directory is None:
         return False
     try:
@@ -304,6 +339,8 @@ def _evidence_valid(directory, attestation, candidate, target):
             data = _read_regular(root / (check + ".log"), 2 * 1024 * 1024)
             if not data.strip() or not hmac.compare_digest(
                     hashlib.sha256(data).hexdigest(), record["evidence_sha256"]):
+                return False
+            if check == "code_review" and not _review_coverage_valid(data, captured):
                 return False
     except (OSError, ValueError, TypeError):
         return False
@@ -325,7 +362,7 @@ def publish(root: Path, output: Path, kind: str, *, attestation=None, key=None,
     source = Path(root).resolve(strict=True)
     if target.is_relative_to(source) or source.is_relative_to(target):
         raise ValueError("Delivery and candidate must be separate directories")
-    if not _evidence_valid(evidence_dir, attestation, source, target):
+    if not _evidence_valid(evidence_dir, attestation, source, target, captured):
         return {**report, "reason": "Independent evidence records missing, invalid or changed"}
     # A private sibling stage is invisible at the final destination until complete.
     # A cooperative exclusive lock prevents concurrent publishers; the parent must
