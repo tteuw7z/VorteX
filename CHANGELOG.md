@@ -108,3 +108,5 @@
 
 - Preflight automático de economia e transparência de perfis adiados.
 - Perfil dedicado de revisão de código e inventário por bytes; política v3 exige registro de cobertura integral.
+
+- Compatibilidade aditiva de campos de planejamento verificada por regressões; contexto de perfis selecionados preparado antes da primeira solicitação remota.

@@ -41,15 +41,16 @@ def prepare_task(task, *, agent_limit=3, skills=None):
     route = plan(task, agent_limit=agent_limit, skills=skills)
     engine = AgentEngine()
     catalog = [asdict(profile) for profile in engine.catalog()]
+    words = set(re.findall(r"\w+", normalize(task)))
+    is_development = bool(words & _DEVELOPMENT_WORDS)
     roles = tuple(route["agents"])
     if not roles:
-        roles = ("reviewer",)
+        roles = ("software engineer",) if is_development else ("reviewer",)
     # Mandatory review roles are outside the specialist cap, not optional savings.
     chosen = tuple(dict.fromkeys((*roles, *_MANDATORY)))
     selected = [asdict(profile) for profile in engine.load(chosen)]
     omitted = [profile["role"] for profile in catalog if profile["role"] not in chosen]
     allowed = skills.names if skills is not None else {s.name for s in SKILLS}
-    words = set(re.findall(r"\w+", normalize(task)))
     matched = [s for s in SKILLS if s.name in allowed and words.intersection(s.keywords)]
     chosen_skills = {s["name"] for s in route["skills"]}
     deferred_skills = [s.name for s in matched if s.name not in chosen_skills]
@@ -72,7 +73,7 @@ def prepare_task(task, *, agent_limit=3, skills=None):
                         "method": "ceil(compact UTF-8 JSON bytes / 4); excludes report and other request overhead"},
             "selected_profiles": selected,
             "stages": [{"id": name, "instruction": instruction} for name, instruction in _STAGES],
-            "development_detected": bool(words & _DEVELOPMENT_WORDS),
+            "development_detected": is_development,
             "review_policy": "load deferred specialists automatically if needed; never drop required work",
             "delivery_authorized": False}
 

@@ -51,3 +51,7 @@ class DisciplineTests(unittest.TestCase):
             self.assertFalse(valid([dict(records[0], bytes_reviewed=True), records[1]]))
             self.assertFalse(valid([dict(records[0], sha256="0" * 64), records[1]]))
             self.assertFalse(valid([dict(records[0], status="FAIL"), records[1]]))
+
+    def test_generic_website_has_developer_not_only_reviewers(self):
+        result = prepare_task("Criar um site", agent_limit=1)
+        self.assertIn("software engineer", {p["role"] for p in result["selected_profiles"]})

@@ -14,7 +14,6 @@ from .automation_cli import add_commands as add_automation_commands
 from .archive import inventory
 from .config import Config
 from .context import ContextEngine
-from .core import plan
 from .discipline import prepare_task
 from .learning import LearningEngine
 from .remote import add_commands as add_remote_commands

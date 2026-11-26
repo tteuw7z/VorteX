@@ -195,7 +195,10 @@ class KnowledgeTests(unittest.TestCase):
             result = plan(task, agent_limit=2)
             process = subprocess.run([sys.executable, "-m", "vortex", "plan", task,
                                       "--agent-limit", "2"], capture_output=True, text=True, check=True)
-            self.assertEqual(json.loads(process.stdout), json.loads(json.dumps(result)))
+            actual = json.loads(process.stdout)
+            self.assertEqual({key: actual[key] for key in result}, json.loads(json.dumps(result)))
+            self.assertIn("economy", actual)
+            self.assertFalse(actual["delivery_authorized"])
             self.assertEqual(result["agents"], ["media engineer", "software engineer"])
 
     def test_routes_representative_tasks_and_keeps_fast_fallback(self):
@@ -268,7 +271,9 @@ class CliTests(unittest.TestCase):
             config.write_text('agent_limit = 1\nskills = ["android"]\nlearning_db = "learn.db"\n')
             common = ("--config", str(config))
             legacy = self.invoke(*common, "plan", "Android código")
-            self.assertEqual(set(legacy), {"status", "skills", "agents", "fallback"})
+            self.assertTrue({"status", "skills", "agents", "fallback"} <= set(legacy))
+            self.assertIn("economy", legacy)
+            self.assertTrue(legacy["economy"]["mandatory_review_roles_preserved"])
             self.assertEqual(len(legacy["agents"]), 1)
             added = self.invoke(*common, "learn", "add", "android", "verify signature",
                                 "fixture", "signature read")

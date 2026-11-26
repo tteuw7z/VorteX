@@ -6,6 +6,7 @@ import os
 
 from .assistant import answer_planner_call, planner_tool, _unique_object
 from .workflow import Status
+from .discipline import prepare_task
 from .security import _SECRET, _ASSIGN_SECRET
 
 _ENDPOINTS = {
@@ -128,6 +129,10 @@ def run_remote_planner(provider: str, model: str, task: str, *, api_key: str | N
     if sensitive(task) or sensitive(model):
         return {"status": Status.BLOCKED, "reason": "Possible credential in remote planning input"}
 
+    # Route before the first network call; send only selected profile context.
+    prepared = prepare_task(task)
+    scoped_instructions = _INSTRUCTIONS + "\nSelected planning profiles: " + json.dumps(
+        prepared["selected_profiles"], ensure_ascii=False, separators=(",", ":"))
     send = _post if transport is None else transport
     history = [{"role": "user", "content": task}]
     usage = []
@@ -141,6 +146,7 @@ def run_remote_planner(provider: str, model: str, task: str, *, api_key: str | N
                   "attempted_requests": attempted, "received_responses": len(usage),
                   "planner_calls": calls, "usage_by_response": usage,
                   "scope": "untrusted planning text; no execution or delivery authorization",
+                  "preflight_economy": prepared["economy"],
                   "usage_source": "provider_reported" if transport is None else "injected_test",
                   "usage_complete": len(usage) == attempted and attempted > 0 and
                   all("input_tokens" in row and "output_tokens" in row for row in usage)}
@@ -152,13 +158,13 @@ def run_remote_planner(provider: str, model: str, task: str, *, api_key: str | N
 
     for round_index in range(max_rounds):
         if provider == "openai":
-            payload = {"model": model, "input": history, "instructions": _INSTRUCTIONS,
+            payload = {"model": model, "input": history, "instructions": scoped_instructions,
                        "tools": [planner_tool(provider)], "max_output_tokens": max_output_tokens,
                        "store": False, "include": ["reasoning.encrypted_content"],
                        "tool_choice": {"type": "function", "name": "vortex_plan"}
                        if round_index == 0 else "auto"}
         else:
-            payload = {"model": model, "messages": history, "system": _INSTRUCTIONS,
+            payload = {"model": model, "messages": history, "system": scoped_instructions,
                        "tools": [planner_tool(provider)], "max_tokens": max_output_tokens,
                        "tool_choice": {"type": "tool", "name": "vortex_plan"}
                        if round_index == 0 else {"type": "auto"}}

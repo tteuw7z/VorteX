@@ -30,6 +30,8 @@ class RemotePlannerTests(unittest.TestCase):
         def send(provider, key, payload, timeout):
             self.assertEqual((provider, key, timeout), ("openai", "test-key", 30))
             self.assertFalse(payload["store"])
+            self.assertIn("code reviewer", payload["instructions"])
+            self.assertIn("security reviewer", payload["instructions"])
             self.assertIn("reasoning.encrypted_content", payload["include"])
             self.assertNotIn("previous_response_id", payload)
             requests.append(payload)
@@ -48,6 +50,8 @@ class RemotePlannerTests(unittest.TestCase):
         self.assertEqual(result["status"], Status.SUCCESS)
         self.assertEqual((result["planner_calls"], result["received_responses"]), (1, 2))
         self.assertEqual(result["usage_source"], "injected_test")
+        self.assertGreater(result["preflight_economy"]["estimated_saved_tokens"], 0)
+        self.assertIsNone(result["preflight_economy"]["actual_provider_tokens"])
         self.assertTrue(result["usage_complete"])
         self.assertEqual([u["total_tokens"] for u in result["usage_by_response"]], [48, 70])
         self.assertNotIn("test-key", json.dumps(result))
