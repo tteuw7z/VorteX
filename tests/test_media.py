@@ -83,6 +83,14 @@ class MediaIntegrationTests(unittest.TestCase):
         self.assertTrue(capped["capped"])
         self.assertEqual(len(capped["frames"]), 1)
 
+    def test_sample_times_relative_to_offset_video(self):
+        ffmpeg("-f", "lavfi", "-i", "color=c=red:s=160x90:r=10:d=1",
+               "-c:v", "libx264", "-output_ts_offset", "5", str(self.source))
+        result = extract_frames(self.source, self.root / "frames", interval=".5")
+        self.assertEqual(result["source_origin_seconds"], 5)
+        self.assertEqual([f["seconds"] for f in result["frames"]], [0, 0.5])
+        self.assertEqual(result["source_sha256"], probe(self.source)["source_sha256"])
+
     def test_edit_preserves_audio_and_reveals_on_expected_frame(self):
         ffmpeg("-f", "lavfi", "-i", "color=c=black:s=320x180:r=30:d=1.5",
                "-f", "lavfi", "-i", "sine=frequency=440:sample_rate=48000:duration=1.5",

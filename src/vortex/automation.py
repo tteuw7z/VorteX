@@ -7,7 +7,7 @@ from pathlib import Path
 from zipfile import BadZipFile
 
 from .core import Engine
-from .workflow import Stage, Status, Workflow
+from .workflow import Stage, Status, Workflow, report_status
 
 
 def _strings(value, name):
@@ -15,18 +15,6 @@ def _strings(value, name):
                                           or "\0" in item for item in value):
         raise ValueError(f"{name} must be a list of nonempty strings")
     return tuple(value)
-
-
-def _status(payload):
-    if isinstance(payload, dict):
-        label = str(payload.get("status", "")).upper()
-        if label in ("FAIL", "FAILED", "ERROR"):
-            return Status.FAILED
-        if label in ("BLOCKED", "UNAVAILABLE", "PARTIAL", "REVIEW_REQUIRED", "UNVERIFIED"):
-            return Status.BLOCKED
-        if label in ("PLAN_ONLY", "SIMULATED", "SIMULATION"):
-            return Status.PLANNED
-    return Status.SUCCESS
 
 
 def execute_manifest(path: Path, prepare: Callable, *, approvals: Collection[str] = (),
@@ -83,10 +71,12 @@ def _invoke(callback: Callable) -> dict:
         return {"status": Status.BLOCKED, "reason": str(exc)}
     except (OSError, ValueError, BadZipFile) as exc:
         return {"status": Status.FAILED, "reason": str(exc)}
-    status = _status(payload)
-    if status != Status.SUCCESS:
-        return {"status": Status.BLOCKED if status == Status.PLANNED else status,
-                "reason": str(payload.get("reason") or payload.get("status"))}
+    status = report_status(payload)
     encoded = json.dumps(payload, sort_keys=True, ensure_ascii=False, allow_nan=False).encode()
-    return {"status": Status.SUCCESS, "evidence": "sha256(output JSON):" + hashlib.sha256(encoded).hexdigest(),
-            "artifacts": {"output": json.loads(encoded)}}
+    result = {"status": status, "evidence": "sha256(output JSON):" + hashlib.sha256(encoded).hexdigest(),
+              "artifacts": {"output": json.loads(encoded)}}
+    if status != Status.SUCCESS:
+        result["reason"] = str(payload.get("reason") or payload.get("status"))
+        if status == Status.PLANNED:
+            result["status"] = Status.BLOCKED
+    return result

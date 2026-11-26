@@ -11,6 +11,8 @@ class Skill:
     steps: tuple[str, ...]
 
 SKILLS = (
+    Skill("archive", ("zip", "unzip", "repack", "descompactar"), ("software engineer",),
+          ("inventory members", "validate limits", "process archive", "verify outputs")),
     Skill("android", ("apk", "android", "gradle"), ("android engineer", "qa"), ("inspect project", "resolve build tools", "build", "verify signature and hash")),
     Skill("media", ("video", "audio", "transcribe", "transcrever", "motion"), ("media engineer", "editor"), ("inventory inputs", "inspect audio and frames", "process", "validate output")),
     Skill("engineering", ("python", "code", "codigo", "bug", "software", "api"), ("software engineer", "qa"), ("inspect", "implement", "test", "review")),

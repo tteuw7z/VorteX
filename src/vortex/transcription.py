@@ -6,8 +6,9 @@ from pathlib import Path
 import re
 from tempfile import TemporaryDirectory
 
+from .evidence import file_sha256
 from .media import (_INPUT_OPTIONS, _destination, _local_file, _media_info, _dimensions,
-                    _primary_tracks, _publish_directory, _run_tool, _sha256, _timeline)
+                    _primary_tracks, _publish_directory, _run_tool, _timeline)
 from .subtitles import Cue, Word, progressive_ass, srt_text
 
 
@@ -120,7 +121,7 @@ def transcribe(path: Path | str, output: Path | str, *, model: Path | str,
         ass, frames = progressive_ass(cues, fps, width, height)
         report = {
             "engine": "whisper.cpp/whisper-cli", "language": detected,
-            "source_sha256": _sha256(file), "model_sha256": _sha256(weights),
+            "source_sha256": file_sha256(file), "model_sha256": file_sha256(weights),
             "timeline_origin": "primary video start" if video else "primary audio start",
             "captions_fps": fps, "segments": [asdict(cue) for cue in cues],
             "adjusted_segments": adjusted,

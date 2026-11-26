@@ -1,7 +1,6 @@
 """Compile trusted Android projects and verify APKs with the installed SDK."""
 from collections.abc import Iterable
 from dataclasses import dataclass
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -11,6 +10,8 @@ import shutil
 import subprocess
 from tempfile import TemporaryDirectory
 from zipfile import ZipFile
+
+from .evidence import file_sha256
 
 
 _ELF_BY_ABI = {
@@ -65,11 +66,6 @@ def _run(program, args, *, step, cwd=None, env=None, timeout=120):
     return result.stdout
 
 
-def _digest(file: Path) -> str:
-    with file.open("rb") as source:
-        return hashlib.file_digest(source, "sha256").hexdigest()
-
-
 def verify_apk(file: Path, tools: AndroidTools, *, required_abi: str | None = None) -> dict:
     """Use Android tools to confirm manifest/package and signature; report native ABIs."""
     file = file.resolve(strict=True)
@@ -108,7 +104,7 @@ def verify_apk(file: Path, tools: AndroidTools, *, required_abi: str | None = No
         raise ValueError("APK verification returned no signer certificate")
     schemes = re.findall(r"^Verified using (v\d+(?:\.\d+)?) scheme.*: true$", signature, re.M)
     return {
-        "path": str(file), "bytes": file.stat().st_size, "sha256": _digest(file),
+        "path": str(file), "bytes": file.stat().st_size, "sha256": file_sha256(file),
         "package": package[1], "version_code": package[2], "version_name": package[3],
         "abis": abis, "verified": True, "schemes": schemes, "certificates_sha256": certificates,
         "build_tools": tools.build_tools.name,

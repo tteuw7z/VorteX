@@ -7,8 +7,9 @@ import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 
+from .evidence import file_sha256
 from .media import (_INPUT_OPTIONS, _cadence, _decimal, _destination, _dimensions,
-                    _local_file, _media_info, _primary_tracks, _run_tool, _sha256, _timeline)
+                    _local_file, _media_info, _primary_tracks, _run_tool, _timeline)
 from .subtitles import Cue, Word, progressive_ass, read_srt
 from .transcription import read_transcript
 
@@ -169,7 +170,7 @@ def render(path: Path | str, output: Path | str, *, ranges=None, fps: int = 60,
     else:
         width += width % 2
         height += height % 2
-    digest = _sha256(file)
+    digest = file_sha256(file)
     cues = ()
     if captions is not None:
         caption_path = _local_file(captions)
@@ -206,7 +207,7 @@ def render(path: Path | str, output: Path | str, *, ranges=None, fps: int = 60,
             raise ValueError(f"Rendered frame count or cadence did not match the edit ({actual_frames}/{frames})")
         if (audio is not None and rendered_audio is None) or _dimensions(rendered) != (width, height):
             raise ValueError("Rendered tracks or dimensions did not match the edit")
-        sha = _sha256(staged)
+        sha = file_sha256(staged)
         os.link(staged, destination)
     return {"output": str(destination), "sha256": sha, "source_sha256": digest,
             "fps": fps, "frames": frames, "dimensions": [width, height], "audio": audio is not None,

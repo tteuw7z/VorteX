@@ -12,6 +12,19 @@ class Status(StrEnum):
     FAILED = "FAILED"
 
 
+def report_status(payload) -> Status:
+    """Translate a technical report into a workflow outcome."""
+    if isinstance(payload, dict):
+        label = str(payload.get("status", "")).upper()
+        if label in ("FAIL", "FAILED", "ERROR"):
+            return Status.FAILED
+        if label in ("BLOCKED", "UNAVAILABLE", "PARTIAL", "REVIEW_REQUIRED", "UNVERIFIED"):
+            return Status.BLOCKED
+        if label in ("PLAN_ONLY", "SIMULATED", "SIMULATION"):
+            return Status.PLANNED
+    return Status.SUCCESS
+
+
 @dataclass(frozen=True, slots=True)
 class Stage:
     id: str

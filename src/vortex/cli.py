@@ -19,6 +19,7 @@ from .learning import LearningEngine
 from .media_cli import add_commands as add_media_commands
 from .methods_cli import add_commands as add_methods_commands
 from .skills import SkillEngine
+from .workflow import Status, report_status
 
 
 _TECHNICAL_COMMANDS = (add_android_commands, add_archive_commands,
@@ -92,6 +93,6 @@ def main(argv=None):
         parser.error(str(exc))
     print(json.dumps(result, ensure_ascii=False, indent=2))
     if getattr(args, "technical_handler", None) and isinstance(result, dict):
-        if result.get("status") in {"FAILED", "BLOCKED", "PARTIAL"}:
+        if report_status(result) in (Status.FAILED, Status.BLOCKED):
             return 1
     return 0

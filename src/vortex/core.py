@@ -71,23 +71,23 @@ class Engine:
             status = Status(value["status"])
             evidence, artifacts = value.get("evidence"), value.get("artifacts", {})
             attempts = tuple(attempted)
-            if status == Status.SUCCESS:
+            if status == Status.SUCCESS or evidence is not None or artifacts:
                 if not isinstance(evidence, str) or not evidence.strip():
                     return StageResult(Status.FAILED, name, reason="Missing evidence", attempted=attempts)
-                if not isinstance(artifacts, dict):
-                    return StageResult(Status.FAILED, name, reason="Invalid artifacts", attempted=attempts)
-                try:
-                    # A JSON round trip would silently coerce tuples and keys.
-                    if json.loads(json.dumps(artifacts, allow_nan=False)) != artifacts:
-                        raise ValueError("Lossy JSON conversion")
-                    clean = deepcopy(artifacts)
-                except (TypeError, ValueError, RecursionError):
-                    return StageResult(Status.FAILED, name, reason="Artifacts must be JSON data",
-                                       attempted=attempts)
+            if not isinstance(artifacts, dict):
+                return StageResult(Status.FAILED, name, reason="Invalid artifacts", attempted=attempts)
+            try:
+                if json.loads(json.dumps(artifacts, allow_nan=False)) != artifacts:
+                    raise ValueError("Lossy JSON conversion")
+                clean = deepcopy(artifacts)
+            except (TypeError, ValueError, RecursionError):
+                return StageResult(Status.FAILED, name, reason="Artifacts must be JSON data",
+                                   attempted=attempts)
+            if status == Status.SUCCESS:
                 return StageResult(status, name, evidence, clean, attempted=attempts)
             reason = value.get("reason") or value.get("error_type") or status.value
-            result = StageResult(status, name, reason=reason if isinstance(reason, str) else status.value,
-                                 attempted=attempts)
+            result = StageResult(status, name, evidence, clean,
+                                 reason if isinstance(reason, str) else status.value, attempts)
             if not stage.retry_safe:
                 break
         return result

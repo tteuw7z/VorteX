@@ -2,7 +2,6 @@
 
 from decimal import Decimal, InvalidOperation
 from fractions import Fraction
-import hashlib
 import json
 import os
 from pathlib import Path
@@ -10,6 +9,8 @@ import re
 import shutil
 import subprocess
 from tempfile import TemporaryDirectory
+
+from .evidence import file_sha256
 
 # Playlist and script demuxers are deliberately absent. Local paths alone do
 # not prevent an input playlist from dereferencing other files.
@@ -35,11 +36,6 @@ def _destination(path: Path | str) -> Path:
     if not destination.parent.is_dir():
         raise ValueError(f"Output directory does not exist: {destination.parent}")
     return destination
-
-
-def _sha256(path: Path) -> str:
-    with path.open("rb") as source:
-        return hashlib.file_digest(source, "sha256").hexdigest()
 
 
 def _run_tool(name: str, args, operation: str, *, cwd=None, timeout=300) -> subprocess.CompletedProcess:
@@ -154,7 +150,7 @@ def _probe_result(file: Path, info: dict) -> dict:
                       "sample_rate": int(audio["sample_rate"]) if audio.get("sample_rate") else None,
                       "channels": audio.get("channels"),
                       "start_seconds": _seconds(audio.get("start_time"))}
-    return {"source_sha256": _sha256(file), "duration_seconds": _seconds(container.get("duration")),
+    return {"source_sha256": file_sha256(file), "duration_seconds": _seconds(container.get("duration")),
             "container": container.get("format_name"), "video": video_data, "audio": audio_data}
 
 
@@ -242,16 +238,18 @@ def extract_frames(path: Path | str, output: Path | str, *, interval=2,
         raise ValueError("Scene threshold must be between 0 and 1")
     if not isinstance(max_frames, int) or not 1 <= max_frames <= 10000:
         raise ValueError("Maximum frame count must be between 1 and 10000")
-    video, _ = _primary_tracks(_media_info(file))
+    info = _media_info(file)
+    video, _ = _primary_tracks(info)
     if video is None:
         raise ValueError("No video track")
+    origin, _ = _timeline(info, video)
     selection = f"isnan(prev_selected_t)+gte(t-prev_selected_t,{step:f})+gt(scene,{scene:f})"
-    filters = (f"setpts=PTS-STARTPTS,select='{selection}',"
+    filters = (f"setpts=PTS-({origin:f})/TB,select='{selection}',"
                "scale=768:768:force_original_aspect_ratio=decrease:force_divisible_by=2,showinfo")
     with TemporaryDirectory(prefix=".vortex-frames-", dir=destination.parent) as tmp:
         folder = Path(tmp)
         result = _run_tool("ffmpeg", [
-            "-nostdin", "-hide_banner", "-loglevel", "info", *_INPUT_OPTIONS, "-i", str(file),
+            "-nostdin", "-hide_banner", "-loglevel", "info", *_INPUT_OPTIONS, "-copyts", "-i", str(file),
             "-map", f"0:{video['index']}", "-vf", filters, "-an", "-fps_mode", "vfr",
             "-frames:v", str(max_frames + 1), "-q:v", "3", str(folder / "frame_%06d.jpg"),
         ], "frame sampling", timeout=600)
@@ -268,9 +266,9 @@ def extract_frames(path: Path | str, output: Path | str, *, interval=2,
             files.pop().unlink()
         frames = [{"file": img.name, "seconds": float(rows[i][1] * base)}
                   for i, img in enumerate(files)]
-        report = {"source_sha256": _sha256(file), "frames": frames, "capped": capped,
+        report = {"source_sha256": file_sha256(file), "frames": frames, "capped": capped,
                   "interval_seconds": float(step), "scene_threshold": float(scene),
-                  "timeline_origin": "first decoded video frame"}
+                  "timeline_origin": "primary video start", "source_origin_seconds": float(origin)}
         (folder / "frames.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
         _publish_directory(folder, destination)
     return {**report, "output": str(destination)}

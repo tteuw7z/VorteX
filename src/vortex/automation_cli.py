@@ -7,9 +7,12 @@ from .automation import execute_manifest
 
 # Names are operations on local data, never executable paths or shell commands.
 _OPERATIONS = {
-    ("archive", "videos"): "engineering",
-    ("archive", "extract"): "engineering",
-    ("archive", "repack"): "engineering",
+    ("archive", "videos"): "archive",
+    ("archive", "extract"): "archive",
+    ("archive", "repack"): "archive",
+    ("apk", "verify"): "android",
+    ("media", "batch"): "media",
+    ("media", "transcribe"): "media",
     ("media", "probe"): "media",
     ("media", "frames"): "media",
     ("media", "edit"): "media",

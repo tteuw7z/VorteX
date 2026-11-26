@@ -66,3 +66,40 @@ class AutomationTests(unittest.TestCase):
                         main(("automation", "run", str(spec), "--approve", "extract"))
                     self.assertEqual(error.exception.code, 2)
                     self.assertFalse(destination.exists())
+
+    def test_review_preserves_report_and_blocks_dependent_command(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "broken.py").write_text("def\n", encoding="utf-8")
+            args = ["engineering", "inspect", str(root)]
+            code, direct = self.run_cli(*args)
+            self.assertEqual((code, direct["status"]), (1, "REVIEW_REQUIRED"))
+            spec = root / "flow.json"
+            spec.write_text(json.dumps({"version": 1, "steps": [
+                {"id": "review", "argv": args},
+                {"id": "later", "argv": args, "needs": ["review"]},
+            ]}), encoding="utf-8")
+            code, run = self.run_cli("automation", "run", str(spec), "--approve", "review",
+                                     "--approve", "later")
+            first, later = run["steps"]
+            self.assertEqual((code, run["status"], first["reason"]), (1, "BLOCKED", "REVIEW_REQUIRED"))
+            self.assertEqual(first["artifacts"]["output"]["status"], direct["status"])
+            self.assertTrue(first["evidence"].startswith("sha256(output JSON):"))
+            self.assertEqual(later["attempted"], [])
+
+    def test_plan_technical_capabilities_without_tools(self):
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "plan.json"
+            operations = [
+                ["apk", "verify", "app.apk"], ["archive", "videos", "data.zip"],
+                ["media", "batch", "data.zip", "out"],
+                ["media", "transcribe", "video.mp4", "captions", "--model", "weights"],
+            ]
+            path.write_text(json.dumps({"version": 1, "steps": [
+                {"id": str(i), "argv": args} for i, args in enumerate(operations)
+            ]}), encoding="utf-8")
+            _, report = self.run_cli("automation", "plan", str(path))
+            self.assertEqual([step["status"] for step in report["steps"]], ["PLAN_ONLY"] * 4)
+            _, route = self.run_cli("knowledge", "descompactar zip")
+            self.assertEqual(route["skills"][0]["name"], "archive")
+            self.assertEqual(route["profiles"][0]["role"], route["agents"][0])
