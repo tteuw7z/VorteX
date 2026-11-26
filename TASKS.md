@@ -76,3 +76,7 @@
 - [x] Recontar inventário privado por árvore Git não truncada e examinar padrões de credenciais no snapshot candidato.
 - [x] Fixar referências das Actions em commits observados no CI aprovado.
 - [ ] Revalidar workflow fixado, auditar histórico e licenças de distribuição e concluir reconciliação granular.
+
+- [x] Implementar política de entrega fail-closed e verificação de atestado associado ao hash dos bytes.
+- [x] Exigir aprovação de confiança Gradle, isolar permissões de aprendizagem POSIX e impedir colisões de aprovação/JSON duplicado.
+- [ ] Validar CI, integrar verificador independente e obrigar gate nos hosts; concluir auditoria de histórico, dependências e demais superfícies.

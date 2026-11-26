@@ -160,3 +160,7 @@ CI 45869077696, 0da86f8: 95 testes descobertos, 92 aprovados, 3 ignorados; quatr
 ## Revisão de segurança Fase 6.7
 
 Snapshot 0da86f8: 57/57 arquivos rastreados de texto examinados para formatos comuns de chaves de OpenAI/Anthropic, GitHub, Google, AWS, Slack e chaves privadas PEM; 0 correspondências, 0 erros de leitura. Não equivale a auditoria de histórico, análise semântica de dados pessoais ou revisão de dependências externas. SHAs das quatro Actions extraídos dos logs do CI aprovado; revalidação após pinning pendente.
+
+## Fase 6.8 — testes adicionados
+
+Casos de bloqueio sem atestado, assinatura errada, evidência faltante, expiração, alteração de bytes, tipo incorreto, credenciais sem reprodução, symlink/Git, artefato não analisado, publicação exata e sem sobrescrita; Gradle sem aprovação, permissões POSIX e colisão de aprovação/JSON. CI pendente; sem garantia de segurança integral.

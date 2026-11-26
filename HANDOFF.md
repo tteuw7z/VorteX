@@ -41,3 +41,7 @@ CI 45868881805 aprovou 434bc0b: 90 testes aprovados, 3 ignorados, quatro jobs ap
 CI 45869077696 aprovou 0da86f8: 92 testes aprovados, 3 ignorados, quatro jobs aprovados, inclusive graves sintéticos e render. Comparação pareada: 15,50 → 11,37 µs/tarefa, planos comuns iguais. Varredura por padrões comuns de credenciais em todos os 57 arquivos de texto rastreados desse commit: zero correspondências. Não cobre histórico, dados pessoais sem padrões reconhecidos ou vulnerabilidades. Referência privada reconfirmada: 361 arquivos, 28 skills, 268 perfis em 18 divisões; nenhuma cópia de fichas. Actions fixadas nos SHAs observados no CI; revalidar. A fase permanece em andamento.
 
 Próximas prioridades: auditoria granular de capacidades e segurança/licenças, interpretação semântica de cenas, acurácia ASR em idiomas reais, integrações especializadas (Figma/3D/voz), instalação Android e chamadas autenticadas autorizadas. Não liberar 1.0.0 antes de comprovar aceite.
+
+## Fase 6.8 — segurança como bloqueio de entrega
+
+CI do checkpoint b70f76c aprovado (45869306182). Gate local para publicação de artefatos, scanner limitado e atestado HMAC independente obrigatório; sem atestado ou com alertas, BLOCKED. Sem verificador externo implantado nem interceptação de entregas do host. Gradle exige confiança explícita, aprovações não podem colidir, manifesto limitado e sem chaves duplicadas, aprendizagem privada em POSIX. Validar CI do candidato. Não declarar auditoria integral concluída.

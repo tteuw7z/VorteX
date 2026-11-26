@@ -169,7 +169,7 @@ def _ignore_project(_directory, names):
 
 def build_apk(project: Path, destination: Path, tools: AndroidTools, *, module="app",
               variant="debug", required_abi=None, lint=False, offline=False, timeout=900,
-              pass_env: Iterable[str] = ()) -> dict:
+              pass_env: Iterable[str] = (), trusted_project: bool = False) -> dict:
     """Build a trusted, self-contained Gradle checkout in a private working copy."""
     if os.name == "nt":
         raise ValueError("Gradle builds currently require a POSIX host")
@@ -185,6 +185,8 @@ def build_apk(project: Path, destination: Path, tools: AndroidTools, *, module="
             raise ValueError("Forwarded environment arguments must be variable names")
         if name not in os.environ:
             raise ValueError(f"Requested environment variable is unset: {name}")
+    if trusted_project is not True:
+        raise ValueError("Gradle executes project code; explicit trusted_project approval is required")
     project = project.resolve(strict=True)
     if not any((project / name).is_file() for name in ("settings.gradle", "settings.gradle.kts")):
         raise ValueError("Expected an Android Gradle project with settings.gradle or settings.gradle.kts")

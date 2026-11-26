@@ -17,6 +17,7 @@ from .context import ContextEngine
 from .core import plan
 from .learning import LearningEngine
 from .remote import add_commands as add_remote_commands
+from .security_cli import add_commands as add_security_commands
 from .media_cli import add_commands as add_media_commands
 from .methods_cli import add_commands as add_methods_commands
 from .skills import SkillEngine
@@ -87,6 +88,7 @@ def main(argv=None):
         register(commands)
     add_automation_commands(commands, _TECHNICAL_COMMANDS)
     add_remote_commands(commands)
+    add_security_commands(commands)
     args = parser.parse_args(argv)
     try:
         config = Config.load(args.config) if args.config else Config()

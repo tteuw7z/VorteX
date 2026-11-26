@@ -77,3 +77,9 @@
 
 - Actions fixadas em hashes completos usados no CI validado.
 - Evidência de varredura limitada de padrões de credenciais e reconciliação de contagens do inventário.
+
+## Fase 6.8 — candidato
+
+- Gate local fail-closed de artefatos com inspeção estática limitada e atestado independente.
+- Proteções de execução Gradle, aprovações, manifesto e armazenamento de aprendizagem.
+- Política de entrega e testes adversariais; CI pendente.

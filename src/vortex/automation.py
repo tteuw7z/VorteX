@@ -7,6 +7,7 @@ from pathlib import Path
 from zipfile import BadZipFile
 
 from .core import Engine
+from .assistant import _unique_object
 from .workflow import Stage, Status, Workflow, report_status
 
 
@@ -20,13 +21,17 @@ def _strings(value, name):
 def execute_manifest(path: Path, prepare: Callable, *, approvals: Collection[str] = (),
                      simulate: bool = False) -> dict:
     """Prepare all tool invocations, then execute only approved stages."""
-    spec = json.loads(path.read_text(encoding="utf-8"))
+    with path.open("rb") as stream:
+        raw = stream.read(2 * 1024 * 1024 + 1)
+    if len(raw) > 2 * 1024 * 1024:
+        raise ValueError("Automation manifest exceeds size limit")
+    spec = json.loads(raw, object_pairs_hook=_unique_object)
     if not isinstance(spec, dict) or spec.keys() - {"version", "steps"}:
         raise ValueError("Expected an automation manifest with version and steps")
     if type(spec.get("version")) is not int or spec["version"] != 1:
         raise ValueError("Unsupported automation manifest version")
     steps = spec.get("steps")
-    if not isinstance(steps, list) or not steps:
+    if not isinstance(steps, list) or not 1 <= len(steps) <= 256:
         raise ValueError("Automation requires a nonempty steps list")
 
     stages, invocations = [], {}
@@ -49,6 +54,8 @@ def execute_manifest(path: Path, prepare: Callable, *, approvals: Collection[str
         invocations[step_id] = invoke
 
     workflow = Workflow(stages)
+    if isinstance(approvals, (str, bytes)):
+        raise ValueError("Approvals must be a collection of labels")
     known_approvals = {stage.approval or stage.id for stage in workflow.stages}
     if unknown := set(approvals) - known_approvals:
         raise ValueError(f"Unknown stage approvals: {', '.join(sorted(unknown))}")

@@ -70,3 +70,7 @@ Extrair PCM local de banda 35–160 Hz, medir energia RMS por quadro e seleciona
 ## Fase 6.7 — revisão de cadeia de fornecimento
 
 Fixar Actions em hashes completos que foram observados no CI 45869077696. Atualizações futuras exigem revisão explícita; pinning não garante ausência de vulnerabilidades. A varredura de credenciais cobre apenas padrões conhecidos no snapshot de 57 arquivos, não histórico ou dados pessoais sem formato detectável. Não copiar fichas privadas: licença da referência não foi identificada por arquivo de licença na árvore auditada. O pacote público declara Apache-2.0 e zero dependências Python de runtime; licenças dos binários externos devem ser verificadas se distribuídos.
+
+## Fase 6.8 — segurança antes de entrega
+
+Default deny. Separar candidato de entrega autorizada e exigir evidência independente ligada ao digest de bytes, escopo, política e validade. HMAC exige chave fora do gerador; não há CLI de autoassinatura. Não confundir ausência de alertas com aprovação. Gate não substitui sandbox, análise dinâmica ou revisão especializada. Mudanças deliberadas de compatibilidade: Gradle requer confiança explícita; rótulos de aprovação distintos; banco POSIX com permissões privadas.
