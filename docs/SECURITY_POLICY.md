@@ -43,3 +43,7 @@ Every kind adds the required check `code_review`. Its log is JSON with exactly `
 ## Policy 4
 
 Integration, regression and performance checks now require separate authenticated evidence logs in addition to functional and security checks. Older attestations do not authorize a policy-4 release. The host must define meaningful acceptance thresholds, run checks in an isolated environment, and verify independent review; receipts are not proof of their own truth.
+
+### Data and API-specific checks
+
+Use artifact kind `database` for integrity, access control, backup/restore and migration evidence; use `api` for access control, input validation, rate limiting, transport security and deployment configuration. Python static checks flag directly interpolated SQL arguments, insecure temporary-name creation and explicit unsafe YAML loaders. These are conservative heuristics, not complete taint tracking or proof of injection. Prefer parameterized SQL and separate review of dynamic identifiers. Verify transactions, rollback, migrations and restore in a trusted environment. A clean static result never authorizes delivery.

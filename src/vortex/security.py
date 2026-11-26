@@ -26,6 +26,8 @@ _REQUIRED = {
     "website": _COMMON | {"access_control", "web_security", "deployment_config"},
     "application": _COMMON | {"access_control", "storage_security", "build_integrity"},
     "skill": _COMMON | {"prompt_injection_review", "permission_review", "tool_provenance"},
+    "database": _COMMON | {"data_integrity", "access_control", "backup_restore", "migration_review"},
+    "api": _COMMON | {"access_control", "input_validation", "rate_limit", "transport_security", "deployment_config"},
     "other": _COMMON | {"format_specific_review"},
 }
 _SECRET = re.compile(
@@ -69,6 +71,21 @@ def _name(node):
     return ""
 
 
+def _dynamic_sql(node):
+    # Direct interpolation is a review blocker even when an identifier might be safe.
+    if isinstance(node, ast.JoinedStr):
+        return any(isinstance(value, ast.FormattedValue) for value in node.values)
+    if isinstance(node, ast.BinOp) and isinstance(node.op, (ast.Add, ast.Mod)):
+        return any(isinstance(value, ast.Constant) and isinstance(value.value, str)
+                   for value in (node.left, node.right)) or any(
+                       _dynamic_sql(value) for value in (node.left, node.right))
+    if isinstance(node, ast.Call) and isinstance(node.func, ast.Attribute):
+        return (node.func.attr in {"format", "format_map"}
+                and isinstance(node.func.value, ast.Constant)
+                and isinstance(node.func.value.value, str))
+    return False
+
+
 def _python_findings(path, data):
     try:
         tree = ast.parse(data, filename=path)
@@ -100,6 +117,14 @@ def _python_findings(path, data):
             rule = "PY_SHELL_EXECUTION"
         elif name in {"pickle.load", "pickle.loads", "dill.load", "dill.loads", "marshal.load", "marshal.loads"}:
             rule = "PY_UNSAFE_DESERIALIZATION"
+        elif name == "tempfile.mktemp":
+            rule = "PY_INSECURE_TEMPFILE"
+        elif name in {"yaml.unsafe_load", "yaml.unsafe_load_all"}:
+            rule = "PY_UNSAFE_YAML"
+        elif (isinstance(node.func, ast.Attribute)
+              and node.func.attr in {"execute", "executemany", "executescript"}
+              and node.args and _dynamic_sql(node.args[0])):
+            rule = "PY_DYNAMIC_SQL_REVIEW"
         elif name == "ssl._create_unverified_context" or literal("verify", False):
             rule = "PY_TLS_VERIFICATION_DISABLED"
         elif name.endswith(".run") and literal("debug", True):

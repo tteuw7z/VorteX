@@ -143,6 +143,32 @@ class DeliveryGateTests(unittest.TestCase):
         with self.assertRaises(ValueError):
             audit(self.candidate, "script")
 
+    def test_database_and_api_evidence_and_dynamic_sql(self):
+        self.write("main.py", "def lookup(db, value):\n"
+                   "    return db.execute(f'SELECT id FROM sample WHERE label = {value}')\n")
+        report = audit(self.candidate, "database")
+        self.assertIn("PY_DYNAMIC_SQL_REVIEW", {item["rule"] for item in report["findings"]})
+        self.assertTrue({"data_integrity", "backup_restore", "migration_review"}
+                        <= set(report["required_checks"]))
+        self.assertEqual(publish(self.candidate, self.output, "database",
+                                 attestation=self.attest(report), key=self.key,
+                                 evidence_dir=self.evidence)["status"], "BLOCKED")
+        self.write("main.py", "def lookup(db, value):\n"
+                   "    return db.execute('SELECT id FROM sample WHERE label = ?', (value,))\n")
+        report = audit(self.candidate, "database")
+        self.assertEqual(report["findings"], [])
+        self.assertEqual(report["status"], "BLOCKED")
+        self.assertTrue({"rate_limit", "transport_security", "access_control"}
+                        <= set(audit(self.candidate, "api")["required_checks"]))
+
+    def test_insecure_temporary_path_and_yaml(self):
+        self.write("main.py", "import tempfile as tmp\n"
+                   "from yaml import unsafe_load as load\n"
+                   "tmp.mktemp()\nload('fixture')\n")
+        report = audit(self.candidate, "script")
+        self.assertTrue({"PY_INSECURE_TEMPFILE", "PY_UNSAFE_YAML"}
+                        <= {item["rule"] for item in report["findings"]})
+
     def test_unparsed_formats_require_attestation(self):
         (self.candidate / "app.apk").write_bytes(b"synthetic binary")
         report = audit(self.candidate, "application")

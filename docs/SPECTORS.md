@@ -13,3 +13,5 @@ The public [SkillSpector development guide](https://github.com/NVIDIA/SkillSpect
 TestSpector runs explicitly trusted callable checks and compares equivalent local computations with repeated, alternating timings. It is not a sandbox or general untrusted-code runner. Unmatched natural-language requests retain the enabled catalog rather than assuming irrelevant context. Performance and token quality equivalence are separate; benchmark evidence is scoped to the workload.
 
 Generic development aliases expand preflight without changing the legacy planner's serialized skill descriptors. A compatibility benchmark rejected the initial catalog change and the correction preserves the original public plan interface.
+
+Data integrity is also operational: the publisher requires database-specific evidence and blocks directly interpolated SQL expressions detected by the Python scanner. API-specific publication requires authentication/authorization, transport and rate-limit evidence. Independent review is still necessary.
