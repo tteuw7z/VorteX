@@ -33,3 +33,5 @@ CI 45868236196 aprovou a622fb4: 77 testes aprovados e 3 ignorados, macOS/Windows
 Implementados clientes HTTPS explícitos para OpenAI Responses e Anthropic Messages, com ferramenta de planejamento apenas, limites de rodadas/tokens/tempo/tamanho, credencial por ambiente, sem redirecionamento ou retry automático. Telemetria por resposta sem confundir fixtures com serviço real. CI pendente; chamadas autenticadas dependem de credencial e modelo autorizados. Não publicar segredos.
 
 CI 45868607929 aprovou 612afce: 86 aprovados, 3 ignorados, quatro jobs aprovados. Benchmark pareado manteve os cinco planos; 14,63 → 10,88 µs/tarefa. Transporte remoto validado apenas por contratos locais, zero credenciais/chamadas reais. Fase 6.5 implementa efeitos de vídeo em intervalos de saída; validar pixels e cadência no próximo CI.
+
+CI 45868881805 aprovou 434bc0b: 90 testes aprovados, 3 ignorados, quatro jobs aprovados, incluindo render e comparação de pixels. Fase 6.6 adiciona análise local de graves e flash automático remapeado por cortes. Validar novo CI; transientes sintéticos não comprovam acurácia em música real.

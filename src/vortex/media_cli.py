@@ -4,6 +4,7 @@ from pathlib import Path
 
 from .batch_cli import add_command as add_batch_command
 from .editor import render
+from .bass import detect_bass
 from .media import check_media, extract_frames, probe
 from .transcription import transcribe
 
@@ -18,7 +19,8 @@ def _edit(args):
         ranges = [(args.start or "0", args.end)]
     return render(args.source, args.output, ranges=ranges, fps=args.fps,
                   captions=args.captions, full_hd=args.full_hd, monochrome=args.monochrome,
-                  fade=args.fade, effects=args.effect, contrast=args.contrast)
+                  fade=args.fade, effects=args.effect, contrast=args.contrast,
+                  bass_flash=args.bass_flash)
 
 
 def add_commands(subparsers):
@@ -65,6 +67,14 @@ def add_commands(subparsers):
         threads=args.threads,
     ))
 
+    bass = operations.add_parser("bass", help="Detect local low-frequency audio transients")
+    bass.add_argument("source", type=Path)
+    bass.add_argument("--fps", type=int, choices=_FRAME_RATES, default=60)
+    bass.add_argument("--max-seconds", type=int, default=600)
+    bass.add_argument("--min-gap", default="0.35")
+    bass.set_defaults(technical_handler=lambda args: detect_bass(
+        args.source, fps=args.fps, max_seconds=args.max_seconds, min_gap=args.min_gap))
+
     edit = operations.add_parser("edit", help="Render cuts and optional progressive captions")
     edit.add_argument("source", type=Path)
     edit.add_argument("output", type=Path)
@@ -80,4 +90,5 @@ def add_commands(subparsers):
     edit.add_argument("--effect", action="append", nargs=4, metavar=("KIND", "START", "END", "STRENGTH"),
                       help="Flash, shake or blur over output seconds, strength (0,1]; repeatable")
     edit.add_argument("--contrast", default="1", help="Contrast multiplier from 0.8 to 1.4")
+    edit.add_argument("--bass-flash", help="Automatically schedule flashes from low-frequency onsets, strength (0,1]")
     edit.set_defaults(technical_handler=_edit)

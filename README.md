@@ -143,3 +143,5 @@ Protocol references: https://developers.openai.com/api/docs/guides/function-call
 ### Frame-aligned visual effects
 
 Repeat `--effect KIND START END STRENGTH` with `vortex media edit` to apply flash, small rotational shake or blur in output seconds (not source-cut time). Strength is normalized to (0,1]; durations are 3 frames to 2 seconds. Flash and shake use a bounded pulse; flash starts must be at least one third of a second apart. `--contrast 1.2` applies an explicit contrast multiplier. These controls do not yet detect music beats or perform motion-aware transitions automatically.
+
+Use `vortex media bass INPUT --fps 60` to inspect low-frequency onsets, or add `--bass-flash 0.6` to `vortex media edit` to schedule a bounded flash on detected transients through ordered cuts. This is a local energy-based heuristic, not verified musical beat/BPM recognition. Audio and input duration limits apply; use manual timing for critical edits.

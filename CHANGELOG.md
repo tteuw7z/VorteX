@@ -67,3 +67,8 @@
 
 - Flash, shake rotacional, blur e contraste em timeline explícita, com validação de limites e relatório de quadros.
 - Testes de renderização comparando pixels decodificados e cadência; CI pendente.
+
+## Fase 6.6 — candidato
+
+- Análise local de transientes de graves e flash automático opcional remapeado pelos cortes.
+- Testes com áudio sintético pulsado, renderização e remapeamento de cortes.

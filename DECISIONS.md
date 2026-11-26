@@ -62,3 +62,7 @@ Usar biblioteca padrão http.client com endpoints HTTPS fixos, sem redirecioname
 ## Fase 6.5 — efeitos por quadros
 
 Aceitar apenas efeitos conhecidos com intervalos numéricos de saída, força limitada e duração de 3 quadros a 2 s. Flash triangular e shake rotacional leve; não permitir sobreposição de efeitos do mesmo tipo nem flashes com início a menos de 1/3 s de distância. O limite não é garantia clínica de segurança. Efeitos antecedem fades e legendas. Sem detecção automática de batidas neste checkpoint.
+
+## Fase 6.6 — transientes graves
+
+Extrair PCM local de banda 35–160 Hz, medir energia RMS por quadro e selecionar aumentos locais com distância mínima. Limitar análise a 600 s e 128 eventos. Mapear ao tempo de saída através dos cortes e aplicar até 32 efeitos, sem sobrescrever arquivos. Flash automático é opt-in e incompatível com flash manual simultâneo. Não alegar acurácia musical sem corpus real.

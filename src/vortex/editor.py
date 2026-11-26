@@ -8,6 +8,7 @@ from pathlib import Path
 from tempfile import TemporaryDirectory
 
 from .evidence import file_sha256
+from .bass import detect_bass, flash_intervals
 from .effects import effect_filters, prepare_effects
 from .media import (_INPUT_OPTIONS, _cadence, _decimal, _destination, _dimensions,
                     _local_file, _media_info, _primary_tracks, _run_tool, _timeline)
@@ -150,7 +151,8 @@ def _filter_graph(cuts: tuple[Cut, ...], fps: int, origin: Decimal, video: dict,
 
 def render(path: Path | str, output: Path | str, *, ranges=None, fps: int = 60,
            captions: Path | str | None = None, full_hd: bool = False,
-           monochrome: bool = False, fade=0, effects=None, contrast=1) -> dict:
+           monochrome: bool = False, fade=0, effects=None, contrast=1,
+           bass_flash=None) -> dict:
     if fps not in (24, 25, 30, 48, 50, 60):
         raise ValueError("Unsupported render frame rate")
     file = _local_file(path)
@@ -166,7 +168,28 @@ def render(path: Path | str, output: Path | str, *, ranges=None, fps: int = 60,
         raise ValueError("A known positive video duration is required")
     cuts = _cuts(ranges, duration, fps)
     frames = sum(cut.frames for cut in cuts)
-    applied_effects = prepare_effects(effects, fps, frames)
+    explicit_effects = tuple(effects or ())
+    prepare_effects(explicit_effects, fps, frames)
+    bass_report = None
+    if bass_flash is not None:
+        if audio is None:
+            raise ValueError("Bass flash requires an audio track")
+        if any(item[0] == "flash" for item in explicit_effects):
+            raise ValueError("Choose automatic bass flash or explicit flash intervals")
+        if max(cut.end_ms for cut in cuts) > 600000:
+            raise ValueError("Bass flash only analyzes the first 600 seconds")
+        strength = _decimal(bass_flash)
+        if not 0 < strength <= 1:
+            raise ValueError("Bass flash strength must be greater than zero and at most one")
+        bass_report = detect_bass(file, fps=fps)
+        automatic = flash_intervals(bass_report["events"], cuts, fps, strength)
+        if len(explicit_effects) + len(automatic) > 32:
+            automatic = automatic[:32 - len(explicit_effects)]
+        explicit_effects += automatic
+        bass_report = {"detected_source_onsets": len(bass_report["events"]),
+                       "scheduled_flashes": len(automatic), "method": bass_report["method"],
+                       "scope": bass_report["scope"]}
+    applied_effects = prepare_effects(explicit_effects, fps, frames)
     contrast_value = _decimal(contrast)
     if not Decimal('0.8') <= contrast_value <= Decimal('1.4'):
         raise ValueError("Contrast must be between 0.8 and 1.4")
@@ -225,6 +248,6 @@ def render(path: Path | str, output: Path | str, *, ranges=None, fps: int = 60,
             "effects": [{"kind": item.kind, "start_frame": item.start_frame,
                          "end_frame_exclusive": item.end_frame_exclusive,
                          "strength": float(item.strength)} for item in applied_effects],
-            "contrast": float(contrast_value),
+            "contrast": float(contrast_value), "bass_flash": bass_report,
             "caption_cues": len(cues), "caption_intervals": len(timeline),
             "caption_timing": "estimated grapheme times" if timeline else None}

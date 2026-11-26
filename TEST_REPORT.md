@@ -148,3 +148,7 @@ CI 45868607929, 612afce: 89 testes descobertos, 86 aprovados, 3 ignorados; quatr
 ## Fase 6.5 — testes adicionados
 
 Render sintético a 60 fps com efeitos e áudio, comparação de pixels em quadros ativos/inativos, cadência, limites e rejeição de intervalos inválidos. Nenhum resultado do candidato declarado aprovado antes de CI.
+
+## Validação Fase 6.5
+
+CI 45868881805, 434bc0b: 93 testes descobertos, 90 aprovados, 3 ignorados; quatro jobs aprovados. Render a 60 fps, comparação de pixels em quadros ativos/inativos, limites e integridade de mídia passaram. Fase 6.6 acrescenta transientes de graves e flash automático; CI pendente.

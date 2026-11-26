@@ -67,3 +67,7 @@
 - [x] Validar índice e transporte em CI, sem alegar chamadas autenticadas.
 - [x] Implementar flash, shake rotacional, blur e contraste por intervalos explícitos de saída.
 - [ ] Validar renderização dos efeitos, detecção de graves e demais lacunas.
+
+- [x] Validar efeitos reais por pixels e cadência em CI.
+- [x] Implementar detecção heurística de graves e flash automático por cortes.
+- [ ] Validar detecção e render em CI e corpus musical real autorizado.

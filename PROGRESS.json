@@ -85,7 +85,7 @@
   "phase_4_implementation": "3d749ef75741ed6aae03f69eab67135b319513ab",
   "phase_5_baseline": "f7de4c57eb9a05425469f5948d3c1dfa442db1dd",
   "phase_5_implementation": "645baca9d860728eed56e79b2a7b0d4da2abd748",
-  "checkpoint": "6.5-visual-effects",
+  "checkpoint": "6.6-bass-onsets",
   "review_4_1": {
     "status": "complete",
     "baseline": "f0daf2820e49fafc079e8bfd0f68704c675c7052",
@@ -123,13 +123,13 @@
       "scope": "explicit noncontextual pure adapters, one workflow, maximum 128 successful entries"
     },
     "validated_ci": {
-      "run": 45868607929,
-      "commit": "612afce64e503800a21d98e9be03412c9624c2f8",
-      "passed": 86,
+      "run": 45868881805,
+      "commit": "434bc0b8925b0eb4a4f12bf93cc14476386bd3bb",
+      "passed": 90,
       "skipped": 3,
       "result": "success",
-      "planner_baseline_us": 14.6327121,
-      "planner_candidate_us": 10.8773132,
+      "planner_baseline_us": 9.5433708,
+      "planner_candidate_us": 7.2297352,
       "plans_equal": true
     },
     "planner_index": {
@@ -147,8 +147,13 @@
       "run": 45868607929
     },
     "visual_effects": {
+      "status": "validated_ci",
+      "scope": "explicit flash, rotational shake, blur, contrast; no automatic beat detection",
+      "run": 45868881805
+    },
+    "bass": {
       "status": "implemented_pending_ci",
-      "scope": "explicit flash, rotational shake, blur, contrast; no automatic beat detection"
+      "scope": "local low-frequency transients and cut-aware automatic flash; not perfect musical beats"
     }
   }
 }
