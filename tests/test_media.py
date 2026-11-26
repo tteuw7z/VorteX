@@ -48,6 +48,17 @@ class SubtitleTests(unittest.TestCase):
         self.assertEqual(cues, (Cue(0, 2000, "Olá, equipe."),))
         self.assertEqual((language, adjusted), ("pt", 1))
 
+    def test_blank_audio_label_is_not_spoken_text(self):
+        cues, language, adjusted = _decode_result({
+            "result": {"language": "en"},
+            "transcription": [
+                {"text": " [BLANK_AUDIO]", "offsets": {"from": 0, "to": 1500}},
+                {"text": " Hello.", "offsets": {"from": 1500, "to": 2000}},
+            ],
+        }, 2000)
+        self.assertEqual(cues, (Cue(1500, 2000, "Hello."),))
+        self.assertEqual((language, adjusted), ("en", 0))
+
     def test_reject_invalid_srt(self):
         with TemporaryDirectory() as tmp:
             path = Path(tmp) / "bad.srt"

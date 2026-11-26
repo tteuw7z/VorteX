@@ -59,6 +59,8 @@ def _decode_result(backend_output: dict, duration_ms: int | None):
         value = segment.get("text")
         if not isinstance(value, str) or not value.strip():
             continue
+        if value.strip() == "[BLANK_AUDIO]":
+            continue
         bounds = _bounds(segment)
         if bounds is None:
             raise ValueError("whisper-cli returned an invalid segment time")

@@ -64,19 +64,19 @@ class Engine:
 
     def _run_stage(self, stage: Stage, prior: dict) -> StageResult:
         history = []
+        attempted = []
         for name in (stage.capability, *stage.alternatives):
             if name not in self._adapters:
                 continue
             value = self._invoke(name, stage.task, prior)
-            outcome = self._validate_result(name, value)
+            attempted.append(name)
+            outcome = replace(self._validate_result(name, value), attempted=tuple(attempted))
             if outcome.status == Status.SUCCESS or not stage.retry_safe:
-                return replace(outcome, attempted=tuple(row.adapter for row in history) + (name,),
-                               previous=tuple(history))
+                return replace(outcome, previous=tuple(history))
             history.append(outcome)
         if not history:
             return StageResult(Status.BLOCKED, reason="No configured adapter")
-        return replace(history[-1], attempted=tuple(row.adapter for row in history),
-                       previous=tuple(history[:-1]))
+        return replace(history[-1], previous=tuple(history[:-1]))
 
     @staticmethod
     def _validate_result(name: str, value: dict) -> StageResult:
