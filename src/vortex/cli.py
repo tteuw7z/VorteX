@@ -73,7 +73,7 @@ def _dispatch(args, config):
             return _learning(args, config)
 
 
-def main(argv=None):
+def build_parser():
     parser = argparse.ArgumentParser(prog="vortex")
     parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument("--config", type=Path, help="Read settings from an explicit TOML file")
@@ -98,6 +98,11 @@ def main(argv=None):
     add_automation_commands(commands, _TECHNICAL_COMMANDS)
     add_remote_commands(commands)
     add_security_commands(commands)
+    return parser
+
+
+def main(argv=None):
+    parser = build_parser()
     args = parser.parse_args(argv)
     try:
         config = Config.load(args.config) if args.config else Config()

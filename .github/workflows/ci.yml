@@ -34,6 +34,14 @@ jobs:
       - run: python -m pip install .
       - run: python -m compileall -q src tests
       - run: python -m unittest discover -s tests -v
+      - name: Export live ChatGPT catalog
+        run: python -m vortex.live_catalog "$GITHUB_SHA" > "$RUNNER_TEMP/catalog.json"
+      - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
+        with:
+          name: chatgpt-live-catalog
+          path: ${{ runner.temp }}/catalog.json
+          if-no-files-found: error
+          retention-days: 7
       - name: Measure bilingual planning latency
         run: |
           python - <<'PY'
@@ -91,6 +99,7 @@ jobs:
       - run: python -m unittest discover -s tests -p test_development.py -v
       - run: python -m unittest discover -s tests -p test_spectors.py -v
       - run: python -m unittest discover -s tests -p test_conversation.py -v
+      - run: python -m unittest discover -s tests -p test_live_catalog.py -v
       - run: python -m unittest discover -s tests -p test_motion_ui.py -v
       - run: python -m unittest discover -s tests -p test_archive.py -v
       - run: python -m unittest discover -s tests -p test_automation.py -v
@@ -137,3 +146,75 @@ jobs:
           path: ${{ runner.temp }}/vortex-apk/
           if-no-files-found: error
           retention-days: 7
+
+  publish-chatgpt-catalog:
+    needs: [tests, portable-core, android-fixture]
+    if: github.event_name == 'push' && github.repository == 'tteuw7z/VorteX' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/phase-6/catalog-reconciliation')
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: write
+    concurrency:
+      group: vortex-chatgpt-live
+      cancel-in-progress: false
+    steps:
+      - uses: actions/download-artifact@d3f86a106a0bac45b974a628896c90dbdf5c8093 # v4
+        with:
+          name: chatgpt-live-catalog
+          path: ${{ runner.temp }}/live-catalog
+      - name: Validate data and publish immutable source reference
+        env:
+          GH_TOKEN: ${{ github.token }}
+          SOURCE_SHA: ${{ github.sha }}
+          SOURCE_REF: ${{ github.ref }}
+        run: |
+          set -euo pipefail
+          manifest="$RUNNER_TEMP/live-catalog/catalog.json"
+          python - "$manifest" <<'PY'
+          import json, os, re, sys
+          from pathlib import Path
+          p = Path(sys.argv[1])
+          if p.is_symlink() or not p.is_file() or p.stat().st_size > 262144:
+              raise SystemExit("Invalid catalog file")
+          obj = json.loads(p.read_bytes())
+          if (obj.get("schema") != 1 or obj.get("source_sha") != os.environ["SOURCE_SHA"]
+              or not re.fullmatch("[0-9a-f]{40}", obj["source_sha"])
+              or obj.get("execution") != "host_binding_required"
+              or obj.get("delivery_authorized") is not False
+              or not all(isinstance(obj.get(k), list) for k in ("skills", "agents", "commands"))):
+              raise SystemExit("Invalid catalog data")
+          PY
+          work="$RUNNER_TEMP/live-publish"
+          mkdir "$work"
+          cd "$work"
+          git init -q
+          git remote add origin https://github.com/tteuw7z/VorteX.git
+          git config user.name "VorteX CI"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          # Read history without running repository code; never publish an older source.
+          git fetch --no-tags origin "$SOURCE_SHA"
+          current=$(git ls-remote origin "$SOURCE_REF" | cut -f1)
+          if [ "$current" != "$SOURCE_SHA" ]; then
+            echo "Source branch advanced; not publishing a superseded run."
+            exit 0
+          fi
+          existing=$(git ls-remote origin refs/heads/chatgpt-live | cut -f1)
+          if [ -n "$existing" ]; then
+            git fetch --no-tags origin refs/heads/chatgpt-live
+            git switch -c chatgpt-live FETCH_HEAD
+            old=$(python -c 'import json; print(json.load(open("catalog.json"))["source_sha"])')
+            [[ "$old" =~ ^[0-9a-f]{40}$ ]]
+            git fetch --no-tags origin "$old"
+            if ! git merge-base --is-ancestor "$old" "$SOURCE_SHA"; then
+              echo "Refusing a non-descendant source update."
+              exit 0
+            fi
+          else
+            git switch --orphan chatgpt-live
+          fi
+          cp "$manifest" catalog.json
+          git add -- catalog.json
+          if git diff --cached --quiet; then exit 0; fi
+          git commit -m "Publish validated catalog for $SOURCE_SHA"
+          gh auth setup-git
+          git push origin HEAD:refs/heads/chatgpt-live
