@@ -27,3 +27,10 @@
 16. A CLI e a automação interpretam o estado de cada relatório pela mesma função. O Core exige evidência para transportar artefatos, inclusive em resultados bloqueados. Somente sucesso libera dependentes. O relatório de domínio conserva estados como PARTIAL e REVIEW_REQUIRED.
 17. O catálogo de skills identifica ZIP e reutiliza o perfil de engenharia. O manifesto admite verificação de APK, mídia em lote e transcrição por adaptadores locais. O build Gradle continua com entrada direta e projeto confiável.
 18. A origem da faixa primária vem dos metadados do mesmo arquivo para render, ASR e quadros. O cálculo de SHA-256 de arquivos é único. ZIP exige publicação atômica exclusiva; Android primeiro verifica assinaturas e produz relatório; mídia publica conjuntos de derivados. Essas garantias específicas orientam cada rotina.
+
+## Fase 5
+
+19. Com orçamento insuficiente para todos os papéis, o planejador prioriza um responsável por capacidade selecionada. Quando todos cabem, preserva a ordem anterior.
+20. Cada resultado de etapa pode registrar tentativas anteriores com evidências e artefatos. Dependentes recebem somente os artefatos do resultado final bem-sucedido. O chamador precisa declarar explicitamente uma alternativa e indicar se a repetição é segura.
+21. O lote prepara todas as saídas em diretório temporário no mesmo sistema de arquivos. Reutiliza a publicação exclusiva do ZIP depois de fechar o manifesto. Saídas parciais são publicadas quando o manifesto consegue identificar os vídeos com falha.
+22. Os adaptadores de assistente traduzem chamadas de planejamento em memória. Transporte, credenciais e contagem de tokens ficam com o host. [OpenAI Responses](https://developers.openai.com/api/docs/guides/function-calling) · [Anthropic Messages](https://platform.claude.com/docs/en/agents-and-tools/tool-use/overview)

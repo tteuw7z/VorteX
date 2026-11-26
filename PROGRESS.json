@@ -1,6 +1,6 @@
 {
   "operation": "VORTEX",
-  "phase": 4,
+  "phase": 5,
   "status": "complete",
   "audit_date": "2026-11-26",
   "public_baseline": "88af0d61e2309984b14ae17d3cc53ce5fc2e0868",
@@ -36,17 +36,32 @@
       "zip_batch_candidates": 2,
       "modules_reviewed_for_imports": 28,
       "technical_ci_result": "success"
+    },
+    "phase_5": {
+      "ci_run": 45819556837,
+      "ci_result": "success",
+      "passed": 60,
+      "skipped": 3,
+      "android_fixture": "success",
+      "planning_microseconds_per_task": 15.19,
+      "host_contracts": [
+        "OpenAI Responses",
+        "Anthropic Messages"
+      ],
+      "authenticated_host_calls": 0
     }
   },
   "next": {
-    "phase": 5,
+    "phase": 6,
     "model": "Astra 6.2",
-    "effort": "High",
+    "effort": "Max",
     "trigger": "Continuar"
   },
   "phase_2_baseline": "decbafdacca3dadfd746e09905d0e30c4affc122",
   "phase_3_baseline": "eb562b0a7a2f24816450b110fb021a49d83d7aa9",
   "phase_3_implementation": "1491b0ef1f120afc8d7085c30ec1ac17a8235ad9",
   "phase_4_baseline": "813787c5a930768742d01f64f103025cca0c4a96",
-  "phase_4_implementation": "3d749ef75741ed6aae03f69eab67135b319513ab"
+  "phase_4_implementation": "3d749ef75741ed6aae03f69eab67135b319513ab",
+  "phase_5_baseline": "f7de4c57eb9a05425469f5948d3c1dfa442db1dd",
+  "phase_5_implementation": "645baca9d860728eed56e79b2a7b0d4da2abd748"
 }

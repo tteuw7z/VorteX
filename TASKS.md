@@ -31,6 +31,7 @@
 ## Próximas etapas
 
 - [x] Fase 4. Revisar arquitetura e dependências, integrar resultados de CLI/DAG e rotas técnicas, unificar origem temporal e reconciliar a matriz.
-- [ ] Fase 5. Ajustar roteamento, desempenho, regressões e portabilidade entre assistentes.
+- [x] Fase 5. Refinar roteamento e fallback, publicar lotes atomicamente, medir latência e testar regressões e contratos locais de dois formatos de assistente.
+- [ ] Validar em contas autorizadas os dois ciclos de chamada remota e registrar uso real fornecido pelos serviços.
 - [ ] Fase 6. Auditar arquitetura, segurança, privacidade e licenças. Validar builds e mídia finais e preparar release.
 - [ ] Registrar separadamente as capacidades ainda parciais, incluindo interpretação semântica de cenas, render de efeitos avançados, provedores externos, testes Android em aparelho e casos de ASR multilingue.

@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-26 — Operação VORTEX, Fase 5
+
+- Roteamento composto português/inglês e melhor distribuição de especialistas com orçamento limitado.
+- Histórico de tentativas no Core, validação de aprovações e bloqueio de estados desconhecidos.
+- Publicação atômica do lote, contratos de planejamento para dois hosts e medição de latência no CI.
+
 ## 2026-11-26 — Operação VORTEX, Fase 4
 
 - CLI e automação compartilham a classificação dos resultados. Relatórios parciais ou bloqueados conservam evidência para revisão.

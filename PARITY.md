@@ -1,4 +1,4 @@
-# Matriz de equivalência — após Fase 4
+# Matriz de equivalência — após Fase 5
 
 **Base da auditoria da Fase 1:** árvores Git não truncadas, 361 arquivos na referência e 12 no destino antes desta auditoria. Referência: 337 Markdown, 16 Python e 8 arquivos complementares. São 28 skills e 268 fichas de perfis, reunidas em 18 divisões, incluindo engenharia, pesquisa, design, testes, segurança defensiva, educação, criação, negócios e suporte. Fichas descrevem papéis e referências, sem representar instâncias em execução. O inventário é do código versionado. Outros produtos, mídia, históricos e arquivos de conta ficam fora da distribuição pública.
 
@@ -21,6 +21,15 @@
 | Android/APK | Build condicionado ao SDK/Gradle, assinatura e relatório | Build real de fixture por SDK e Gradle, isolamento de projeto, verificação da assinatura, hash e checagem estrutural de ABI; sem ensaio em aparelho | 3 entregue no escopo sintético / builds com app e ABI nativos na avaliação final |
 | Automação e provedores | Permissões, handoffs, fallback e callbacks | DAG com manifesto, aprovações e operações locais permitidas; SDK, Gradle, FFmpeg e Whisper acionados. Conectores SaaS autenticados pendentes | 4 integrada no escopo local / verificar portabilidade entre assistentes na Fase 5 |
 | CI e portabilidade | Workflow e suíte de referência aferida na Fase 1 | CI em CPython 3.15.2, FFmpeg e fixture Android auditada. Execução local com ferramentas nativas validada em Linux | 3 entregue no escopo testado / revisar portabilidade nas Fases 4 e 5 |
+
+## Revisão da Fase 5
+
+| Capacidade | Evidência de integração | Limite para aceite final |
+| --- | --- | --- |
+| Roteamento e colaboração | Planejamento bilíngue de mídia + ZIP via Python e CLI; o orçamento limitado prioriza um responsável por capacidade. A DAG preserva evidência das alternativas e encaminha ao dependente os artefatos da tentativa bem-sucedida. | Corpus sintético reduzido; falta medir precisão em solicitações reais. |
+| Automação e segurança | Aprovação por rótulo exato, estado técnico desconhecido bloqueado e publicação exclusiva de lote completo ou parcial com manifesto. Interrupção tratada permite repetir o destino. | Queda abrupta pode deixar diretório temporário órfão. Sistemas adicionais precisam de teste. |
+| Integração com assistentes | Contratos locais para planejamento em OpenAI Responses e Anthropic Messages; as duas respostas carregam o mesmo plano e identificadores de chamada correspondentes. | Transporte, autenticação e chamadas ao vivo pendentes. |
+| Desempenho e custo | Medição reproduzível de latência do planejador bilíngue no CI. | Sem telemetria de tokens faturados. |
 
 ## Consolidação
 

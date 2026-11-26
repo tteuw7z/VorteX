@@ -1,5 +1,18 @@
 # Testes e evidências
 
+## Fase 5
+
+[CI da implementação final](https://github.com/tteuw7z/VorteX/actions/runs/45819556837), CPython 3.15.2. A suíte executou em 1,845 s. Dos 63 testes descobertos, 60 passaram e 3 foram pulados (integrações locais opcionais de SDK, Gradle e ASR). O job Android separado compilou, assinou e verificou a fixture. A validação desta fase ocorreu no runner GitHub Actions.
+
+| Ensaio | Evidência |
+| --- | --- |
+| ZIP + legendagem, PT e EN | Planejamento em processo Python e CLI em subprocesso entregou o mesmo JSON normalizado. Com limite 2, ambos selecionaram mídia e engenharia de arquivos. |
+| Alternativa e colaboração | Falha inicial com artefato parcial, segunda tentativa com sucesso e etapa dependente executada. Histórico contém a evidência inicial. O dependente recebeu apenas o resultado final. |
+| Aprovação e revisão defensiva | String usada como coleção de aprovações rejeitada, aprovação booleana inválida bloqueada, política de repetição inválida rejeitada e status desconhecido bloqueado. |
+| Interrupção de lote | Injeção de KeyboardInterrupt antes da conclusão. Destino final ficou disponível para nova execução no mesmo caminho, que publicou manifesto com falha de mídia prevista. |
+| Contratos de assistente | Fixtures Responses e Messages passaram pelo tradutor Python com identificador correlacionado e plano idêntico. Nome de ferramenta e campos inesperados foram rejeitados. Testes locais de protocolo; chamadas autenticadas permanecem pendentes. |
+| Latência | Mediana de 15,19 µs por tarefa no runner, 5 séries de 1.000 pares PT/EN. O teste mede o planejamento em processo. As condições do runner variam; não há comparação controlada com o baseline nem métrica faturada de tokens. |
+
 ## Fase 4
 
 CPython 3.15.2 em Linux. A suíte local descobriu 57 testes; 54 passaram e três integrações opt-in foram puladas (SDK, Gradle e reconhecimento com modelo local). Compilação de módulos e verificação de espaços no diff passaram. A fixture de APK é executada em job separado no [CI do commit técnico](https://github.com/tteuw7z/VorteX/actions/runs/45817987722).

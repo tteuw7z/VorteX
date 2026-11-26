@@ -1,17 +1,11 @@
 # Handoff da Operação VORTEX
 
-Fase 4 concluída em 26/11/2026. Ao receber **Continuar**, retome a Fase 5 com Astra 6.2 High. Leia PROGRESS, PARITY, TEST_REPORT, DECISIONS, TASKS e CHANGELOG no HEAD atual. A implementação desta revisão está no commit 3d749ef75741ed6aae03f69eab67135b319513ab.
+Ao receber **Continuar**, retome na Fase 6 com Astra 6.2 Max. Confira o HEAD e os sete arquivos de continuidade. A Fase 5 partiu de f7de4c57eb9a05425469f5948d3c1dfa442db1dd. Os commits técnicos são a46ab497070f2da1b786f6062c1cc010bb0f782b e 645baca9d860728eed56e79b2a7b0d4da2abd748.
 
-## Contratos a preservar
+## Auditoria final
 
-- A tarefa passa pelo catálogo de skills, pela seleção limitada de perfis e pelo carregamento seletivo de contexto. A aprendizagem continua local e explícita. A CLI e o manifesto usam os mesmos parsers técnicos.
-- A CLI retorna 1 em falha, bloqueio ou revisão de resultado técnico. A DAG mantém relatório e evidência inclusive para um lote parcial. Dependentes exigem sucesso. A simulação continua sem efeitos.
-- Os relatórios de quadros indicam a origem da faixa primária e seu instante no arquivo. Editor, ASR e amostragem compartilham essa referência. O reconhecimento continua opcional via modelo local.
-- A publicação de arquivos mantém garantias próprias de cada motor. Android, ASR e FFmpeg dependem do host. Pesquisa verifica excertos, engenharia verifica contratos estáticos, e design verifica os pares de contraste declarados.
-
-## Aceite da Fase 5
-
-1. Avaliar o roteamento com tarefas compostas em português e inglês, limites de agentes e perfis selecionados. Testar duas integrações de host disponíveis e registrar exatamente quais foram executadas.
-2. Exercitar falha recuperável, fallback autorizado e passagem de artefatos entre agentes. Verificar perda de evidência em múltiplas tentativas e comportamento diante de estados novos. Medir custo e latência em conjuntos reproduzíveis; contar tokens apenas com métrica real.
-3. Revisar interrupção e recuperação de lotes, acesso a caminhos e exposição de evidências. Rodar integração e regressão em CPython 3.15.2.
-4. Preservar na matriz as lacunas de ASR multilíngue, descrição visual, mídia avançada, Android nativo/em aparelho e serviços autenticados. A Fase 6 exige aceite e evidência próprios para cada capacidade.
+1. Reconciliar PARITY com o inventário autorizado da Fase 1. Conferir código e testes de cada capacidade relevante; registrar qualquer lacuna.
+2. Reexecutar CI e verificar o artefato APK. Comparar com os builds Gradle debug e release da Fase 3. Testes nativos ARM64, instalação física e publicação com chave de produção exigem evidência própria.
+3. Verificar mídia, ASR, legendas por grafema, idioma e origem temporal. Descrição semântica visual, validação multilíngue e fidelidade exaustiva continuam pendentes.
+4. Revisar os adaptadores, permissões, distribuição, licenças e privacidade de forma independente. Os contratos locais de planejamento foram testados para Responses e Messages. Para aceite remoto, é preciso observar chamadas autenticadas em ambos.
+5. Conferir portabilidade, comportamento após interrupções, segurança e consumo real quando houver medição. Preparar documentação e release com escopo validado. A equivalência integral permanece aberta.
