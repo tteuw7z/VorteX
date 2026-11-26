@@ -22,6 +22,8 @@ def report_status(payload) -> Status:
             return Status.BLOCKED
         if label in ("PLAN_ONLY", "SIMULATED", "SIMULATION"):
             return Status.PLANNED
+        if "status" in payload and label not in ("SUCCESS", "PASS", "INSPECTED", "READY_FOR_RUNTIME_TEST"):
+            return Status.BLOCKED
     return Status.SUCCESS
 
 
@@ -44,6 +46,7 @@ class StageResult:
     artifacts: dict = field(default_factory=dict)
     reason: str | None = None
     attempted: tuple[str, ...] = ()
+    previous: tuple["StageResult", ...] = ()
 
 
 @dataclass(frozen=True, slots=True, init=False)
@@ -56,6 +59,8 @@ class Workflow:
         if not entries or len(index) != len(entries):
             raise ValueError("Workflow needs nonempty, unique stages")
         for stage in entries:
+            if type(stage.retry_safe) is not bool:
+                raise ValueError("retry_safe must be a boolean")
             fields = (stage.id, stage.capability, stage.task)
             if any(not field.strip() for field in fields):
                 raise ValueError("Stage ID, capability and task are required")

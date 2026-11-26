@@ -4,6 +4,8 @@ import io
 import json
 from pathlib import Path
 from tempfile import TemporaryDirectory
+import subprocess
+import sys
 import unittest
 from zipfile import ZipFile
 
@@ -15,7 +17,7 @@ from vortex.context import ContextEngine
 from vortex.core import Engine, Status, plan
 from vortex.learning import LearningEngine
 from vortex.skills import SkillEngine
-from vortex.workflow import Stage, Workflow
+from vortex.workflow import Stage, Workflow, report_status
 
 
 class WorkflowTests(unittest.TestCase):
@@ -39,6 +41,34 @@ class WorkflowTests(unittest.TestCase):
         self.assertEqual(list(result), ["work", "review"])
         self.assertEqual(result["work"].artifacts, {"item": ["prepare result"]})
         self.assertEqual(result["review"].evidence, "fixture checked")
+
+    def test_retry_keeps_evidence_isolated_from_downstream(self):
+        engine = Engine()
+        engine.register("archive", lambda _: {"status": "FAILED", "evidence": "first",
+                                              "artifacts": {"partial": 1}})
+        engine.register("research", lambda _: {"status": "SUCCESS", "evidence": "second",
+                                               "artifacts": {"verified": 2}})
+        def consume(_, prior):
+            self.assertEqual(prior, {"read": {"verified": 2}})
+            return {"status": "SUCCESS", "evidence": "checked"}
+        engine.register("media", consume, with_context=True)
+        flow = Workflow([Stage("read", "archive", "input", alternatives=("research",), retry_safe=True),
+                         Stage("inspect", "media", "check", depends_on=("read",))])
+        results = engine.run_workflow(flow, approvals=["read", "inspect"])
+        self.assertEqual(results["inspect"].status, Status.SUCCESS)
+        first, = results["read"].previous
+        self.assertEqual((first.adapter, first.evidence, first.artifacts), ("archive", "first", {"partial": 1}))
+
+    def test_strict_permissions_and_unrecognized_report(self):
+        flow = Workflow([Stage("read", "archive", "input")])
+        with self.assertRaises(ValueError):
+            Engine().run_workflow(flow, approvals="already")
+        with self.assertRaises(ValueError):
+            Workflow([Stage("a", "archive", "input", retry_safe="false")])
+        engine = Engine()
+        engine.register("archive", lambda _: {"status": "SUCCESS"})
+        self.assertEqual(engine.run("archive", "input", approved="false")["status"], Status.BLOCKED)
+        self.assertEqual(report_status({"status": "PENDING_REVIEW"}), Status.BLOCKED)
 
     def test_graph_validation(self):
         for stages in (
@@ -136,6 +166,14 @@ class KnowledgeTests(unittest.TestCase):
         self.assertEqual([p.role for p in profiles], result["agents"])
         self.assertTrue(all(p.focus and p.output for p in profiles))
         self.assertTrue(plan("vídeo", skills=skills)["fallback"])
+
+    def test_bilingual_routing_matches_process_host(self):
+        for task in ("Legendar os vídeos do ZIP", "Add captions to videos from a ZIP"):
+            result = plan(task, agent_limit=2)
+            process = subprocess.run([sys.executable, "-m", "vortex", "plan", task,
+                                      "--agent-limit", "2"], capture_output=True, text=True, check=True)
+            self.assertEqual(json.loads(process.stdout), json.loads(json.dumps(result)))
+            self.assertEqual(result["agents"], ["media engineer", "software engineer"])
 
     def test_context_preserves_checkpoint_and_restores_deduplicated_text(self):
         large = "ação" * 30

@@ -44,7 +44,12 @@ class AgentEngine:
     def select(self, skills: Iterable[Skill], *, limit: int = 3) -> tuple[str, ...]:
         if type(limit) is not int or not 1 <= limit <= 4:
             raise ValueError("Agent limit must be between 1 and 4")
-        return tuple(dict.fromkeys(role for skill in skills for role in skill.agents))[:limit]
+        selected = tuple(skills)
+        roles = tuple(dict.fromkeys(role for skill in selected for role in skill.agents))
+        if len(roles) <= limit:
+            return roles
+        leads = (skill.agents[0] for skill in selected if skill.agents)
+        return tuple(dict.fromkeys((*leads, *roles)))[:limit]
 
     def load(self, roles: Iterable[str]) -> tuple[AgentProfile, ...]:
         return tuple(AgentProfile(role, *_PROFILE_DATA[role]) for role in roles

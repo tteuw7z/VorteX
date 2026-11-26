@@ -5,7 +5,7 @@ from pathlib import Path
 import shutil
 from tempfile import TemporaryDirectory
 
-from .archive import MAX_BYTES, MAX_ENTRIES, discover_videos, extract_archive
+from .archive import MAX_BYTES, MAX_ENTRIES, _publish, discover_videos, extract_archive
 from .media import extract_frames, probe
 from .transcription import transcribe
 
@@ -74,19 +74,21 @@ def inspect_batch(source: Path, output: Path, *, interval: float = 2, max_frames
         if not source.is_dir():
             root = Path(staging) / "source"
             extract_archive(source, root, max_entries=max_entries, max_bytes=max_bytes)
-        output.mkdir()
+        prepared = Path(staging) / "result"
+        prepared.mkdir()
         rows = []
         for index, candidate in enumerate(candidates, 1):
             relative = candidate["path"]
-            row = _inspect(root / relative, output / f"video_{index:04}", interval=interval,
+            row = _inspect(root / relative, prepared / f"video_{index:04}", interval=interval,
                            max_frames=max_frames, model=model, language=language)
             rows.append({"path": relative, **row})
         total_success = sum(row["status"] == "SUCCESS" for row in rows)
         report = {"status": ("SUCCESS" if total_success == len(rows) else
                              "FAILED" if all(row["status"] == "FAILED" for row in rows) else "PARTIAL"),
                   "candidates": len(rows), "complete": total_success, "videos": rows}
-        manifest = output / "batch.json"
+        manifest = prepared / "batch.json"
         with manifest.open("x", encoding="utf-8") as target:
             json.dump(report, target, ensure_ascii=False, indent=2)
             target.write("\n")
-    return {**report, "manifest": str(manifest)}
+        _publish(prepared, output)
+    return {**report, "manifest": str(output / "batch.json")}

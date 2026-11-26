@@ -22,6 +22,16 @@ jobs:
       - run: python -m pip install .
       - run: python -m compileall -q src tests
       - run: python -m unittest discover -s tests -v
+      - name: Measure bilingual planning latency
+        run: |
+          python - <<'PY'
+          from statistics import median
+          from timeit import repeat
+          from vortex.core import plan
+          tasks = ("Legendar os vídeos do ZIP", "Add captions to videos from a ZIP")
+          samples = repeat(lambda: [plan(task, agent_limit=2) for task in tasks], number=1000, repeat=5)
+          print(f"Median planning latency per task (microseconds): {median(samples) * 500:.2f}")
+          PY
       - run: vortex plan "compile APK Android"
   android-fixture:
     runs-on: ubuntu-latest

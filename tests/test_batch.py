@@ -4,6 +4,7 @@ import shutil
 import subprocess
 from tempfile import TemporaryDirectory
 import unittest
+from unittest.mock import patch
 from zipfile import ZipFile
 
 from vortex.batch import inspect_batch
@@ -35,3 +36,16 @@ class BatchTests(unittest.TestCase):
                 self.assertEqual(frames["frames"][0]["seconds"], 0.0)
                 self.assertIsNotNone(row["metadata"]["video"])
                 self.assertEqual(row["transcript"]["status"], "NOT_REQUESTED")
+
+    def test_interrupted_batch_can_retry_same_destination(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            source = root / "media.zip"
+            with ZipFile(source, "w") as archive:
+                archive.writestr("bad.mp4", b"invalid")
+            dest = root / "result"
+            with patch("vortex.batch._inspect", side_effect=KeyboardInterrupt), self.assertRaises(KeyboardInterrupt):
+                inspect_batch(source, dest)
+            self.assertFalse(dest.exists())
+            self.assertEqual(inspect_batch(source, dest)["status"], "FAILED")
+            self.assertTrue((dest / "batch.json").is_file())

@@ -1,7 +1,7 @@
 """Deterministic planning and explicit capability dispatch."""
 from collections.abc import Callable, Collection
 from copy import deepcopy
-from dataclasses import asdict
+from dataclasses import asdict, replace
 import json
 
 from .agents import AgentEngine
@@ -40,12 +40,14 @@ class Engine:
             return {"status": Status.FAILED, "error_type": type(exc).__name__}
 
     def run(self, name: str, task: str, *, approved: bool = False) -> dict:
-        if not approved or name not in self._adapters:
+        if approved is not True or name not in self._adapters:
             return {"status": Status.BLOCKED, "reason": "Approval or configured adapter missing"}
         return self._invoke(name, task, {})
 
     def run_workflow(self, workflow: Workflow, *, approvals: Collection[str] = (),
                      simulate: bool = False) -> dict[str, StageResult]:
+        if isinstance(approvals, (str, bytes)):
+            raise ValueError("Provide approval labels as a collection of strings")
         results = {}
         for stage in workflow.stages:
             if simulate:
@@ -61,33 +63,36 @@ class Engine:
         return results
 
     def _run_stage(self, stage: Stage, prior: dict) -> StageResult:
+        history = []
         attempted = []
         result = StageResult(Status.BLOCKED, reason="No configured adapter")
         for name in (stage.capability, *stage.alternatives):
             if name not in self._adapters:
                 continue
             attempted.append(name)
+            if result.adapter is not None:
+                history.append(replace(result, previous=()))
             value = self._invoke(name, stage.task, prior)
             status = Status(value["status"])
             evidence, artifacts = value.get("evidence"), value.get("artifacts", {})
             attempts = tuple(attempted)
             if status == Status.SUCCESS or evidence is not None or artifacts:
                 if not isinstance(evidence, str) or not evidence.strip():
-                    return StageResult(Status.FAILED, name, reason="Missing evidence", attempted=attempts)
+                    return StageResult(Status.FAILED, name, reason="Missing evidence", attempted=attempts, previous=tuple(history))
             if not isinstance(artifacts, dict):
-                return StageResult(Status.FAILED, name, reason="Invalid artifacts", attempted=attempts)
+                return StageResult(Status.FAILED, name, reason="Invalid artifacts", attempted=attempts, previous=tuple(history))
             try:
-                if json.loads(json.dumps(artifacts, allow_nan=False)) != artifacts:
+                clean = json.loads(json.dumps(artifacts, allow_nan=False))
+                if clean != artifacts:
                     raise ValueError("Lossy JSON conversion")
-                clean = deepcopy(artifacts)
             except (TypeError, ValueError, RecursionError):
                 return StageResult(Status.FAILED, name, reason="Artifacts must be JSON data",
-                                   attempted=attempts)
+                                   attempted=attempts, previous=tuple(history))
             if status == Status.SUCCESS:
-                return StageResult(status, name, evidence, clean, attempted=attempts)
+                return StageResult(status, name, evidence, clean, attempted=attempts, previous=tuple(history))
             reason = value.get("reason") or value.get("error_type") or status.value
             result = StageResult(status, name, evidence, clean,
-                                 reason if isinstance(reason, str) else status.value, attempts)
+                                 reason if isinstance(reason, str) else status.value, attempts, tuple(history))
             if not stage.retry_safe:
                 break
         return result

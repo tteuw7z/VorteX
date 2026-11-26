@@ -14,7 +14,7 @@ SKILLS = (
     Skill("archive", ("zip", "unzip", "repack", "descompactar"), ("software engineer",),
           ("inventory members", "validate limits", "process archive", "verify outputs")),
     Skill("android", ("apk", "android", "gradle"), ("android engineer", "qa"), ("inspect project", "resolve build tools", "build", "verify signature and hash")),
-    Skill("media", ("video", "audio", "transcribe", "transcrever", "motion"), ("media engineer", "editor"), ("inventory inputs", "inspect audio and frames", "process", "validate output")),
+    Skill("media", ("video", "videos", "audio", "captions", "legendas", "legendar", "transcreva", "transcribe", "transcrever", "motion"), ("media engineer", "editor"), ("inventory inputs", "inspect audio and frames", "process", "validate output")),
     Skill("engineering", ("python", "code", "codigo", "bug", "software", "api"), ("software engineer", "qa"), ("inspect", "implement", "test", "review")),
     Skill("research", ("research", "pesquisa", "investigar", "sources"), ("researcher", "reviewer"), ("decompose", "gather sources", "cross-check", "synthesize")),
     Skill("design", ("design", "ui", "figma", "interface"), ("designer", "accessibility reviewer"), ("requirements", "prototype", "validate")),
@@ -24,6 +24,8 @@ SKILLS = (
 )
 
 def normalize(value: str) -> str:
+    if value.isascii():
+        return value.casefold()
     return "".join(c for c in unicodedata.normalize("NFKD", value.casefold()) if not unicodedata.combining(c))
 
 
