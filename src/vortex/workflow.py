@@ -49,6 +49,7 @@ class StageResult:
     reason: str | None = None
     attempted: tuple[str, ...] = ()
     previous: tuple["StageResult", ...] = ()
+    cache_hit: bool = False
 
 
 @dataclass(frozen=True, slots=True, init=False)

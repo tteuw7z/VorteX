@@ -128,3 +128,7 @@ Reprodução pública: em ambiente Python 3.15.2, instale o pacote local, rode `
 Casos bilíngues para dez novas capacidades, integridade de perfis, limite de agentes, configuração restrita e ausência de adaptador de execução; argumentos duplicados, limites inválidos e tarefas vazias nos contratos de host. Nenhum resultado do candidato é declarado aprovado antes de CI.
 
 CI 45868049061, commit 06cb01b: 77 testes descobertos, 73 aprovados, 1 erro no caso PT `Experiência imersiva`, 3 ignorados. macOS, Windows e fixture Android aprovados. Corrigida a ausência do alias feminino; novos testes incluídos também no CI portátil. Revalidação pendente.
+
+## Fase 6.2 — testes adicionados (a executar)
+
+Testes de contagem real de chamadas, isolamento de artefatos, aprovação de cada estágio, reinicialização de cache por workflow, não reutilização de falhas e validação de opt-in. Não implica medição de tokens faturados.

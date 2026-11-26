@@ -47,3 +47,8 @@
 - CI pendente; sem alteração na versão pública.
 
 - Corrigido alias PT de experiências imersivas detectado em CI; suíte de catálogo adicionada aos jobs macOS e Windows.
+
+## Fase 6.2 — candidato
+
+- Cache explícito por workflow, com marcação de reutilização e isolamento de artefatos.
+- Testes de aprovações, falhas, ausência de opt-in, escopo e limites de registro.

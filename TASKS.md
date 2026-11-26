@@ -53,3 +53,6 @@
 - [x] Rejeitar argumentos JSON duplicados e validar limites de chamadas de planejamento.
 - [ ] Verificar CI do candidato e reconciliar capacidades restantes em detalhe.
 - [ ] Implementar e medir lacunas técnicas ainda abertas; manter validações externas separadas.
+
+- [x] Implementar cache opt-in, limitado à execução e a adaptadores puros sem contexto.
+- [ ] Validar cache, medir ganho em tarefas equivalentes e auditar demais componentes.

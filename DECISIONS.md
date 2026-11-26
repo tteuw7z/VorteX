@@ -46,3 +46,7 @@
 ## Fase 6 — expansão inicial
 
 Usar descritores próprios, genéricos e compactos em vez de copiar fichas privadas. Distinguir cobertura de planejamento de execução real. Rejeitar chaves duplicadas em JSON recebido pelo planejador e aplicar validação explícita de limites antes de planejar.
+
+## Fase 6.2 — cache restrito
+
+Cache não persistente, desabilitado por padrão; apenas adaptadores puros sem contexto podem optar. Cada estágio continua sujeito a aprovação e dependências. Apenas sucesso validado em JSON entra no cache, com cópias independentes e limite de 128 entradas por execução. Não reutilizar resultados de operações externas ou arquivos mutáveis. `cache_hit` identifica reutilização.

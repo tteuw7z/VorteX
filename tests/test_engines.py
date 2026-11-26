@@ -293,3 +293,50 @@ class CliTests(unittest.TestCase):
                 config.write_text(invalid)
                 with self.assertRaises(ValueError):
                     Config.load(config)
+
+
+class WorkflowCacheTests(unittest.TestCase):
+    def test_explicit_pure_cache_is_scoped_to_approved_stages_and_run(self):
+        calls = []
+        engine = Engine()
+        def pure(task):
+            calls.append(task)
+            return {"status": "SUCCESS", "evidence": "computed from task",
+                    "artifacts": {"values": [task]}}
+        engine.register("engineering", pure, cacheable=True)
+        graph = Workflow([Stage("first", "engineering", "same"),
+                          Stage("second", "engineering", "same", depends_on=("first",)),
+                          Stage("third", "engineering", "same", depends_on=("second",)),
+                          Stage("other", "engineering", "different")])
+        approvals = {"first", "second", "other"}
+        result = engine.run_workflow(graph, approvals=approvals)
+        self.assertEqual(calls.count("same"), 1)
+        self.assertEqual(calls.count("different"), 1)
+        self.assertFalse(result["first"].cache_hit)
+        self.assertTrue(result["second"].cache_hit)
+        self.assertEqual(result["third"].status, Status.BLOCKED)
+        self.assertFalse(result["third"].cache_hit)
+        result["first"].artifacts["values"].clear()
+        self.assertEqual(result["second"].artifacts["values"], ["same"])
+        again = engine.run_workflow(graph, approvals=approvals)
+        self.assertFalse(again["first"].cache_hit)
+        self.assertEqual(calls.count("same"), 2)
+
+    def test_uncached_and_failed_adapters_are_never_reused(self):
+        for cacheable, status in ((False, "SUCCESS"), (True, "FAILED")):
+            calls = []
+            engine = Engine()
+            def adapter(task):
+                calls.append(task)
+                return {"status": status, "evidence": "computed"}
+            engine.register("engineering", adapter, cacheable=cacheable)
+            flow = Workflow([Stage("a", "engineering", "same"),
+                             Stage("b", "engineering", "same")])
+            result = engine.run_workflow(flow, approvals={"a", "b"})
+            self.assertEqual(calls, ["same", "same"])
+            self.assertFalse(any(value.cache_hit for value in result.values()))
+
+    def test_cache_opt_in_requires_noncontextual_adapter_and_boolean(self):
+        for flags in ({"with_context": True, "cacheable": True}, {"cacheable": "yes"}):
+            with self.assertRaises(ValueError):
+                Engine().register("engineering", lambda _: {}, **flags)

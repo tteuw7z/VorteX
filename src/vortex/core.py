@@ -19,17 +19,27 @@ def plan(task: str, *, agent_limit: int = 3, skills: SkillEngine | None = None) 
 class Engine:
     def __init__(self, skills: SkillEngine | None = None):
         self._skills = skills or SkillEngine()
-        self._adapters: dict[str, tuple[Callable[..., dict], bool]] = {}
+        self._adapters: dict[str, tuple[Callable[..., dict], bool, bool]] = {}
 
-    def register(self, name: str, adapter: Callable[..., dict], *, with_context: bool = False) -> None:
+    def register(self, name: str, adapter: Callable[..., dict], *, with_context: bool = False,
+                 cacheable: bool = False) -> None:
+        """Register an adapter. Cache opt-in is only for pure task-to-JSON computations.
+
+        Never opt in for external calls, mutable files, clock-dependent results or side effects.
+        Cache lifetime is one workflow invocation; approval is still required for every stage.
+        """
+        if type(with_context) is not bool or type(cacheable) is not bool:
+            raise ValueError("Adapter flags must be booleans")
+        if with_context and cacheable:
+            raise ValueError("Contextual adapters cannot opt into task-only caching")
         if name not in self._skills.names or name in self._adapters:
             raise ValueError("Unknown or duplicate capability")
         if not callable(adapter):
             raise TypeError("Adapter must be callable")
-        self._adapters[name] = (adapter, with_context)
+        self._adapters[name] = (adapter, with_context, cacheable)
 
     def _invoke(self, name: str, task: str, prior: dict) -> dict:
-        adapter, with_context = self._adapters[name]
+        adapter, with_context, _ = self._adapters[name]
         try:
             result = adapter(task, deepcopy(prior)) if with_context else adapter(task)
             allowed = (Status.SUCCESS, Status.BLOCKED, Status.FAILED)
@@ -49,6 +59,7 @@ class Engine:
         if isinstance(approvals, (str, bytes)):
             raise ValueError("Provide approval labels as a collection of strings")
         results = {}
+        cache: dict[tuple[str, str], StageResult] = {}
         for stage in workflow.stages:
             if simulate:
                 result = StageResult(Status.PLANNED, reason="Simulation")
@@ -58,19 +69,29 @@ class Engine:
                 result = StageResult(Status.BLOCKED, reason="Approval missing")
             else:
                 prior = {dep: results[dep].artifacts for dep in stage.depends_on}
-                result = self._run_stage(stage, prior)
+                result = self._run_stage(stage, prior, cache)
             results[stage.id] = result
         return results
 
-    def _run_stage(self, stage: Stage, prior: dict) -> StageResult:
+    def _run_stage(self, stage: Stage, prior: dict,
+                   cache: dict[tuple[str, str], StageResult]) -> StageResult:
         history = []
         attempted = []
         for name in (stage.capability, *stage.alternatives):
             if name not in self._adapters:
                 continue
-            value = self._invoke(name, stage.task, prior)
             attempted.append(name)
-            outcome = replace(self._validate_result(name, value), attempted=tuple(attempted))
+            key = (name, stage.task)
+            cacheable = self._adapters[name][2]
+            if cacheable and key in cache:
+                outcome = replace(deepcopy(cache[key]), cache_hit=True,
+                                  attempted=tuple(attempted))
+            else:
+                value = self._invoke(name, stage.task, prior)
+                validated = self._validate_result(name, value)
+                if cacheable and validated.status == Status.SUCCESS and len(cache) < 128:
+                    cache[key] = deepcopy(validated)
+                outcome = replace(validated, attempted=tuple(attempted))
             if outcome.status == Status.SUCCESS or not stage.retry_safe:
                 return replace(outcome, previous=tuple(history))
             history.append(outcome)
