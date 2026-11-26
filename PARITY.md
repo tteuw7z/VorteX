@@ -79,3 +79,5 @@ Fase 6.11 validada (110 aprovados). Fase 6.12 adiciona varredura de histórico e
 Fase 6.13 acrescenta preflight e perfil revisor (23 perfis), não execução autônoma de agentes. Política v3 requer revisão vinculada aos bytes. Ganho real de tokens e equivalência funcional ainda não comprovados.
 
 Fase 6.13 aprovada (118 testes). Fase 6.14 inclui expansão automática e contrato de host; CI pendente. Nenhuma garantia de economia real, execução sem falhas ou independência implantada.
+
+Fase 6.15 oferece coordenação executável para adapters confiáveis; sem geração autônoma integrada, independência implantada ou publicação automática. CI pendente.

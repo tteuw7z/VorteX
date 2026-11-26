@@ -116,3 +116,7 @@
 - Expansão automática de perfis habilitados correspondentes; explicitação de desabilitações.
 - Totais de uso remoto separados de estimativas e fixtures.
 - AGENTS.md com fluxo de desenvolvimento e critérios de segurança.
+
+## Fase 6.15 — candidato
+
+- Coordenador Python para preflight, build, revisão por bytes, barreira estática, testes funcionais e segurança em ordem, com bloqueio antes de entrega.

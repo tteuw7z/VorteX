@@ -101,3 +101,6 @@
 
 - [x] Validar 6.13 em CI e implementar expansão automática, contrato AGENTS.md e separação da telemetria.
 - [ ] Validar 6.14, medir desempenho e qualidade em tarefas reais equivalentes e integrar execução obrigatória nos hosts.
+
+- [x] Implementar coordenador ordenado para integração de hosts com callbacks confiáveis.
+- [ ] Validar CI e integrar adapters reais independentes, isolamento e publicação obrigatória nos hosts.

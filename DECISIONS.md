@@ -98,3 +98,7 @@ Preferir decomposição, entrada/processamento/saída, teste de mesa, funções 
 ## Fase 6.14 — economia sem redução silenciosa
 
 O limite inicial de seleção não deve remover perfis de capacidades habilitadas correspondentes. Expandir automaticamente a seleção, mesmo com economia menor; preservar desabilitações explícitas e reportá-las. Palavras-chave não garantem cobertura semântica. Telemetria real exige resposta real, e economia real exige baseline comparável e avaliação de qualidade.
+
+## Fase 6.15 — coordenação executável
+
+O coordenador aceita somente callbacks de host confiável, não comandos arbitrários. Exige autorização e diretório novo. Bloqueia revisão incompleta, testes falhos/pulados, modificação de bytes e alertas estáticos. Não possui chave de assinatura, não publica nem comprova independência das conclusões de callbacks. Publicação permanece separada.
