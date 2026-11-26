@@ -30,7 +30,7 @@
 
 ## Próximas etapas
 
-- [ ] Fase 4. Revisar arquitetura, contratos, integração, dependências e matriz de equivalência.
+- [x] Fase 4. Revisar arquitetura e dependências, integrar resultados de CLI/DAG e rotas técnicas, unificar origem temporal e reconciliar a matriz.
 - [ ] Fase 5. Ajustar roteamento, desempenho, regressões e portabilidade entre assistentes.
 - [ ] Fase 6. Auditar arquitetura, segurança, privacidade e licenças. Validar builds e mídia finais e preparar release.
 - [ ] Registrar separadamente as capacidades ainda parciais, incluindo interpretação semântica de cenas, render de efeitos avançados, provedores externos, testes Android em aparelho e casos de ASR multilingue.

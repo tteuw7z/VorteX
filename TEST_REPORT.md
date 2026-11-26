@@ -1,5 +1,18 @@
 # Testes e evidências
 
+## Fase 4
+
+CPython 3.15.2 em Linux. A suíte local descobriu 57 testes; 54 passaram e três integrações opt-in foram puladas (SDK, Gradle e reconhecimento com modelo local). Compilação de módulos e verificação de espaços no diff passaram. A fixture de APK é executada em job separado no [CI do commit técnico](https://github.com/tteuw7z/VorteX/actions/runs/45817987722).
+
+| Ensaio | Resultado |
+| --- | --- |
+| Relatório de inspeção com erro sintático | CLI retorna 1 e REVIEW_REQUIRED. A DAG conserva o relatório com hash, bloqueia a etapa dependente e registra zero tentativas nela. |
+| ZIP → lote → etapa dependente, com FFmpeg e FFprobe | Um MP4 válido e um arquivo corrompido. Lote PARTIAL, 1 de 2 completo. O resultado incluiu o caminho do manifesto e a evidência por vídeo. CLI retornou 1 e o dependente ficou bloqueado. |
+| Linha do tempo | MP4 sintético com início em 5 s. A amostragem devolveu 0 e 0,5 s relativos e o mesmo digest da inspeção. O teste de render com legenda também passou. |
+| Seleção e dependências | ZIP resolveu um perfil existente. Plano validou verificação Android, ZIP, lote e transcrição sem chamar os binários. Inspeção AST de 28 módulos encontrou apenas imports locais ou da biblioteca padrão. Manifesto declara zero dependências Python de execução. |
+
+Os testes de Gradle e ASR reais desta operação estão registrados na Fase 3. Esta fase não mediu portabilidade entre assistentes, fidelidade multilíngue nem cobertura de conteúdo semântico.
+
 ## Fase 3
 
 As verificações locais usaram CPython 3.15.2 em Linux x86-64. O pacote foi instalado a partir do código público. A suíte passou **54/54**, sem skips, com SDK Android, Gradle, FFmpeg e ASR habilitados. O pacote continua sem dependências Python de execução.

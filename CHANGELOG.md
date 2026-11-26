@@ -1,5 +1,11 @@
 # Changelog
 
+## 2026-11-26 — Operação VORTEX, Fase 4
+
+- CLI e automação compartilham a classificação dos resultados. Relatórios parciais ou bloqueados conservam evidência para revisão.
+- A seleção de capacidades reconhece ZIP. O manifesto aceita verificação de APK, lote de vídeos e transcrição local.
+- A amostragem de quadros usa a origem da faixa primária que orienta o editor e a transcrição. Android e mídia compartilham o cálculo do digest de arquivo.
+
 ## 2026-11-26 — Operação VORTEX, Fase 3
 
 - Compilador APK e verificação de assinatura e arquitetura com Android SDK e Gradle.

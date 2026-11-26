@@ -21,3 +21,9 @@
 13. **Entradas locais e evidência.** ZIP, mídia, pesquisa e engenharia operam em arquivos locais explícitos. Arquivos são dados. Conteúdo de projeto só é executado quando o operador seleciona a compilação Gradle de um projeto confiável. O workflow genérico aceita somente operações locais permitidas e não executa comandos de shell.
 14. **Reconstrução original.** A sequência Study → Build → Check valida evidências, compilação estática e contrato do candidato. Material complementar pode esclarecer lacunas da fonte primária. `READY_FOR_RUNTIME_TEST` preserva a necessidade de testar comportamento.
 15. **Licenças e verificações.** Nenhum código ou binário de Android SDK, Gradle, FFmpeg, Whisper ou modelos é incorporado ao pacote. A disponibilidade continua dependente do ambiente. O preview aplica os limiares de contraste aos pares declarados. [Android SDK](https://developer.android.com/tools/apksigner) · [FFmpeg](https://ffmpeg.org/legal.html) · [WCAG 2.2](https://www.w3.org/WAI/WCAG22/Understanding/contrast-minimum.html)
+
+## Fase 4
+
+16. A CLI e a automação interpretam o estado de cada relatório pela mesma função. O Core exige evidência para transportar artefatos, inclusive em resultados bloqueados. Somente sucesso libera dependentes. O relatório de domínio conserva estados como PARTIAL e REVIEW_REQUIRED.
+17. O catálogo de skills identifica ZIP e reutiliza o perfil de engenharia. O manifesto admite verificação de APK, mídia em lote e transcrição por adaptadores locais. O build Gradle continua com entrada direta e projeto confiável.
+18. A origem da faixa primária vem dos metadados do mesmo arquivo para render, ASR e quadros. O cálculo de SHA-256 de arquivos é único. ZIP exige publicação atômica exclusiva; Android primeiro verifica assinaturas e produz relatório; mídia publica conjuntos de derivados. Essas garantias específicas orientam cada rotina.
