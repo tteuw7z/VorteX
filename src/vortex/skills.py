@@ -37,7 +37,7 @@ SKILLS = (
           ("define mechanics", "prototype gameplay", "test behavior and performance")),
     Skill("gis", ("gis", "geospatial", "geoespacial", "cartography", "cartografia", "qgis"), ("geospatial analyst", "reviewer"),
           ("identify coordinate system and data provenance", "check spatial transformations", "validate output")),
-    Skill("spatial", ("xr", "arcore", "arkit", "spatial", "imersivo", "immersive", "3d"), ("spatial experience designer", "reviewer"),
+    Skill("spatial", ("xr", "arcore", "arkit", "spatial", "imersivo", "imersiva", "immersive", "3d"), ("spatial experience designer", "reviewer"),
           ("define interaction and coordinate frame", "prototype experience", "check accessibility and performance")),
     Skill("support", ("support", "suporte", "troubleshooting", "helpdesk", "incident", "incidente", "network", "rede"), ("support engineer", "reviewer"),
           ("collect symptoms", "isolate causes safely", "verify recovery")),

@@ -45,3 +45,5 @@
 - Validação de entradas duplicadas e limites nos contratos de planejamento.
 - Testes de seleção, restrições de configuração e ausência de execução implícita.
 - CI pendente; sem alteração na versão pública.
+
+- Corrigido alias PT de experiências imersivas detectado em CI; suíte de catálogo adicionada aos jobs macOS e Windows.

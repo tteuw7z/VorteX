@@ -19,3 +19,5 @@ Fase 4.1 encerrada em 26/11/2026. O baseline público f0daf2820e49fafc079e8bfd0f
 ## Fase 6 — checkpoint 6.1
 
 Autorização recebida. Branch de integração isolada: phase-6/catalog-reconciliation. Ampliação original do catálogo para 19 capacidades de planejamento e 22 perfis, incluindo dez áreas antes não representadas explicitamente. Não são agentes em execução. Validação de CI ainda pendente no momento deste commit. Não publicar versão 1.0.0 nem declarar paridade integral. Próximos trabalhos: reconciliação granular das capacidades, cache seguro, transporte autenticado, qualidade multimodal e testes Android de execução.
+
+Primeiro CI da fase 6: 73 aprovados, 1 erro de alias PT, 3 ignorados. Correção aplicada; confirmar novo CI antes de integrar.

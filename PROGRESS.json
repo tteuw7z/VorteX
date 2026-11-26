@@ -105,9 +105,17 @@
       "profiles": 22,
       "scope": "planning only; external execution not implied"
     },
-    "ci_status": "pending",
+    "ci_status": "revalidation_pending",
     "full_parity": false,
     "authenticated_provider_calls": 0,
-    "android_device_runs": 0
+    "android_device_runs": 0,
+    "first_ci": {
+      "run": 45868049061,
+      "passed": 73,
+      "errors": 1,
+      "skipped": 3,
+      "portable_core": "success",
+      "android_fixture": "success"
+    }
   }
 }
