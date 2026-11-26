@@ -64,6 +64,7 @@ jobs:
       - run: python -m unittest discover -s tests -p test_engines.py -v
       - run: python -m unittest discover -s tests -p test_assistant.py -v
       - run: python -m unittest discover -s tests -p test_catalog_phase6.py -v
+      - run: python -m unittest discover -s tests -p test_remote.py -v
       - run: python -m unittest discover -s tests -p test_archive.py -v
       - run: python -m unittest discover -s tests -p test_automation.py -v
   android-fixture:

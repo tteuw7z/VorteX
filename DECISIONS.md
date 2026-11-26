@@ -54,3 +54,7 @@ Cache não persistente, desabilitado por padrão; apenas adaptadores puros sem c
 ## Fase 6.3 — roteamento eficiente
 
 Indexar palavras por capacidade e reutilizar o catálogo padrão evita percorrer e reconstruir todo o catálogo por solicitação. Preservar desempate pela ordem original e provar igualdade de planos em tarefas comuns antes de comparar latência. Não confundir latência com economia de tokens.
+
+## Fase 6.4 — transporte remoto
+
+Usar biblioteca padrão http.client com endpoints HTTPS fixos, sem redirecionamento ou retries automáticos. Exigir aprovação explícita e credencial do processo. O modelo pode executar apenas o planejador de leitura; a CLI remota não entra na automação técnica. Limitar tamanho, tempo, rodadas e tokens de saída. Uso vem das respostas, separado de transporte injetado. Sem armazenar respostas no cliente; OpenAI store=false não implica garantia de retenção zero pelo provedor.

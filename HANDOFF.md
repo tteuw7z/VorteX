@@ -27,3 +27,7 @@ Primeiro CI da fase 6: 73 aprovados, 1 erro de alias PT, 3 ignorados. Correção
 Implementado cache opt-in por workflow para adaptadores puros, sem contexto, com resultados JSON validados e bem-sucedidos. Aprovações continuam obrigatórias em todo estágio. Não habilitar para arquivos mutáveis, serviços remotos ou efeitos colaterais. CI pendente. Próximas etapas: medir desempenho pareado e implementar demais lacunas.
 
 CI 45868236196 aprovou a622fb4: 77 testes aprovados e 3 ignorados, macOS/Windows/fixture Android aprovados. Mediana do planejador: 30,27 µs/tarefa; não é comparação pareada. Fase 6.3 reutiliza o catálogo padrão e usa índice invertido, com comparação pareada do baseline no mesmo runner. Confirmar novo CI.
+
+## Fase 6.4 — transporte de planejamento
+
+Implementados clientes HTTPS explícitos para OpenAI Responses e Anthropic Messages, com ferramenta de planejamento apenas, limites de rodadas/tokens/tempo/tamanho, credencial por ambiente, sem redirecionamento ou retry automático. Telemetria por resposta sem confundir fixtures com serviço real. CI pendente; chamadas autenticadas dependem de credencial e modelo autorizados. Não publicar segredos.

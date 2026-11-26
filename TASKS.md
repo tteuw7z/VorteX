@@ -60,3 +60,6 @@
 - [x] Validar catálogo e cache em CI (a622fb4).
 - [x] Implementar índice invertido e benchmark pareado para tarefas comuns.
 - [ ] Validar otimização e registrar medição.
+
+- [x] Implementar transporte HTTPS e ciclo limitado de planejamento com aprovação explícita.
+- [ ] Validar contratos e fronteiras HTTPS em CI; executar validação autenticada somente com autorização e credenciais adequadas.

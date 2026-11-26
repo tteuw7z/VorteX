@@ -57,3 +57,8 @@
 
 - Catálogo padrão reutilizável e índice invertido de palavras-chave.
 - Benchmark pareado com baseline fixado e validação de equivalência nas tarefas comuns.
+
+## Fase 6.4 — candidato
+
+- Transporte HTTPS para OpenAI Responses e Anthropic Messages, com aprovação explícita, limite de execução e telemetria por resposta.
+- Testes de protocolo injetado, fronteira HTTPS simulada, bloqueio de ferramentas não autorizadas e ausência de retries.

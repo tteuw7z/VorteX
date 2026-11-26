@@ -126,3 +126,16 @@ The bridge exposes only local planning. See [contract tests](tests/test_assistan
 ## Project status
 
 [Parity matrix](PARITY.md) · [Test report](TEST_REPORT.md) · [Next phase](HANDOFF.md)
+
+## Remote planner (Phase 6 candidate)
+
+The read-only planning tool can be used through OpenAI Responses or Anthropic Messages. By default no external request is made. For a live run, set the appropriate API key in the process environment using your own authorized account, choose an enabled model, and explicitly approve sending the task and incurring API costs:
+
+```sh
+vortex host openai MODEL_ID "Plan an Android build" --approve-network
+vortex host anthropic MODEL_ID "Plan a ZIP analysis" --approve-network
+```
+
+Use `OPENAI_API_KEY` or `ANTHROPIC_API_KEY`; do not commit keys or place them in arguments. The HTTPS transport uses fixed endpoints, no redirects or automatic retries, a bounded number of requests and output tokens, and per-response usage reported by the service. It sends task text and planning results to the chosen provider. Do not send private information without authorization. The OpenAI client disables response storage and replays tool-loop state; provider retention policies still apply. The model can invoke only the local planning tool, not technical execution. Contract tests use injected responses and mocked HTTPS; live credentials, model compatibility and billing telemetry remain unverified.
+
+Protocol references: https://developers.openai.com/api/docs/guides/function-calling and https://platform.claude.com/docs/en/agents-and-tools/tool-use/handle-tool-calls.

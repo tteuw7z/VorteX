@@ -136,3 +136,7 @@ Testes de contagem real de chamadas, isolamento de artefatos, aprovação de cad
 ## Validação Fase 6.2
 
 CI 45868236196, a622fb4: 80 testes descobertos, 77 aprovados, 3 ignorados; todos os quatro jobs aprovados. Mediana do planejamento 30,27 µs/tarefa no job Linux. Fase 6.3 adiciona regressão de equivalência de pontuação e comparação pareada no mesmo runner; resultado pendente.
+
+## Fase 6.4 — testes adicionados (a executar)
+
+Ciclos locais de ferramenta nos dois protocolos, preservação de IDs e itens, uso por resposta, aprovação, credencial, limites, falhas, endpoints fixos e rejeição de redirects/JSON duplicado. Respostas injetadas e HTTPS mockado não comprovam transporte autenticado ao vivo.

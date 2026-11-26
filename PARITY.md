@@ -57,3 +57,5 @@
 Fase 6.2: cache em processo agora implementado para adaptadores puros explicitamente habilitados, limitado a 128 resultados bem-sucedidos por workflow. Não reutiliza falhas, arquivos mutáveis ou operações externas por padrão. Validação e ganho medido ainda pendentes.
 
 Fase 6.3: catálogo e cache passaram no CI 45868236196 (77 aprovados, 3 ignorados). Otimização por índice invertido implementada; ganho exige comparação pareada no CI. Nenhuma telemetria de tokens reais foi coletada.
+
+Fase 6.4: transporte de OpenAI Responses/Anthropic Messages e coleta de uso por resposta implementados no código. Somente testes locais de protocolo e fronteira HTTPS previstos neste commit. Zero chamadas autenticadas; integração real e economia faturada permanecem não comprovadas.
