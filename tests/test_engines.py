@@ -2,6 +2,7 @@ import contextlib
 import hashlib
 import io
 import json
+import os
 from pathlib import Path
 from tempfile import TemporaryDirectory
 import subprocess
@@ -69,6 +70,28 @@ class WorkflowTests(unittest.TestCase):
         engine.register("archive", lambda _: {"status": "SUCCESS"})
         self.assertEqual(engine.run("archive", "input", approved="false")["status"], Status.BLOCKED)
         self.assertEqual(report_status({"status": "PENDING_REVIEW"}), Status.BLOCKED)
+
+    def test_workflow_owns_a_snapshot_of_dependencies_and_alternatives(self):
+        needs, alternatives = ["first"], ["research"]
+        flow = Workflow([Stage("first", "archive", "prepare"),
+                         Stage("second", "media", "review", depends_on=needs,
+                               alternatives=alternatives)])
+        needs.clear()
+        alternatives.append("engineering")
+        engine = Engine()
+        engine.register("media", lambda _: {"status": "SUCCESS", "evidence": "fixture"})
+        self.assertEqual(flow.stages[-1].alternatives, ("research",))
+        self.assertEqual(engine.run_workflow(flow, approvals=["second"])["second"].status,
+                         Status.BLOCKED)
+
+    def test_retry_with_invalid_first_result(self):
+        engine = Engine()
+        engine.register("archive", lambda _: {"status": "SUCCESS", "artifacts": {"x": 1}})
+        engine.register("research", lambda _: {"status": "SUCCESS", "evidence": "fallback"})
+        flow = Workflow([Stage("read", "archive", "input", alternatives=("research",), retry_safe=True)])
+        result = engine.run_workflow(flow, approvals=["read"])["read"]
+        self.assertEqual((result.status, result.evidence), (Status.SUCCESS, "fallback"))
+        self.assertEqual(result.previous[0].reason, "Missing evidence")
 
     def test_graph_validation(self):
         for stages in (
@@ -210,6 +233,16 @@ class CliTests(unittest.TestCase):
         with contextlib.redirect_stdout(output):
             self.assertEqual(main(args), 0)
         return json.loads(output.getvalue())
+
+    def test_cli_json_survives_legacy_output_encoding(self):
+        with TemporaryDirectory() as directory:
+            path = Path(directory) / "fixture.zip"
+            with ZipFile(path, "w") as archive:
+                archive.writestr("vídeo-🎥.mp4", "fixture")
+            result = subprocess.run([sys.executable, "-m", "vortex", "inventory", str(path)],
+                                    env=os.environ | {"PYTHONIOENCODING": "cp1252"},
+                                    capture_output=True, check=True)
+            self.assertEqual(json.loads(result.stdout)[0]["path"], "vídeo-🎥.mp4")
 
     def test_configured_knowledge_and_legacy_plan(self):
         with TemporaryDirectory() as directory:

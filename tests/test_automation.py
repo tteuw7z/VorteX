@@ -8,6 +8,7 @@ import unittest
 from zipfile import ZipFile
 
 from vortex.cli import main
+from vortex.automation import execute_manifest
 
 
 class AutomationTests(unittest.TestCase):
@@ -47,6 +48,17 @@ class AutomationTests(unittest.TestCase):
             payload_hash = hashlib.sha256(json.dumps(payload, sort_keys=True,
                                                      ensure_ascii=False).encode()).hexdigest()
             self.assertEqual(result["steps"][1]["evidence"], "sha256(output JSON):" + payload_hash)
+
+    def test_missing_report_fails_closed(self):
+        with TemporaryDirectory() as directory:
+            spec = Path(directory) / "flow.json"
+            spec.write_text(json.dumps({"version": 1, "steps": [
+                {"id": "invalid", "argv": ["archive", "videos"]},
+                {"id": "after", "argv": ["archive", "videos"], "needs": ["invalid"]},
+            ]}), encoding="utf-8")
+            result = execute_manifest(spec, lambda _: ("archive", lambda: None),
+                                      approvals=("invalid", "after"))
+            self.assertEqual([item["status"] for item in result["steps"]], ["FAILED", "BLOCKED"])
 
     def test_invalid_step_prevents_all_effects(self):
         with TemporaryDirectory() as directory:

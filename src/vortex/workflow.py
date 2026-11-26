@@ -1,5 +1,5 @@
 """Types and validation for an executable workflow graph."""
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 from enum import StrEnum
 from graphlib import TopologicalSorter
 from typing import Iterable
@@ -14,6 +14,8 @@ class Status(StrEnum):
 
 def report_status(payload) -> Status:
     """Translate a technical report into a workflow outcome."""
+    if not isinstance(payload, (dict, list)):
+        return Status.FAILED
     if isinstance(payload, dict):
         label = str(payload.get("status", "")).upper()
         if label in ("FAIL", "FAILED", "ERROR"):
@@ -54,7 +56,16 @@ class Workflow:
     stages: tuple[Stage, ...]
 
     def __init__(self, stages: Iterable[Stage]):
-        entries = tuple(stages)
+        entries = []
+        for stage in stages:
+            for field_name in ("depends_on", "alternatives"):
+                names = getattr(stage, field_name)
+                if not isinstance(names, (tuple, list)) or any(
+                    not isinstance(name, str) or not name.strip() for name in names
+                ):
+                    raise ValueError(f"{field_name} must contain nonempty strings")
+            entries.append(replace(stage, depends_on=tuple(stage.depends_on),
+                                   alternatives=tuple(stage.alternatives)))
         index = {stage.id: stage for stage in entries}
         if not entries or len(index) != len(entries):
             raise ValueError("Workflow needs nonempty, unique stages")

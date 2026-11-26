@@ -71,6 +71,8 @@ def _invoke(callback: Callable) -> dict:
         return {"status": Status.BLOCKED, "reason": str(exc)}
     except (OSError, ValueError, BadZipFile) as exc:
         return {"status": Status.FAILED, "reason": str(exc)}
+    if not isinstance(payload, (dict, list)):
+        return {"status": Status.FAILED, "reason": "Expected a JSON object or array from the command"}
     status = report_status(payload)
     encoded = json.dumps(payload, sort_keys=True, ensure_ascii=False, allow_nan=False).encode()
     result = {"status": status, "evidence": "sha256(output JSON):" + hashlib.sha256(encoded).hexdigest(),

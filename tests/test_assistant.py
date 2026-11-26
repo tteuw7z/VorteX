@@ -22,6 +22,16 @@ class PlannerHostTests(unittest.TestCase):
         self.assertEqual(plans[0], plans[1])
         self.assertEqual(plans[0]["status"], "PLAN_ONLY")
 
+    def test_unicode_length_matches_across_hosts(self):
+        args = {"task": "vídeo " + "🎥" * 6000, "agent_limit": 2}
+        anthropic = answer_planner_call("anthropic", {"type": "tool_use", "id": "A",
+                                         "name": "vortex_plan", "input": args})
+        for escaped in (False, True):
+            openai = answer_planner_call("openai", {"type": "function_call", "call_id": "B",
+                                          "name": "vortex_plan",
+                                          "arguments": json.dumps(args, ensure_ascii=escaped)})
+            self.assertEqual(openai["output"], anthropic["content"])
+
     def test_host_cannot_request_execution(self):
         for name, extra in (("vortex_plan", {"approved": True}), ("apk_build", {})):
             with self.assertRaises(ValueError):

@@ -64,35 +64,36 @@ class Engine:
 
     def _run_stage(self, stage: Stage, prior: dict) -> StageResult:
         history = []
-        attempted = []
-        result = StageResult(Status.BLOCKED, reason="No configured adapter")
         for name in (stage.capability, *stage.alternatives):
             if name not in self._adapters:
                 continue
-            attempted.append(name)
-            if result.adapter is not None:
-                history.append(replace(result, previous=()))
             value = self._invoke(name, stage.task, prior)
-            status = Status(value["status"])
-            evidence, artifacts = value.get("evidence"), value.get("artifacts", {})
-            attempts = tuple(attempted)
-            if status == Status.SUCCESS or evidence is not None or artifacts:
-                if not isinstance(evidence, str) or not evidence.strip():
-                    return StageResult(Status.FAILED, name, reason="Missing evidence", attempted=attempts, previous=tuple(history))
-            if not isinstance(artifacts, dict):
-                return StageResult(Status.FAILED, name, reason="Invalid artifacts", attempted=attempts, previous=tuple(history))
-            try:
-                clean = json.loads(json.dumps(artifacts, allow_nan=False))
-                if clean != artifacts:
-                    raise ValueError("Lossy JSON conversion")
-            except (TypeError, ValueError, RecursionError):
-                return StageResult(Status.FAILED, name, reason="Artifacts must be JSON data",
-                                   attempted=attempts, previous=tuple(history))
-            if status == Status.SUCCESS:
-                return StageResult(status, name, evidence, clean, attempted=attempts, previous=tuple(history))
-            reason = value.get("reason") or value.get("error_type") or status.value
-            result = StageResult(status, name, evidence, clean,
-                                 reason if isinstance(reason, str) else status.value, attempts, tuple(history))
-            if not stage.retry_safe:
-                break
-        return result
+            outcome = self._validate_result(name, value)
+            if outcome.status == Status.SUCCESS or not stage.retry_safe:
+                return replace(outcome, attempted=tuple(row.adapter for row in history) + (name,),
+                               previous=tuple(history))
+            history.append(outcome)
+        if not history:
+            return StageResult(Status.BLOCKED, reason="No configured adapter")
+        return replace(history[-1], attempted=tuple(row.adapter for row in history),
+                       previous=tuple(history[:-1]))
+
+    @staticmethod
+    def _validate_result(name: str, value: dict) -> StageResult:
+        status = Status(value["status"])
+        evidence, artifacts = value.get("evidence"), value.get("artifacts", {})
+        if not isinstance(artifacts, dict):
+            return StageResult(Status.FAILED, name, reason="Invalid artifacts")
+        if status == Status.SUCCESS or evidence is not None or artifacts:
+            if not isinstance(evidence, str) or not evidence.strip():
+                return StageResult(Status.FAILED, name, reason="Missing evidence")
+        try:
+            clean = json.loads(json.dumps(artifacts, allow_nan=False))
+            if clean != artifacts:
+                raise ValueError("Lossy JSON conversion")
+        except (TypeError, ValueError, RecursionError):
+            return StageResult(Status.FAILED, name, reason="Artifacts must be JSON data")
+        reason = value.get("reason") or value.get("error_type") or status.value
+        return StageResult(status, name, evidence, clean,
+                           None if status == Status.SUCCESS else
+                           reason if isinstance(reason, str) else status.value)

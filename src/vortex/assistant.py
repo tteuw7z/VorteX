@@ -3,6 +3,10 @@ import json
 
 from .core import plan
 
+_MAX_TASK_CHARS = 8192
+# JSON can encode one non-BMP character as two six-character escapes.
+_MAX_ARGUMENT_CHARS = _MAX_TASK_CHARS * 12 + 1024
+
 
 def planner_tool(provider: str) -> dict:
     schema = {"type": "object", "properties": {"task": {"type": "string"},
@@ -24,7 +28,7 @@ def answer_planner_call(provider: str, call: dict) -> dict:
     if provider == "openai" and call.get("type") == "function_call":
         identifier = call.get("call_id")
         raw = call.get("arguments")
-        if not isinstance(raw, str) or len(raw) > 65536:
+        if not isinstance(raw, str) or len(raw) > _MAX_ARGUMENT_CHARS:
             raise ValueError("Invalid function arguments")
         args = json.loads(raw)
     elif provider == "anthropic" and call.get("type") == "tool_use":
@@ -36,7 +40,7 @@ def answer_planner_call(provider: str, call: dict) -> dict:
         raise ValueError("Missing tool call identifier")
     if not isinstance(args, dict) or args.keys() != {"task", "agent_limit"}:
         raise ValueError("Expected task and agent_limit")
-    if not isinstance(args["task"], str) or len(args["task"]) > 8192:
+    if not isinstance(args["task"], str) or len(args["task"]) > _MAX_TASK_CHARS:
         raise ValueError("Invalid planning task")
     output = json.dumps(plan(**args), ensure_ascii=False)
     if provider == "openai":

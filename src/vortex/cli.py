@@ -91,8 +91,8 @@ def main(argv=None):
         result = _dispatch(args, config)
     except (ValueError, OSError, BadZipFile, sqlite3.Error) as exc:
         parser.error(str(exc))
-    print(json.dumps(result, ensure_ascii=False, indent=2))
-    if getattr(args, "technical_handler", None) and isinstance(result, dict):
+    print(json.dumps(result, indent=2))
+    if getattr(args, "technical_handler", None):
         if report_status(result) in (Status.FAILED, Status.BLOCKED):
             return 1
     return 0
