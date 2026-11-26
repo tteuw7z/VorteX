@@ -91,6 +91,18 @@ class MediaIntegrationTests(unittest.TestCase):
         self.assertEqual([f["seconds"] for f in result["frames"]], [0, 0.5])
         self.assertEqual(result["source_sha256"], probe(self.source)["source_sha256"])
 
+    @unittest.skipUnless(shutil.which("tesseract"), "Tesseract is required for frame OCR")
+    def test_on_screen_text_in_sampled_frames(self):
+        ffmpeg("-f", "lavfi", "-i", "color=c=black:s=480x270:r=10:d=1",
+               "-vf", "drawtext=text=VORTEX TEST:fontcolor=white:fontsize=54:x=20:y=75",
+               "-c:v", "libx264", str(self.source))
+        out = self.root / "ocr"
+        result = extract_frames(self.source, out, interval=".5", ocr_language="eng")
+        self.assertEqual(result["ocr"]["languages"], ["eng"])
+        self.assertEqual([(frame["seconds"], frame["screen_text"]) for frame in result["frames"]],
+                         [(0, "VORTEX TEST"), (0.5, "VORTEX TEST")])
+        self.assertEqual(json.loads((out / "frames.json").read_text())["frames"], result["frames"])
+
     def test_edit_preserves_audio_and_reveals_on_expected_frame(self):
         ffmpeg("-f", "lavfi", "-i", "color=c=black:s=320x180:r=30:d=1.5",
                "-f", "lavfi", "-i", "sine=frequency=440:sample_rate=48000:duration=1.5",

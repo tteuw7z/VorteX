@@ -10,7 +10,7 @@ from .media import extract_frames, probe
 from .transcription import transcribe
 
 
-def _inspect(file, directory, *, interval, max_frames, model, language):
+def _inspect(file, directory, *, interval, max_frames, model, language, ocr_language):
     try:
         metadata = probe(file)
         if metadata["video"] is None:
@@ -22,7 +22,8 @@ def _inspect(file, directory, *, interval, max_frames, model, language):
     row = {"status": "SUCCESS", "metadata": metadata, "errors": {},
            "transcript": {"status": "NOT_REQUESTED" if model is None else "NO_AUDIO"}}
     try:
-        pictures = extract_frames(file, directory / "frames", interval=interval, max_frames=max_frames)
+        pictures = extract_frames(file, directory / "frames", interval=interval,
+                                  max_frames=max_frames, ocr_language=ocr_language)
         if pictures["source_sha256"] != metadata["source_sha256"]:
             raise ValueError("Source changed during inspection")
         row["frames"] = {"manifest": f"{directory.name}/frames/frames.json",
@@ -34,25 +35,31 @@ def _inspect(file, directory, *, interval, max_frames, model, language):
             transcript = transcribe(file, directory / "transcript", model=model, language=language)
             if transcript["source_sha256"] != metadata["source_sha256"]:
                 raise ValueError("Source changed during transcription")
-            row["transcript"] = {"status": "TRANSCRIBED", "language": transcript["language"],
+            got_text = bool(transcript["segments"])
+            row["transcript"] = {"status": "TRANSCRIBED" if got_text else "NO_RECOGNIZED_SPEECH",
+                                 "language": transcript["language"],
                                  "manual_reviewed": False,
                                  "manifest": f"{directory.name}/transcript/transcript.json"}
         except (ValueError, OSError) as exc:
             row["errors"]["transcription"] = str(exc)
             row["transcript"] = {"status": "FAILED"}
-    if row["errors"] or row.get("frames", {}).get("capped"):
+    if (row["errors"] or row.get("frames", {}).get("capped")
+            or row["transcript"]["status"] == "NO_RECOGNIZED_SPEECH"):
         row["status"] = "PARTIAL"
     return row
 
 
 def inspect_batch(source: Path, output: Path, *, interval: float = 2, max_frames: int = 500,
                   model: Path | None = None, language: str = "auto",
+                  ocr_language: str | None = None,
                   max_entries: int = MAX_ENTRIES, max_bytes: int = MAX_BYTES) -> dict:
     if not math.isfinite(interval) or interval <= 0 or type(max_frames) is not int or not 1 <= max_frames <= 10000:
         raise ValueError("Use a positive interval and a frame limit between 1 and 10000")
     for tool in ("ffprobe", "ffmpeg"):
         if shutil.which(tool) is None:
             raise FileNotFoundError(f"{tool} is required for batch inspection")
+    if ocr_language is not None and shutil.which("tesseract") is None:
+        raise FileNotFoundError("tesseract is required when OCR is requested")
     if model is not None:
         model = model.resolve(strict=True)
         if not model.is_file():
@@ -65,22 +72,22 @@ def inspect_batch(source: Path, output: Path, *, interval: float = 2, max_frames
         raise ValueError("Choose an output directory outside the input tree")
     if output.exists() or output.is_symlink():
         raise FileExistsError(f"Output already exists: {output}")
-    candidates = discover_videos(source, max_entries=max_entries, max_bytes=max_bytes)
-    if not candidates:
-        raise ValueError("No video candidates found in the source")
     output.parent.mkdir(parents=True, exist_ok=True)
     with TemporaryDirectory(prefix=".vortex-batch-", dir=output.parent) as staging:
         root = source
         if not source.is_dir():
             root = Path(staging) / "source"
             extract_archive(source, root, max_entries=max_entries, max_bytes=max_bytes)
+        candidates = discover_videos(root, max_entries=max_entries, max_bytes=max_bytes)
+        if not candidates:
+            raise ValueError("No video candidates found in the source")
         prepared = Path(staging) / "result"
         prepared.mkdir()
         rows = []
         for index, candidate in enumerate(candidates, 1):
             relative = candidate["path"]
             row = _inspect(root / relative, prepared / f"video_{index:04}", interval=interval,
-                           max_frames=max_frames, model=model, language=language)
+                           max_frames=max_frames, model=model, language=language, ocr_language=ocr_language)
             rows.append({"path": relative, **row})
         total_success = sum(row["status"] == "SUCCESS" for row in rows)
         report = {"status": ("SUCCESS" if total_success == len(rows) else

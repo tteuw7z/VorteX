@@ -77,6 +77,8 @@ def verify_apk(file: Path, tools: AndroidTools, *, required_abi: str | None = No
             raise ValueError("Expected one AndroidManifest.xml")
         native = [(match[1], name) for name in members
                   if (match := re.fullmatch(r"lib/([A-Za-z0-9_-]+)/[^/]+\.so", name))]
+        if len(native) != len(set(native)):
+            raise ValueError("APK has duplicate native library paths")
         abis = sorted({abi for abi, _ in native})
         if required_abi is not None and required_abi not in abis:
             raise ValueError(f"APK lacks the requested native ABI {required_abi}")
@@ -84,11 +86,15 @@ def verify_apk(file: Path, tools: AndroidTools, *, required_abi: str | None = No
             raise ValueError(f"No ELF validation is available for ABI {required_abi}")
         for abi, name in native:
             if expected := _ELF_BY_ABI.get(abi):
+                header_size = 52 if expected[0] == 1 else 64
                 with archive.open(name) as library:
-                    header = library.read(20)
-                if (len(header) < 20 or header[:4] != b"\x7fELF" or header[5] != 1
+                    header = library.read(header_size)
+                if (len(header) != header_size
+                        or header[:4] != b"\x7fELF" or header[5:7] != b"\x01\x01"
                         or (header[4], int.from_bytes(header[18:20], "little")) != expected):
                     raise ValueError(f"Native library ELF architecture does not match {abi}: {name}")
+                if int.from_bytes(header[16:18], "little") != 3:
+                    raise ValueError(f"Native library is not an ELF shared object: {name}")
 
     badging = _run(tools.binary("aapt2"), ["dump", "badging", file], step="Android manifest inspection")
     package = re.search(r"^package: name='([^']+)' versionCode='([^']*)' versionName='([^']*)'",

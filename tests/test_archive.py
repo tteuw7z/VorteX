@@ -64,7 +64,9 @@ class ArchiveTests(unittest.TestCase):
         )
         for name in invalid:
             with self.subTest(name=name):
-                self.make_archive([("first.txt", b"valid"), (name, b"invalid")])
+                raw = ZipInfo(name)
+                raw.filename = name  # The writer converts native separators in its constructor.
+                self.make_archive([("first.txt", b"valid"), (raw, b"invalid")])
                 with self.assertRaises(ValueError):
                     extract_archive(self.archive, self.output)
                 self.assertFalse(self.output.exists())

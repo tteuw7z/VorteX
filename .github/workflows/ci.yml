@@ -13,11 +13,18 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.15.2'
-      - name: Install FFmpeg if needed
+      - name: Install media tools if needed
         run: |
+          packages=()
           if ! command -v ffmpeg >/dev/null || ! command -v ffprobe >/dev/null; then
+            packages+=(ffmpeg)
+          fi
+          if ! command -v tesseract >/dev/null || ! tesseract --list-langs | grep -qx eng; then
+            packages+=(tesseract-ocr tesseract-ocr-eng)
+          fi
+          if (( ${#packages[@]} )); then
             sudo apt-get update -qq
-            sudo apt-get install -y --no-install-recommends ffmpeg
+            sudo apt-get install -y --no-install-recommends "${packages[@]}"
           fi
       - run: python -m pip install .
       - run: python -m compileall -q src tests

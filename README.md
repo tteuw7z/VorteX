@@ -73,6 +73,12 @@ vortex apk build ./authorized-android-project ./android-debug --variant debug
 vortex apk verify ./android-debug/app-debug.apk
 ```
 
+Add `--ocr-language eng` to `media frames` or `media batch` to read visible
+text from sampled frames. Install Tesseract and the selected language data in
+the host environment. Each sample keeps its timestamp and recognized text.
+For local speech recognition, give a known language with `--language pt` or
+`--language fr` when automatic detection is unreliable.
+
 ZIP mutations require a new destination with an existing parent. They enforce path, type, count, size and integrity checks. `media batch` reports each candidate by path and emits timecoded JPEGs, with optional ASR via `--model`. Candidates are found by video extensions and confirmed with FFprobe. Visual interpretation and transcript review remain separate from sampling and inference. Transcript outputs include TXT, JSON, SRT and progressive ASS. Grapheme timing is estimated from recognized word or segment intervals.
 
 Android verification reports package and version, signature schemes, certificate digest, APK SHA-256 and native ABI names. Check a required native architecture with `--abi arm64-v8a`. A resource-only APK can have an empty ABI list.

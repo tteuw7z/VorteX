@@ -11,14 +11,14 @@ class Skill:
     steps: tuple[str, ...]
 
 SKILLS = (
-    Skill("archive", ("zip", "unzip", "repack", "descompactar"), ("software engineer",),
+    Skill("archive", ("zip", "unzip", "repack", "descompactar", "descompacte", "zipado", "zipada"), ("software engineer",),
           ("inventory members", "validate limits", "process archive", "verify outputs")),
     Skill("android", ("apk", "android", "gradle"), ("android engineer", "qa"), ("inspect project", "resolve build tools", "build", "verify signature and hash")),
     Skill("media", ("video", "videos", "audio", "captions", "legendas", "legendar", "transcreva", "transcribe", "transcrever", "motion"), ("media engineer", "editor"), ("inventory inputs", "inspect audio and frames", "process", "validate output")),
     Skill("engineering", ("python", "code", "codigo", "bug", "software", "api"), ("software engineer", "qa"), ("inspect", "implement", "test", "review")),
-    Skill("research", ("research", "pesquisa", "investigar", "sources"), ("researcher", "reviewer"), ("decompose", "gather sources", "cross-check", "synthesize")),
-    Skill("design", ("design", "ui", "figma", "interface"), ("designer", "accessibility reviewer"), ("requirements", "prototype", "validate")),
-    Skill("learning", ("study", "estudar", "quiz", "aprender"), ("educator",), ("identify source", "explain", "practice", "review errors")),
+    Skill("research", ("research", "pesquisa", "pesquisar", "investigar", "sources", "fontes"), ("researcher", "reviewer"), ("decompose", "gather sources", "cross-check", "synthesize")),
+    Skill("design", ("design", "ui", "figma", "interface", "acessibilidade"), ("designer", "accessibility reviewer"), ("requirements", "prototype", "validate")),
+    Skill("learning", ("study", "estudo", "estudar", "quiz", "aprender"), ("educator",), ("identify source", "explain", "practice", "review errors")),
     Skill("security", ("security", "seguranca", "audit", "auditoria"), ("security reviewer",), ("scope authorization", "inspect", "verify", "report")),
     Skill("automation", ("workflow", "automacao", "automation"), ("automation engineer",), ("map steps", "check permissions", "execute", "verify")),
 )

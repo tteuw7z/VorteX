@@ -126,6 +126,7 @@ def transcribe(path: Path | str, output: Path | str, *, model: Path | str,
             "captions_fps": fps, "segments": [asdict(cue) for cue in cues],
             "adjusted_segments": adjusted,
             "manual_reviewed": False,
+            "speech_recognized": bool(cues),
             "timing_scope": "provider segment and token times; grouped word and estimated grapheme times",
             "review_cues": [i for i, item in enumerate(cues, 1) if not item.words or any(
                 word.confidence is None or word.confidence < .55 for word in item.words

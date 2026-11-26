@@ -36,9 +36,10 @@ def add_commands(subparsers):
     frames.add_argument("--interval", default="2")
     frames.add_argument("--scene-threshold", default="0.30")
     frames.add_argument("--max-frames", type=int, default=500)
+    frames.add_argument("--ocr-language", help="Read on-screen text using installed Tesseract data")
     frames.set_defaults(technical_handler=lambda args: extract_frames(
         args.source, args.output, interval=args.interval, scene_threshold=args.scene_threshold,
-        max_frames=args.max_frames,
+        max_frames=args.max_frames, ocr_language=args.ocr_language,
     ))
 
     qa = operations.add_parser("qa", help="Check frame cadence, tracks and optional SRT")

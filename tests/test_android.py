@@ -55,6 +55,20 @@ class AndroidValidationTests(unittest.TestCase):
                 verify_apk(apk, tools, required_abi="x86_64")
 
 
+    def test_abi_requires_a_shared_object_header(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            apk = root / "sample.apk"
+            header = bytearray(64)
+            header[:7] = b"\x7fELF\x02\x01\x01"
+            header[16:20] = b"\x02\x00\xb7\x00"  # ELF64 AArch64 executable, not a shared object.
+            with ZipFile(apk, "w") as output:
+                output.writestr("AndroidManifest.xml", "test manifest")
+                output.writestr("lib/arm64-v8a/fixture.so", header)
+            with self.assertRaisesRegex(ValueError, "not an ELF shared object"):
+                verify_apk(apk, AndroidTools(root, root), required_abi="arm64-v8a")
+
+
 @unittest.skipUnless(os.environ.get("VORTEX_TEST_ANDROID_SDK"), "Android SDK fixture test is opt-in")
 class AndroidSdkIntegrationTests(unittest.TestCase):
     def test_signed_sdk_fixture_and_reverification(self):

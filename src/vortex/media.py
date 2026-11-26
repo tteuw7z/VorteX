@@ -44,7 +44,7 @@ def _run_tool(name: str, args, operation: str, *, cwd=None, timeout=300) -> subp
         raise FileNotFoundError(f"{name} is required for {operation}")
     try:
         result = subprocess.run([executable, *args], cwd=cwd, stdin=subprocess.DEVNULL,
-                                capture_output=True, text=True, errors="replace", timeout=timeout)
+                                capture_output=True, encoding="utf-8", errors="replace", timeout=timeout)
     except subprocess.TimeoutExpired as exc:
         raise ValueError(f"{name} timed out during {operation}") from exc
     if result.returncode:
@@ -229,7 +229,7 @@ _FRAME_TIMEBASE = re.compile(r"(?m)^\[Parsed_showinfo_[^\n]+?\] config in time_b
 
 
 def extract_frames(path: Path | str, output: Path | str, *, interval=2,
-                   scene_threshold=0.30, max_frames=500) -> dict:
+                   scene_threshold=0.30, max_frames=500, ocr_language: str | None = None) -> dict:
     file = _local_file(path)
     destination = _destination(output)
     step = _decimal(interval, positive=True)
@@ -238,6 +238,12 @@ def extract_frames(path: Path | str, output: Path | str, *, interval=2,
         raise ValueError("Scene threshold must be between 0 and 1")
     if not isinstance(max_frames, int) or not 1 <= max_frames <= 10000:
         raise ValueError("Maximum frame count must be between 1 and 10000")
+    if ocr_language is not None:
+        if not re.fullmatch(r"[a-z]{3}(?:_[a-zA-Z]+)?(?:\+[a-z]{3}(?:_[a-zA-Z]+)?)*", ocr_language):
+            raise ValueError("Use installed Tesseract language codes joined by +")
+        available = _run_tool("tesseract", ["--list-langs"], "OCR language discovery")
+        if set(ocr_language.split("+")) - set(available.stdout.splitlines()):
+            raise ValueError("Requested Tesseract language data is not installed")
     info = _media_info(file)
     video, _ = _primary_tracks(info)
     if video is None:
@@ -269,6 +275,13 @@ def extract_frames(path: Path | str, output: Path | str, *, interval=2,
         report = {"source_sha256": file_sha256(file), "frames": frames, "capped": capped,
                   "interval_seconds": float(step), "scene_threshold": float(scene),
                   "timeline_origin": "primary video start", "source_origin_seconds": float(origin)}
-        (folder / "frames.json").write_text(json.dumps(report, indent=2) + "\n", encoding="utf-8")
+        if ocr_language is not None:
+            report["ocr"] = {"engine": "tesseract", "languages": ocr_language.split("+"),
+                             "scope": "text on sampled frames", "manual_reviewed": False}
+            for frame, image in zip(frames, files, strict=True):
+                recognized = _run_tool("tesseract", [str(image), "stdout", "-l", ocr_language,
+                                                      "--psm", "11"], "frame text recognition", timeout=30)
+                frame["screen_text"] = recognized.stdout.strip()
+        (folder / "frames.json").write_text(json.dumps(report, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
         _publish_directory(folder, destination)
     return {**report, "output": str(destination)}

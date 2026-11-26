@@ -7,7 +7,7 @@ from .batch import inspect_batch
 
 def _execute(args):
     return inspect_batch(args.source, args.output, interval=args.interval, max_frames=args.max_frames,
-                         model=args.model, language=args.language,
+                         model=args.model, language=args.language, ocr_language=args.ocr_language,
                          max_entries=args.max_entries, max_bytes=args.max_bytes)
 
 
@@ -19,6 +19,7 @@ def add_command(media_commands):
     batch.add_argument("--max-frames", type=int, default=500)
     batch.add_argument("--model", type=Path, help="Transcribe audio using the selected local Whisper model")
     batch.add_argument("--language", default="auto")
+    batch.add_argument("--ocr-language", help="Read on-screen text in each sampled video")
     batch.add_argument("--max-entries", type=int, default=MAX_ENTRIES)
     batch.add_argument("--max-bytes", type=int, default=MAX_BYTES)
     batch.set_defaults(technical_handler=_execute)

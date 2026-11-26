@@ -198,6 +198,24 @@ class KnowledgeTests(unittest.TestCase):
             self.assertEqual(json.loads(process.stdout), json.loads(json.dumps(result)))
             self.assertEqual(result["agents"], ["media engineer", "software engineer"])
 
+    def test_routes_representative_tasks_and_keeps_fast_fallback(self):
+        cases = (
+            ("Verifique a assinatura do APK", {"android"}),
+            ("Generate captions for the videos in a ZIP", {"media", "archive"}),
+            ("Descompacte a pasta zipada e transcreva os vídeos", {"media", "archive"}),
+            ("Pesquisar as fontes sobre acessibilidade", {"research", "design"}),
+            ("Build a Python workflow", {"engineering", "automation"}),
+            ("Quero um quiz para o estudo", {"learning"}),
+            ("Audit Android security", {"android", "security"}),
+            ("Obrigado pela ajuda", set()),
+        )
+        for task, expected in cases:
+            with self.subTest(task=task):
+                result = plan(task, agent_limit=2)
+                self.assertEqual({skill["name"] for skill in result["skills"]}, expected)
+                self.assertEqual(result["fallback"], not expected)
+                self.assertLessEqual(len(result["agents"]), 2)
+
     def test_context_preserves_checkpoint_and_restores_deduplicated_text(self):
         large = "ação" * 30
         checkpoint = {"decisions": [large], "evidence": "fixture"}
