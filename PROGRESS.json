@@ -85,7 +85,7 @@
   "phase_4_implementation": "3d749ef75741ed6aae03f69eab67135b319513ab",
   "phase_5_baseline": "f7de4c57eb9a05425469f5948d3c1dfa442db1dd",
   "phase_5_implementation": "645baca9d860728eed56e79b2a7b0d4da2abd748",
-  "checkpoint": "6.21-data-security",
+  "checkpoint": "6.21-data-security-validated",
   "review_4_1": {
     "status": "complete",
     "baseline": "f0daf2820e49fafc079e8bfd0f68704c675c7052",
@@ -106,7 +106,7 @@
       "scope": "planning only; external execution not implied",
       "status": "validated_ci"
     },
-    "ci_status": "candidate_revalidation_pending",
+    "ci_status": "validated_code_checkpoint",
     "full_parity": false,
     "authenticated_provider_calls": 0,
     "android_device_runs": 0,
@@ -123,9 +123,9 @@
       "scope": "explicit noncontextual pure adapters, one workflow, maximum 128 successful entries"
     },
     "validated_ci": {
-      "run": 45906687959,
-      "commit": "c99c059cfaa663c374d811a1a5d5a585723db643",
-      "passed": 136,
+      "run": 45907237193,
+      "commit": "6938dc52d581dcbba7bd86d52a35822cd43dacb7",
+      "passed": 144,
       "skipped": 3,
       "result": "success"
     },
@@ -174,7 +174,7 @@
         "independent_verifier_deployed": false,
         "host_enforcement": false,
         "scope": "bounded static inspection and authenticated exact-byte publishing",
-        "run": 45882770153,
+        "run": 45907237193,
         "policy_version": 4,
         "evidence_logs_required": true,
         "atomic_staging": true
@@ -194,9 +194,10 @@
       },
       "history_scan": {
         "status": "validated_ci",
-        "objects": 494,
+        "objects": 675,
+        "bytes": 3106124,
         "known_pattern_matches": 0,
-        "run": 45885353048
+        "run": 45907237193
       },
       "remote_privacy": {
         "status": "validated_local_ci",
@@ -229,7 +230,7 @@
       ]
     },
     "spectors": {
-      "status": "implemented_pending_ci",
+      "status": "validated_local_ci",
       "policy_version": 4,
       "baseline": "fe74039e2dc46656be63c71c129309aa5c33c0e2",
       "independent_reviewer_deployed": false,
@@ -242,7 +243,22 @@
         45907004303
       ],
       "compatibility_fix": "aliases in preflight, not legacy skill descriptors",
-      "data_security": "implemented_pending_ci"
+      "data_security": "validated_local_ci",
+      "preflight_benchmark": {
+        "run": 45907237193,
+        "baseline_median_us": 89.54689388888919,
+        "candidate_median_us": 68.04705277777619,
+        "all_previous_roles_preserved": true,
+        "provider_quality_equivalence": false,
+        "actual_provider_savings": null
+      },
+      "limitations": [
+        "No independent reviewer service or isolated host deployed",
+        "Logic plan and repair require trusted adapters; receipt validation is not semantic proof",
+        "No provider baseline or actual token savings measured",
+        "Direct technical commands are not universally gated",
+        "Private training materials not published; exhaustive study not certified"
+      ]
     }
   }
 }

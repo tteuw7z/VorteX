@@ -194,3 +194,9 @@ New Spector regression cases and portable test invocation added. Results pending
 Phase 6.17: CI 45906687959 at c99c059cfaa663c374d811a1a5d5a585723db643 completed successfully across all four jobs; 139 tests, 136 passed and 3 skipped. Phase 6.18 adds trusted callable checks, SQLite constraints and preflight timing; results pending.
 
 Phase 6.18 and 6.19 CI runs 45906948347 and 45907004303 failed the exact legacy planning comparison after generic keywords changed serialized Skill descriptors; portable and Android jobs passed. Phase 6.20 restores the legacy catalog and limits software alias expansion to preflight. Revalidation pending.
+
+## Phase 6.20–6.21 validated checkpoints
+
+- 6.20 (8400aa36700f13a5c59420604b9b0c6f5472128e): CI 45907175134, 145 tests, 142 passed, 3 skipped. Legacy common plans equal; preflight median 92.305 to 64.266 microseconds/task against 6.16.
+- 6.21 (6938dc52d581dcbba7bd86d52a35822cd43dacb7): CI 45907237193, all four jobs successful (Linux, macOS, Windows, synthetic Android APK). 147 tests, 144 passed, 3 skipped. Git history scan: 675 reachable objects, 3,106,124 bytes, zero known credential pattern matches. Legacy common planning benchmark: 11.709 to 8.692 microseconds/task, unchanged plans. Preflight benchmark: 89.547 to 68.047 microseconds/task vs 6.16; previous selected roles preserved in all six synthetic cases. Token counts are local estimates; provider savings and generated-output quality equivalence were not measured.
+- Remaining: independent semantic reviewer, isolated host execution, universal delivery enforcement, complete private-source study and full parity. No production authorization or absolute security certification.

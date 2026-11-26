@@ -68,3 +68,7 @@ Fase 6.15: coordenador Python executa preflight antes do build e ordena revisão
 ## Fase 6.16 — ativação e menu
 
 Candidato: contrato SKILL.md, sessão Python local, CLI chat, menus estruturados e fallback textual, ativação explícita sem fala automática, perfis de planejamento separados de execução vinculada, preflight automático em pedidos diretos. Testes adicionados; confirmar CI e integração real dos hosts. Sem alteração do gate de publicação. Não declarar paridade ou release 1.0.0.
+
+## Latest verified checkpoint (6.21)
+
+Continue from code commit 6938dc52d581dcbba7bd86d52a35822cd43dacb7 or its documentation-only successor, preserving phase 6.21. Push CI 45907237193 completed successfully across four jobs; 144 passed, 3 skipped. The Spector pipeline uses existing planner, coordinator and authenticated delivery gate, bounded trusted repair, separate test classes, database/API evidence and conservative static checks. No independent reviewer/sandbox is deployed. Do not copy private source material or claim actual provider savings, exhaustive study, full parity, universal delivery enforcement or zero vulnerabilities. Draft PR #1 remains unmerged.

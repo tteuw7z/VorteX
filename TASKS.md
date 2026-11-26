@@ -109,4 +109,5 @@
 - [ ] Validar CI e integrar menus nativos, localização e bindings confiáveis em sessões reais dos hosts.
 
 - [x] Validate phase 6.17 Spector pipeline and policy 4 (CI 45906687959).
-- [ ] Validate phase 6.18–6.19 trusted checks and repair loop; deploy independent reviewer, execution isolation and host enforcement separately.
+- [x] Validate phase 6.18–6.21 trusted checks, repair loop, compatibility and database/API gates (CI 45907237193).
+- [ ] Deploy independent reviewer, execution isolation and universal host enforcement; verify live provider token savings, complete source coverage and broader parity.
