@@ -70,6 +70,8 @@ class Conversation:
         elif section == "agents":
             roles = {role for skill in skills for role in skill.agents}
             roles.update(("code reviewer", "qa", "security reviewer"))
+            if "design" in self.enabled:
+                roles.update(("motion designer", "ui interaction tester"))
             rows = [{"id": p.role, "label": p.role, "detail": p.focus, "status": planning}
                     for p in AgentEngine().catalog() if p.role in roles]
         elif section == "tools":

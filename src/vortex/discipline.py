@@ -49,7 +49,10 @@ def prepare_task(task, *, agent_limit=3, skills=None):
     match_words = words | {"python"} if is_development else words
     all_matches = [s for s in SKILLS if match_words.intersection(s.keywords)]
     matched = [s for s in all_matches if s.name in allowed]
-    initial = tuple(dict.fromkeys((*roles, *_MANDATORY)))
+    motion_words = {"motion", "animation", "animacao", "animacoes", "vfx", "sakuga", "interface", "ui", "menu"}
+    visual_roles = ("motion designer", "ui interaction tester") if (
+        "design" in allowed and words.intersection(motion_words)) else ()
+    initial = tuple(dict.fromkeys((*roles, *_MANDATORY, *visual_roles)))
     matched_roles = tuple(dict.fromkeys(role for skill in matched for role in skill.agents))
     chosen = tuple(dict.fromkeys((*initial, *matched_roles)))
     selected = [record(profile) for profile in engine.load(chosen)]
@@ -61,6 +64,8 @@ def prepare_task(task, *, agent_limit=3, skills=None):
         # A keyword miss is not evidence that omitted roles are irrelevant.
         allowed_roles = {role for skill in SKILLS if skill.name in allowed for role in skill.agents}
         allowed_roles.update(initial)
+        if "design" in allowed:
+            allowed_roles.update(("motion designer", "ui interaction tester"))
         selected = [profile for profile in catalog if profile["role"] in allowed_roles]
     selected, economy = TokenSpector.select(task, catalog, selected)
     selected_roles = {profile["role"] for profile in selected}

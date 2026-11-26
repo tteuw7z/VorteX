@@ -165,3 +165,7 @@ The initial specialist cap no longer silently excludes matching enabled roles in
 ## Chat activation and menu (Phase 6.16 candidate)
 
 `vortex chat --locale pt Vortex sim 2` previews a complete session as JSON events. Use a fresh `vortex.conversation.Conversation` per conversation; call `handle` only on user messages. Explicit Vortex or 🇮🇪 activation emits the official greeting once; menu categories support textual navigation and structured rendering by an interactive host. No unsolicited voice greeting. The local CLI shows planning capabilities, never claims bound execution tools. Trusted Python hosts can supply enabled and actually bound capability IDs; all execution still needs existing authorization and delivery checks. Native rendering, other language localization and installing the [skill instructions](SKILL.md) depend on the host. ChatGPT, Claude and DeepSeek compatibility has not been tested in live sessions. Direct requests after activation run the existing automatic preflight, not arbitrary execution.
+
+### Motion UI (candidate)
+
+Generate a local, offline menu or control gallery with `vortex design motion CANDIDATE --mode menu --locale pt-BR` or `--mode gallery`. Add `--still` for no animation. The candidate is read-only and requires independent review before release. See [Motion UI](docs/MOTION_UI.md).

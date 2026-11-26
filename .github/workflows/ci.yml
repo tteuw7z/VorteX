@@ -82,6 +82,7 @@ jobs:
       - run: python -m unittest discover -s tests -p test_development.py -v
       - run: python -m unittest discover -s tests -p test_spectors.py -v
       - run: python -m unittest discover -s tests -p test_conversation.py -v
+      - run: python -m unittest discover -s tests -p test_motion_ui.py -v
       - run: python -m unittest discover -s tests -p test_archive.py -v
       - run: python -m unittest discover -s tests -p test_automation.py -v
   android-fixture:

@@ -138,3 +138,5 @@
 - Phase 6.21 candidate: database/API evidence types and conservative Python checks for direct SQL interpolation, insecure temporary names and unsafe YAML loading.
 
 - Phase 6.20 and 6.21 validated in CI 45907175134 and 45907237193 respectively. Latest code checkpoint: 144 passed, 3 skipped; all four jobs successful. Document-only checkpoint records verified evidence.
+
+- Phase 6.22 candidate: original Python motion presets, native offline menu and control gallery, reduced motion, CSP, contrast validation, two planning profiles and regression tests. No production authorization.

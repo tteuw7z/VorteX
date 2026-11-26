@@ -3,7 +3,7 @@
 import json
 from pathlib import Path
 
-from . import design, engineering, research
+from . import design, engineering, research, interface
 
 
 def _document(path: Path) -> dict:
@@ -53,6 +53,14 @@ def add_commands(subparsers):
     preview.add_argument("tokens", type=Path)
     preview.add_argument("output", type=Path)
     preview.set_defaults(technical_handler=_design_preview)
+
+    motion = design_commands.add_parser("motion", help="Generate an offline Motion UI candidate")
+    motion.add_argument("output", type=Path)
+    motion.add_argument("--mode", choices=("menu", "gallery"), default="menu")
+    motion.add_argument("--locale", choices=("pt-BR", "en"), default="pt-BR")
+    motion.add_argument("--still", action="store_true")
+    motion.set_defaults(technical_handler=lambda args: interface.write_preview(
+        args.output, mode=args.mode, locale=args.locale, still=args.still))
 
     commands = subparsers.add_parser("research", help="Organize local evidence and citations")
     research_commands = commands.add_subparsers(dest="research_action", required=True)
