@@ -113,6 +113,7 @@ try {
   session = (await request('Target.attachToTarget',{targetId:target.targetId,flatten:true},null)).sessionId;
   await request('Page.enable'); await request('Runtime.enable'); await request('Log.enable'); await request('Network.enable');
   await navigate('menu',1280,900);
+  assert.equal(await evaluate('document.getAnimations().length'),0,'menu must rest quietly');
   await screenshot('menu-desktop-rest');
   await key('Tab','Tab',9);
   assert.equal(await evaluate('document.activeElement.id'), 'motion-off');
@@ -129,6 +130,7 @@ try {
   await click('#section-settings summary');
   await waitFor(() => evaluate('document.querySelector("#section-settings").open'), 'mouse open');
   assert.equal(await evaluate('getComputedStyle(document.querySelector("#section-settings .effect")).animationName'),'vx-impact');
+  assert.equal(await evaluate('getComputedStyle(document.querySelector("#section-settings .fx")).animationName'),'vx-vector');
   for (const ms of [0,80,180,420]) {
     await evaluate('document.getAnimations().forEach(a=>{a.pause();a.currentTime='+ms+'})');
     await screenshot('motion-frame-'+ms);
@@ -146,6 +148,7 @@ try {
   await screenshot('menu-phone-expanded');
 
   await navigate('gallery',390,844);
+  assert.equal(await evaluate('document.getAnimations().length'),0,'initial controls must rest quietly');
   await click('input[role="switch"]',true);
   await waitFor(() => evaluate('document.querySelector("input[role=switch]").checked'), 'switch touch');
   await click('#choice-1',true);
@@ -170,19 +173,21 @@ try {
   await click('#motion-off',true);
   await waitFor(() => evaluate('document.querySelector("#motion-off").checked'), 'motion switch');
   assert.equal(await evaluate('getComputedStyle(document.querySelector(".field:has(input:checked) .effect")).animationName'),'none');
+  assert.equal(await evaluate('document.documentElement.scrollWidth <= innerWidth'),true,'gallery horizontal overflow');
   await screenshot('gallery-phone-motion-off');
 
   await navigate('menu',390,844,true);
   await click('#section-security summary',true);
   await waitFor(() => evaluate('document.querySelector("#section-security").open'), 'reduced-motion touch');
   assert.equal(await evaluate('getComputedStyle(document.querySelector("#section-security .effect")).animationName'),'none');
+  assert.equal(await evaluate('getComputedStyle(document.querySelector("#section-security .fx")).visibility'),'hidden');
   await screenshot('menu-phone-reduced-motion');
 
   const errors = events.filter(e=>e.method==='Runtime.exceptionThrown'||(e.method==='Log.entryAdded'&&e.params.entry.level==='error'));
   assert.equal(errors.length,0,'Browser errors or CSP violations');
   const remote = events.filter(e=>e.method==='Network.requestWillBeSent'&&/^https?:/.test(e.params.request.url));
   assert.equal(remote.length,0,'Preview made network requests');
-  const report={status:'PASS',browser:info.Browser,widths:[1280,390],keyboard:true,mouse:true,touch_emulated:true,stepped_animation_ms:[0,80,180,420],
+  const report={status:'PASS',browser:info.Browser,widths:[1280,390],keyboard:true,mouse:true,touch_emulated:true,quiet_rest:true,vector_animation:true,stepped_animation_ms:[0,80,180,420],
     range_keyboard:true,text_input:true,segmented:true,rating:true,select_keyboard:true,notice:true,reduced_motion:true,local_motion_switch:true,
     no_horizontal_overflow:true,network_requests:remote.length,browser_errors:errors.length,
     limitations:'Headless Chromium; no physical phone, Safari, Firefox or screen reader.'};

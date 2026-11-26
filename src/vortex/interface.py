@@ -3,6 +3,7 @@ import base64
 from hashlib import sha256
 from html import escape
 from pathlib import Path
+from types import MappingProxyType
 
 from .conversation import Conversation
 from .design import audit as audit_design
@@ -12,14 +13,14 @@ from .private_io import private_open
 from .security import audit as audit_security
 from .ui_components import Controls, effect_label
 
-COLORS = {
+COLORS = MappingProxyType({
     "background": "#0d0b14", "surface": "#191426", "raised": "#241b36",
     "ink": "#f8f4ff", "muted": "#c8b9e2", "accent": "#c6a7ff",
     "line": "#8f6dd0", "button": "#30204c", "warning": "#ffdda0",
-}
+})
 _CSS = """
 *{box-sizing:border-box}
-:root{color-scheme:dark;--bg:#0d0b14;--surface:#191426;--raised:#241b36;--ink:#f8f4ff;--muted:#c8b9e2;--accent:#c6a7ff;--line:#8f6dd0;--button:#30204c;--warning:#ffdda0}
+:root{color-scheme:dark}
 body{margin:0;background:var(--bg);color:var(--ink);font:16px/1.5 system-ui,sans-serif}
 main{width:min(100%,72rem);margin:auto;padding:clamp(16px,4vw,48px)}
 a{color:var(--accent);text-underline-offset:.2em}
@@ -61,7 +62,8 @@ progress{width:100%;height:18px;accent-color:var(--accent)}
 .switch-track{width:50px;height:30px;border:2px solid var(--line);border-radius:24px;flex:none;background:var(--raised);position:relative;pointer-events:none}
 .switch-track::after{content:"";position:absolute;left:4px;top:4px;width:18px;height:18px;border-radius:50%;background:var(--accent)}
 .switch-field input:checked+.switch-track{background:var(--button)}
-.switch-field input:checked+.switch-track::after{left:24px;animation:vx-pop var(--vx-pop-ms) linear both}
+.switch-field input:checked+.switch-track::after{left:24px}
+.switch-field input:checked:not([checked])+.switch-track::after{animation:vx-pop var(--vx-pop-ms) linear both}
 .switch-field input:focus-visible+.switch-track{outline:3px solid var(--accent);outline-offset:3px}
 .choice-segmented .choices,.choice-rating .choices{display:flex;flex-wrap:wrap;gap:6px}
 .choice-segmented .field,.choice-rating .field{border:1px solid var(--line);border-radius:12px;padding:4px 8px;min-height:44px}
@@ -76,16 +78,16 @@ footer{margin-top:28px;padding-top:16px;border-top:1px solid var(--line);color:v
 .effect::before,.effect::after{pointer-events:none;position:absolute;content:"";inset:-8px;border:2px solid var(--accent);border-radius:14px;transform:scale(0);visibility:hidden}
 .effect::after{inset:-12px;border-style:dashed;border-color:var(--line);border-radius:3px 20px 3px 20px}
 details[open]>summary .effect{animation:vx-impact var(--vx-impact-ms) linear both}
-details[open]>summary .effect::before,.field:has(input:checked) .effect::before{animation:vx-ring 420ms linear both}
-details[open]>summary .effect::after,.field:has(input:checked) .effect::after{animation:vx-shards 420ms linear both}
-.field:has(input:checked) .effect{animation:vx-pop var(--vx-pop-ms) linear both}
+details[open]>summary .effect::before,.field:has(input:checked:not([checked])) .effect::before{animation:vx-ring 420ms linear both}
+details[open]>summary .effect::after,.field:has(input:checked:not([checked])) .effect::after{animation:vx-shards 420ms linear both}
+.field:has(input:checked:not([checked])) .effect{animation:vx-pop var(--vx-pop-ms) linear both}
 details[open] .content{animation:vx-slide var(--vx-slide-ms) linear both}
 .action:focus-visible{animation:vx-spark var(--vx-spark-ms) linear both}
 .fx{position:absolute;width:58px;height:58px;right:-24px;top:-34px;pointer-events:none;visibility:hidden;transform:scale(0);overflow:visible}
 .fx-fill{fill:#4a3278;stroke:var(--accent);stroke-width:2.5;stroke-linejoin:round}
 .fx-line{fill:none;stroke:var(--accent);stroke-width:2.5;stroke-linecap:round}
 .fx-accent{fill:#e2c6ff;stroke:var(--line);stroke-width:1.5;stroke-linejoin:round}
-details[open]>summary .fx,.field:has(input:checked) .fx{animation:vx-vector var(--vx-impact-ms) linear both}
+details[open]>summary .fx,.field:has(input:checked:not([checked])) .fx{animation:vx-vector var(--vx-impact-ms) linear both}
 @keyframes vx-vector{0%{visibility:visible;transform:translate(0,7px) scale(.25) rotate(-8deg)}22%{transform:translate(10px,-5px) scale(1) rotate(0)}60%{transform:translate(14px,-10px) scale(.85) rotate(7deg)}100%{visibility:hidden;transform:translate(20px,-16px) scale(0) rotate(12deg)}}
 @keyframes vx-ring{0%{visibility:visible;transform:scale(.75)}55%{transform:scale(1.15)}100%{visibility:hidden;transform:scale(1.25);border-width:0}}
 @keyframes vx-shards{0%{visibility:visible;transform:rotate(-8deg) scale(.8)}60%{transform:rotate(5deg) scale(1.22)}100%{visibility:hidden;transform:rotate(8deg) scale(1.35);border-width:0}}
@@ -106,7 +108,9 @@ def _language(locale):
 def _page(content, *, locale, title, still):
     if type(still) is not bool:
         raise ValueError("Still mode must be a boolean")
-    css = _CSS + stylesheet()
+    palette = ":root{" + "".join("--" + ("bg" if name == "background" else name) + ":" + value + ";"
+                                  for name, value in COLORS.items()) + "}"
+    css = palette + _CSS + stylesheet()
     # Hash the exact inline stylesheet. All scripts and external loads are forbidden.
     css_hash = base64.b64encode(sha256(css.encode("utf-8")).digest()).decode("ascii")
     policy = "default-src 'none'; script-src 'none'; style-src 'sha256-" + css_hash + "'; base-uri 'none'; form-action 'none'; object-src 'none'"
@@ -118,13 +122,14 @@ def _page(content, *, locale, title, still):
             "><main>" + content + "</main></body></html>")
 
 
-def _hero(title, subtitle, *, pt):
+def _hero(title, subtitle, *, pt, still=False):
     status = "Visualização local · entrega não autorizada" if pt else "Local preview · delivery not authorized"
-    motion = "Desativar animações" if pt else "Disable animations"
+    motion = ("Animações desativadas" if pt else "Animations disabled") if still else ("Desativar animações" if pt else "Disable animations")
+    motion_state = " checked disabled" if still else ""
     return ('<header class="hero"><div><p class="eyebrow">VorteX / Motion UI</p><h1>' +
             escape(title) + '</h1><p class="muted">' + escape(subtitle) + '</p></div>' + _MARK +
             '</header><p class="status"><span class="status-dot" aria-hidden="true"></span>' +
-            status + '</p><label class="motion-option"><input id="motion-off" type="checkbox">' +
+            status + '</p><label class="motion-option"><input id="motion-off" type="checkbox"' + motion_state + '>' +
             motion + '</label>')
 
 
@@ -165,7 +170,7 @@ def render_menu(*, locale="pt-BR", session=None, still=False):
                 "Explore agents, capabilities and security. No operation runs here.")
     footer = ("Interface de consulta. O host continua responsável por executar e autorizar." if pt else
               "Read-only interface. The host remains responsible for execution and authorization.")
-    return _page(_hero(title, subtitle, pt=pt) + '<section class="layout" aria-label="' +
+    return _page(_hero(title, subtitle, pt=pt, still=still) + '<section class="layout" aria-label="' +
                  ("Seções" if pt else "Sections") + '">' + "".join(panels) + '</section><footer>' +
                  footer + '</footer>', locale=lang, title=title, still=still)
 
@@ -182,24 +187,24 @@ def render_gallery(*, locale="pt-BR", still=False):
     toggle, choose, intensity, text, progress, details, open_close = labels
     factory = Controls()
     controls = (
-        ("Switch", factory.toggle("demo-switch", toggle)),
-        ("Radio", factory.radio("choice", choose, ("A", "B"))),
-        ("Slider", factory.slider("demo-range", intensity)),
-        ("Input", factory.text("demo-text", text)),
-        ("Progress", factory.progress("demo-progress", progress)),
-        ("Disclosure", factory.disclosure("demo-details", open_close, details)),
-        ("Select", factory.select("demo-select", "Tema" if pt else "Theme", ("Violet", "Graphite"))),
-        ("Segmented", factory.radio("demo-segment", "Vista" if pt else "View",
+        ("Interruptor" if pt else "Switch", factory.toggle("demo-switch", toggle)),
+        ("Seleção" if pt else "Radio", factory.radio("choice", choose, ("A", "B"))),
+        ("Controle deslizante" if pt else "Slider", factory.slider("demo-range", intensity)),
+        ("Campo" if pt else "Input", factory.text("demo-text", text)),
+        ("Progresso" if pt else "Progress", factory.progress("demo-progress", progress)),
+        ("Detalhes" if pt else "Disclosure", factory.disclosure("demo-details", open_close, details)),
+        ("Lista" if pt else "Select", factory.select("demo-select", "Tema" if pt else "Theme", ("Violet", "Graphite"))),
+        ("Segmentado" if pt else "Segmented", factory.radio("demo-segment", "Vista" if pt else "View",
                                     ("Menu", "Lab", "Info"), selected=0, style="segmented")),
-        ("Rating", factory.radio("demo-rating", "Avaliação" if pt else "Rating",
+        ("Avaliação" if pt else "Rating", factory.radio("demo-rating", "Avaliação" if pt else "Rating",
                                  ("1 ★", "2 ★", "3 ★", "4 ★", "5 ★"), style="rating")),
-        ("Notice", factory.notice("demo-notice", "Ver aviso" if pt else "Show notice",
+        ("Aviso" if pt else "Notice", factory.notice("demo-notice", "Ver aviso" if pt else "Show notice",
                                   "Ação local, sem execução externa." if pt else "Local interaction, no external execution.")),
     )
     content = '<section class="layout">' + "".join(
         '<div class="panel gallery-card"><h2>' + name + '</h2>' + control + '</div>'
         for name, control in controls) + '</section>'
-    return _page(_hero(title, subtitle, pt=pt) + content + '<footer>VorteX · Motion UI</footer>',
+    return _page(_hero(title, subtitle, pt=pt, still=still) + content + '<footer>VorteX · Motion UI</footer>',
                  locale=lang, title=title, still=still)
 
 

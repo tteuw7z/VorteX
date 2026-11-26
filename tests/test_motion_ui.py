@@ -121,3 +121,13 @@ class MotionUITests(unittest.TestCase):
         self.assertIn('--vx-impact-ms:420ms', stylesheet())
         self.assertIn('class="fx fx-shards"', render_menu())
         self.assertIn('class="fx fx-cloud"', render_gallery())
+
+    def test_still_mode_reflects_state_and_palette_is_shared(self):
+        from vortex.interface import COLORS
+        html = render_menu(still=True)
+        self.assertIn('id="motion-off" type="checkbox" checked disabled', html)
+        self.assertIn("--bg:" + COLORS["background"], html)
+        self.assertIn("--accent:" + COLORS["accent"], html)
+        self.assertIn(":checked:not([checked])", render_gallery())
+        with self.assertRaises(TypeError):
+            COLORS["background"] = "#ffffff"

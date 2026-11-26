@@ -21,3 +21,5 @@ CI runs a test-only Node 22+ DevTools harness against installed Chromium. It gen
 The browser harness initially failed Enter activation. The revised test sends keyDown with the correct text, waits for actual state change, checks the focused section, and adds pointer and stepped CSS animation captures. Failed evidence is retained for diagnosis, never reported as a successful review.
 
 Five original vector motifs (shards, ring, slash, spark and cloud) decorate interaction labels. All are fixed inline SVG paths with aria-hidden and no external assets; they shrink away after finite motion. Animation durations are generated from the Python preset registry. Motion is disabled by the same local and system preference controls.
+
+Visual review of phase 6.25 captured menu and gallery at real browser widths and exposed overly subtle accents. Phase 6.26 adds original vector art. Phase 6.27 shares actual palette values with contrast validation, keeps initially selected controls visually quiet, localizes the gallery headings and exposes the forced-still mode accurately. Browser tests explicitly check quiet rest and vector animation.
