@@ -152,3 +152,11 @@ Render sintético a 60 fps com efeitos e áudio, comparação de pixels em quadr
 ## Validação Fase 6.5
 
 CI 45868881805, 434bc0b: 93 testes descobertos, 90 aprovados, 3 ignorados; quatro jobs aprovados. Render a 60 fps, comparação de pixels em quadros ativos/inativos, limites e integridade de mídia passaram. Fase 6.6 acrescenta transientes de graves e flash automático; CI pendente.
+
+## Validação Fase 6.6
+
+CI 45869077696, 0da86f8: 95 testes descobertos, 92 aprovados, 3 ignorados; quatro jobs aprovados. Dois transientes sintéticos de 80 Hz detectados, dois flashes renderizados, remapeamento de cortes e cadência aprovados. Benchmark pareado: 15,5032 → 11,3740 µs/tarefa; planos comuns iguais. Nenhuma medição de tokens faturados ou corpus musical real.
+
+## Revisão de segurança Fase 6.7
+
+Snapshot 0da86f8: 57/57 arquivos rastreados de texto examinados para formatos comuns de chaves de OpenAI/Anthropic, GitHub, Google, AWS, Slack e chaves privadas PEM; 0 correspondências, 0 erros de leitura. Não equivale a auditoria de histórico, análise semântica de dados pessoais ou revisão de dependências externas. SHAs das quatro Actions extraídos dos logs do CI aprovado; revalidação após pinning pendente.

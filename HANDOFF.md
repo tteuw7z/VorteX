@@ -35,3 +35,9 @@ Implementados clientes HTTPS explícitos para OpenAI Responses e Anthropic Messa
 CI 45868607929 aprovou 612afce: 86 aprovados, 3 ignorados, quatro jobs aprovados. Benchmark pareado manteve os cinco planos; 14,63 → 10,88 µs/tarefa. Transporte remoto validado apenas por contratos locais, zero credenciais/chamadas reais. Fase 6.5 implementa efeitos de vídeo em intervalos de saída; validar pixels e cadência no próximo CI.
 
 CI 45868881805 aprovou 434bc0b: 90 testes aprovados, 3 ignorados, quatro jobs aprovados, incluindo render e comparação de pixels. Fase 6.6 adiciona análise local de graves e flash automático remapeado por cortes. Validar novo CI; transientes sintéticos não comprovam acurácia em música real.
+
+## Fase 6.7 — evidência de segurança
+
+CI 45869077696 aprovou 0da86f8: 92 testes aprovados, 3 ignorados, quatro jobs aprovados, inclusive graves sintéticos e render. Comparação pareada: 15,50 → 11,37 µs/tarefa, planos comuns iguais. Varredura por padrões comuns de credenciais em todos os 57 arquivos de texto rastreados desse commit: zero correspondências. Não cobre histórico, dados pessoais sem padrões reconhecidos ou vulnerabilidades. Referência privada reconfirmada: 361 arquivos, 28 skills, 268 perfis em 18 divisões; nenhuma cópia de fichas. Actions fixadas nos SHAs observados no CI; revalidar. A fase permanece em andamento.
+
+Próximas prioridades: auditoria granular de capacidades e segurança/licenças, interpretação semântica de cenas, acurácia ASR em idiomas reais, integrações especializadas (Figma/3D/voz), instalação Android e chamadas autenticadas autorizadas. Não liberar 1.0.0 antes de comprovar aceite.

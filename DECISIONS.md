@@ -66,3 +66,7 @@ Aceitar apenas efeitos conhecidos com intervalos numéricos de saída, força li
 ## Fase 6.6 — transientes graves
 
 Extrair PCM local de banda 35–160 Hz, medir energia RMS por quadro e selecionar aumentos locais com distância mínima. Limitar análise a 600 s e 128 eventos. Mapear ao tempo de saída através dos cortes e aplicar até 32 efeitos, sem sobrescrever arquivos. Flash automático é opt-in e incompatível com flash manual simultâneo. Não alegar acurácia musical sem corpus real.
+
+## Fase 6.7 — revisão de cadeia de fornecimento
+
+Fixar Actions em hashes completos que foram observados no CI 45869077696. Atualizações futuras exigem revisão explícita; pinning não garante ausência de vulnerabilidades. A varredura de credenciais cobre apenas padrões conhecidos no snapshot de 57 arquivos, não histórico ou dados pessoais sem formato detectável. Não copiar fichas privadas: licença da referência não foi identificada por arquivo de licença na árvore auditada. O pacote público declara Apache-2.0 e zero dependências Python de runtime; licenças dos binários externos devem ser verificadas se distribuídos.

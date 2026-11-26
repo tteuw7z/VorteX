@@ -63,3 +63,5 @@ Fase 6.4: transporte de OpenAI Responses/Anthropic Messages e coleta de uso por 
 Fase 6.3/6.4: CI aprovou o índice e contratos locais HTTPS; mediana pareada de 14,63 para 10,88 µs/tarefa com planos iguais. Fase 6.5 adiciona efeitos explícitos de flash, shake rotacional, blur e contraste, ainda pendentes de validação. Sincronização automática musical, transições avançadas e descrição semântica continuam abertas.
 
 Fase 6.5: efeitos explícitos aprovados em render sintético e comparação de pixels (CI 45868881805). Fase 6.6 implementa onsets locais de 35–160 Hz e remapeamento de flash para cortes; ainda exige CI e validação musical real. Não equivale a reconhecimento semântico ou classificação perfeita de batidas.
+
+Fase 6.6: detecção de graves e flash automático passaram em áudio sintético real e render a 60 fps (CI 45869077696). Fase 6.7 reconfirmou inventário privado e verificou padrões comuns de credenciais em 57 arquivos públicos do candidato; nenhum match. Isso não comprova privacidade integral nem substitui revisão de histórico/licenças. Paridade e validações externas seguem abertas.

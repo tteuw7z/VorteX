@@ -72,3 +72,8 @@
 
 - Análise local de transientes de graves e flash automático opcional remapeado pelos cortes.
 - Testes com áudio sintético pulsado, renderização e remapeamento de cortes.
+
+## Fase 6.7 — candidato
+
+- Actions fixadas em hashes completos usados no CI validado.
+- Evidência de varredura limitada de padrões de credenciais e reconciliação de contagens do inventário.

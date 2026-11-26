@@ -71,3 +71,8 @@
 - [x] Validar efeitos reais por pixels e cadência em CI.
 - [x] Implementar detecção heurística de graves e flash automático por cortes.
 - [ ] Validar detecção e render em CI e corpus musical real autorizado.
+
+- [x] Validar transientes sintéticos e flash automático em CI.
+- [x] Recontar inventário privado por árvore Git não truncada e examinar padrões de credenciais no snapshot candidato.
+- [x] Fixar referências das Actions em commits observados no CI aprovado.
+- [ ] Revalidar workflow fixado, auditar histórico e licenças de distribuição e concluir reconciliação granular.
