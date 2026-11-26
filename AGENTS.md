@@ -30,3 +30,5 @@ Follow SKILL.md: explicit standalone activation only, one exact greeting per cha
 ## Spector stages
 
 The coordinator requires a structured logic/threat plan before building, byte-bound independent review, functional, integration, regression, performance and security receipts. Missing adapters or skipped checks block the coordinator. Policy 4 additionally requires those separate evidence logs for publication. Python lexical/compile checks and advisories do not prove semantic correctness. Preserve the full request; expand context when relevance is uncertain.
+
+On keyword misses retain enabled profiles instead of guessing irrelevance. Trusted repair is bounded and restarts all reviews and tests against new bytes; never reuse stale evidence. Unexpected artifact mutation stops the pipeline. Trusted local check execution is not an untrusted-code sandbox.

@@ -50,6 +50,7 @@ class StageResult:
     attempted: tuple[str, ...] = ()
     previous: tuple["StageResult", ...] = ()
     cache_hit: bool = False
+    economy: dict = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True, init=False)

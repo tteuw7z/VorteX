@@ -4,7 +4,7 @@ The existing planner, development coordinator and authenticated publisher are th
 
 Design principles: isolate input/output from computation; favor cohesive functions and meaningful names; use classes only where state justifies them; validate inputs and exceptional cases; use parameterized SQL, transactions and integrity constraints where relevant; test failure paths and avoid redundant abstractions. Comments explain intent, not obvious syntax.
 
-Private instructional material is not included. No claim of exhaustive source study, deployed independent reviewer, execution sandbox, universal host enforcement, or zero defects. Failed checks require a fresh reviewed candidate; automatic repair adapters are not implemented. Existing direct capability commands remain outside this coordinator. 
+Private instructional material is not included. No claim of exhaustive source study, deployed independent reviewer, execution sandbox, universal host enforcement, or zero defects. A configured trusted repair adapter may correct a normal validation failure up to three times. All review and test stages restart on new bytes; unexpected mutation or invalid evidence stops execution. Direct Engine and workflow execution now report preflight economy; direct technical CLI operations still require a host to enforce the full coordinator. 
 
 ## Reference architecture and local testing
 

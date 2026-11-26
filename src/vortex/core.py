@@ -55,7 +55,9 @@ class Engine:
     def run(self, name: str, task: str, *, approved: bool = False) -> dict:
         if approved is not True or name not in self._adapters:
             return {"status": Status.BLOCKED, "reason": "Approval or configured adapter missing"}
-        return self._invoke(name, task, {})
+        from .discipline import prepare_task
+        prepared = prepare_task(task, skills=self._skills)
+        return {**self._invoke(name, task, {}), "economy": prepared["economy"]}
 
     def run_workflow(self, workflow: Workflow, *, approvals: Collection[str] = (),
                      simulate: bool = False) -> dict[str, StageResult]:
@@ -63,6 +65,7 @@ class Engine:
             raise ValueError("Provide approval labels as a collection of strings")
         results = {}
         cache: dict[tuple[str, str], StageResult] = {}
+        from .discipline import prepare_task
         for stage in workflow.stages:
             if simulate:
                 result = StageResult(Status.PLANNED, reason="Simulation")
@@ -72,7 +75,8 @@ class Engine:
                 result = StageResult(Status.BLOCKED, reason="Approval missing")
             else:
                 prior = {dep: results[dep].artifacts for dep in stage.depends_on}
-                result = self._run_stage(stage, prior, cache)
+                prepared = prepare_task(stage.task, skills=self._skills)
+                result = replace(self._run_stage(stage, prior, cache), economy=prepared["economy"])
             results[stage.id] = result
         return results
 

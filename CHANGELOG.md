@@ -128,3 +128,7 @@
 - SKILL.md, CLI chat, preflight automático em pedidos diretos e dez testes de contrato; CI multiplataforma.
 
 - Phase 6.17 candidate: operational Spector helpers, structured pre-build logic/threat receipt, separate integration/regression/performance gates, Python lexical and compilation inventory, policy 4. CI pending.
+
+- Phase 6.17 validated: 136 passed, 3 skipped; Linux, macOS, Windows and synthetic Android CI succeeded (45906687959).
+- Phase 6.18 candidate: conservative fallback, trusted callable checks, preflight benchmark.
+- Phase 6.19 candidate: Engine/workflow economy reports and bounded repair with exact-byte revalidation; CI pending.

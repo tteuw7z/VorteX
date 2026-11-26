@@ -42,6 +42,8 @@ class WorkflowTests(unittest.TestCase):
         self.assertEqual(list(result), ["work", "review"])
         self.assertEqual(result["work"].artifacts, {"item": ["prepare result"]})
         self.assertEqual(result["review"].evidence, "fixture checked")
+        self.assertTrue(result["work"].economy["task_preserved"])
+        self.assertTrue(result["review"].economy["mandatory_review_roles_preserved"])
 
     def test_retry_keeps_evidence_isolated_from_downstream(self):
         engine = Engine()

@@ -108,4 +108,5 @@
 - [x] Implementar ativação explícita, saudação, menu estruturado e textual, preflight para pedidos diretos e contrato de skill portátil.
 - [ ] Validar CI e integrar menus nativos, localização e bindings confiáveis em sessões reais dos hosts.
 
-- [ ] Validate phase 6.17 Spector pipeline and policy 4; deploy independently trusted reviewer/test isolation and automatic repair loop separately.
+- [x] Validate phase 6.17 Spector pipeline and policy 4 (CI 45906687959).
+- [ ] Validate phase 6.18–6.19 trusted checks and repair loop; deploy independent reviewer, execution isolation and host enforcement separately.

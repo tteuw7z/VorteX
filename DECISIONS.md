@@ -104,3 +104,5 @@ O limite inicial de seleção não deve remover perfis de capacidades habilitada
 O coordenador aceita somente callbacks de host confiável, não comandos arbitrários. Exige autorização e diretório novo. Bloqueia revisão incompleta, testes falhos/pulados, modificação de bytes e alertas estáticos. Não possui chave de assinatura, não publica nem comprova independência das conclusões de callbacks. Publicação permanece separada.
 
 - Phase 6.17: reuse existing coordinator and delivery gate rather than duplicating security or claiming autonomous agents. Fail closed on missing test classes; require separate authenticated evidence. Token estimates are not provider usage.
+
+- Phase 6.18–6.19: fail conservatively on uncertain routing; allow bounded repairs only through an explicitly trusted adapter, with exact-byte revalidation; no new dependencies or automatic execution of untrusted Python.
