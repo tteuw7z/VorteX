@@ -15,3 +15,7 @@ Fase 4.1 encerrada em 26/11/2026. O baseline público f0daf2820e49fafc079e8bfd0f
 3. Confirmar testes e build no HEAD de release. Registrar o escopo do APK sintético, o estado da execução física e a procedência de qualquer assinatura.
 4. Registrar a comprovação de transporte e telemetria de OpenAI Responses e Anthropic Messages se houver modelos e credenciais autorizados. Manter tokens estimados separados de uso informado pelo serviço.
 5. Preparar documentação, versão e release conforme o escopo validado. A equivalência integral continua aberta.
+
+## Fase 6 — checkpoint 6.1
+
+Autorização recebida. Branch de integração isolada: phase-6/catalog-reconciliation. Ampliação original do catálogo para 19 capacidades de planejamento e 22 perfis, incluindo dez áreas antes não representadas explicitamente. Não são agentes em execução. Validação de CI ainda pendente no momento deste commit. Não publicar versão 1.0.0 nem declarar paridade integral. Próximos trabalhos: reconciliação granular das capacidades, cache seguro, transporte autenticado, qualidade multimodal e testes Android de execução.

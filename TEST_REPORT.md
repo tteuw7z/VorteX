@@ -122,3 +122,7 @@ O teste com ZIP mede operações de leitura e digest, a partir de uma fixture si
 | Privacidade | Comparação do pacote publicado com a árvore pública de base: somente os sete arquivos de continuidade novos, sem dados de commit, trechos de código ou ativos da fonte privada. |
 
 Reprodução pública: em ambiente Python 3.15.2, instale o pacote local, rode `python -m unittest discover -s tests -v` e execute `vortex --version` e `vortex plan "compile APK Android"`. Os testes do projeto de referência rodam apenas em checkout autorizado. Esta fase não estabelece equivalência integral nem desempenho medido.
+
+## Fase 6.1 — testes adicionados (a executar)
+
+Casos bilíngues para dez novas capacidades, integridade de perfis, limite de agentes, configuração restrita e ausência de adaptador de execução; argumentos duplicados, limites inválidos e tarefas vazias nos contratos de host. Nenhum resultado do candidato é declarado aprovado antes de CI.

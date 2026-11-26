@@ -49,3 +49,7 @@
 - Editor, voz e QA de mídia compartilham ativos e tempo em uma timeline única. Transcrição e legendas são etapas da mesma cadeia. Manter status distintos por etapa.
 - Design, pesquisa e engenharia compartilham evidências e revisão. Usar um contrato de verificação em vez de um runtime por especialidade.
 - Adaptadores e estados de aprovação devem passar por um único Core; perfis, ferramentas e serviços externos entram sob demanda.
+
+## Fase 6 — ampliação inicial
+
+19 capacidades de planejamento, 22 perfis originais. Finanças, informações de saúde, marketing, vendas, produto, projetos, jogos, GIS, experiências espaciais e suporte ganham rotas bilíngues limitadas. São descritores e perfis de planejamento; não equivalem a execução de ferramentas especializadas ou a cobertura integral das fichas da referência. Testes do candidato ainda aguardam CI. A paridade integral permanece aberta.

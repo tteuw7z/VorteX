@@ -38,3 +38,10 @@
 - Inventário e matriz de equivalência dos snapshots privado e público.
 - Decisões de licença, Python e dependências, evidências e handoff.
 - Mantida a versão do pacote 0.1.0. Esta etapa acrescenta os registros da auditoria.
+
+## Fase 6.1 — candidato em desenvolvimento
+
+- Dez novas capacidades de planejamento e dez perfis originais, com roteamento PT/EN.
+- Validação de entradas duplicadas e limites nos contratos de planejamento.
+- Testes de seleção, restrições de configuração e ausência de execução implícita.
+- CI pendente; sem alteração na versão pública.

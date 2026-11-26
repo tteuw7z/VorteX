@@ -42,3 +42,7 @@
 25. O OCR é ativado por idioma e lê somente quadros amostrados. Usa Tesseract e dados já instalados no host. O relatório separa texto visível de reconhecimento de fala. O modelo Whisper conserva sinalização de revisão e não trata o marcador [BLANK_AUDIO] como fala.
 26. MacOS e Windows executam regressões de Core, ZIP, CLI, DAG e envelopes. No Windows, a fixture de ZIP grava o nome literal para testar a mesma entrada do Linux. O motor Android continua dependente de SDK e host compatíveis.
 27. A verificação ARM64 confirma cabeçalho ELF e assinatura do pacote. O aceite da execução nativa requer um aparelho ou emulador ARM64 e uma aplicação de teste que invoque a biblioteca. Tesseract, SDK, compiladores, Whisper e pesos permanecem externos ao pacote. [Tesseract](https://github.com/tesseract-ocr/tesseract/blob/main/LICENSE) · [Android ABIs](https://developer.android.com/ndk/guides/abis)
+
+## Fase 6 — expansão inicial
+
+Usar descritores próprios, genéricos e compactos em vez de copiar fichas privadas. Distinguir cobertura de planejamento de execução real. Rejeitar chaves duplicadas em JSON recebido pelo planejador e aplicar validação explícita de limites antes de planejar.

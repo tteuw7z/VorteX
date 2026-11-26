@@ -45,3 +45,11 @@
 - [ ] Validar em contas autorizadas os dois ciclos de chamada remota e registrar uso real fornecido pelos serviços.
 - [ ] Fase 6. Auditar arquitetura, segurança, privacidade e licenças. Validar builds e mídia finais e preparar release.
 - [ ] Registrar separadamente as capacidades ainda parciais, incluindo interpretação semântica de cenas, render de efeitos avançados, provedores externos, testes Android em aparelho e casos de ASR multilingue.
+
+## Fase 6 — checkpoint 6.1
+
+- [x] Confirmar baseline e acesso de leitura à referência privada.
+- [x] Implementar dez rotas de planejamento originais e perfis correspondentes, sem publicar arquivos privados.
+- [x] Rejeitar argumentos JSON duplicados e validar limites de chamadas de planejamento.
+- [ ] Verificar CI do candidato e reconciliar capacidades restantes em detalhe.
+- [ ] Implementar e medir lacunas técnicas ainda abertas; manter validações externas separadas.
