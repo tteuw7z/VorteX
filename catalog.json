@@ -1,0 +1,1606 @@
+{
+  "schema": 1,
+  "source_sha": "ad6c48c4c6aa39794c7a2b8c4218a95de6aa2d69",
+  "skills": [
+    {
+      "name": "archive",
+      "keywords": [
+        "zip",
+        "unzip",
+        "repack",
+        "descompactar",
+        "descompacte",
+        "zipado",
+        "zipada"
+      ],
+      "agents": [
+        "software engineer"
+      ],
+      "steps": [
+        "inventory members",
+        "validate limits",
+        "process archive",
+        "verify outputs"
+      ]
+    },
+    {
+      "name": "android",
+      "keywords": [
+        "apk",
+        "android",
+        "gradle"
+      ],
+      "agents": [
+        "android engineer",
+        "qa"
+      ],
+      "steps": [
+        "inspect project",
+        "resolve build tools",
+        "build",
+        "verify signature and hash"
+      ]
+    },
+    {
+      "name": "media",
+      "keywords": [
+        "video",
+        "videos",
+        "audio",
+        "captions",
+        "legendas",
+        "legendar",
+        "transcreva",
+        "transcribe",
+        "transcrever",
+        "motion"
+      ],
+      "agents": [
+        "media engineer",
+        "editor"
+      ],
+      "steps": [
+        "inventory inputs",
+        "inspect audio and frames",
+        "process",
+        "validate output"
+      ]
+    },
+    {
+      "name": "engineering",
+      "keywords": [
+        "python",
+        "code",
+        "codigo",
+        "bug",
+        "software",
+        "api"
+      ],
+      "agents": [
+        "software engineer",
+        "qa"
+      ],
+      "steps": [
+        "inspect",
+        "implement",
+        "test",
+        "review"
+      ]
+    },
+    {
+      "name": "research",
+      "keywords": [
+        "research",
+        "pesquisa",
+        "pesquisar",
+        "investigar",
+        "sources",
+        "fontes"
+      ],
+      "agents": [
+        "researcher",
+        "reviewer"
+      ],
+      "steps": [
+        "decompose",
+        "gather sources",
+        "cross-check",
+        "synthesize"
+      ]
+    },
+    {
+      "name": "design",
+      "keywords": [
+        "design",
+        "ui",
+        "figma",
+        "interface",
+        "acessibilidade"
+      ],
+      "agents": [
+        "designer",
+        "accessibility reviewer"
+      ],
+      "steps": [
+        "requirements",
+        "prototype",
+        "validate"
+      ]
+    },
+    {
+      "name": "learning",
+      "keywords": [
+        "study",
+        "estudo",
+        "estudar",
+        "quiz",
+        "aprender"
+      ],
+      "agents": [
+        "educator"
+      ],
+      "steps": [
+        "identify source",
+        "explain",
+        "practice",
+        "review errors"
+      ]
+    },
+    {
+      "name": "security",
+      "keywords": [
+        "security",
+        "seguranca",
+        "audit",
+        "auditoria"
+      ],
+      "agents": [
+        "security reviewer"
+      ],
+      "steps": [
+        "scope authorization",
+        "inspect",
+        "verify",
+        "report"
+      ]
+    },
+    {
+      "name": "automation",
+      "keywords": [
+        "workflow",
+        "automacao",
+        "automation"
+      ],
+      "agents": [
+        "automation engineer"
+      ],
+      "steps": [
+        "map steps",
+        "check permissions",
+        "execute",
+        "verify"
+      ]
+    },
+    {
+      "name": "finance",
+      "keywords": [
+        "finance",
+        "financas",
+        "orcamento",
+        "budget",
+        "contabilidade",
+        "accounting"
+      ],
+      "agents": [
+        "financial analyst",
+        "reviewer"
+      ],
+      "steps": [
+        "identify scope and assumptions",
+        "check calculations and sources",
+        "report risks and uncertainty"
+      ]
+    },
+    {
+      "name": "healthcare",
+      "keywords": [
+        "healthcare",
+        "saude",
+        "clinical",
+        "clinico",
+        "medico",
+        "medical"
+      ],
+      "agents": [
+        "health information reviewer",
+        "reviewer"
+      ],
+      "steps": [
+        "identify information need",
+        "consult authoritative evidence",
+        "flag uncertainty and need for professional review"
+      ]
+    },
+    {
+      "name": "marketing",
+      "keywords": [
+        "marketing",
+        "campaign",
+        "campanha",
+        "seo",
+        "branding",
+        "advertising",
+        "publicidade"
+      ],
+      "agents": [
+        "marketing strategist",
+        "reviewer"
+      ],
+      "steps": [
+        "identify audience",
+        "define campaign objectives",
+        "measure results"
+      ]
+    },
+    {
+      "name": "sales",
+      "keywords": [
+        "sales",
+        "vendas",
+        "prospecting",
+        "prospeccao",
+        "crm"
+      ],
+      "agents": [
+        "sales analyst",
+        "reviewer"
+      ],
+      "steps": [
+        "identify customer needs",
+        "plan outreach with consent",
+        "review outcomes"
+      ]
+    },
+    {
+      "name": "product",
+      "keywords": [
+        "product",
+        "produto",
+        "roadmap",
+        "backlog",
+        "discovery"
+      ],
+      "agents": [
+        "product strategist",
+        "reviewer"
+      ],
+      "steps": [
+        "identify user needs",
+        "prioritize requirements",
+        "define acceptance criteria"
+      ]
+    },
+    {
+      "name": "project",
+      "keywords": [
+        "project",
+        "projeto",
+        "cronograma",
+        "milestones",
+        "milestone",
+        "sprint"
+      ],
+      "agents": [
+        "project coordinator",
+        "reviewer"
+      ],
+      "steps": [
+        "define scope",
+        "map dependencies and milestones",
+        "review delivery risks"
+      ]
+    },
+    {
+      "name": "game",
+      "keywords": [
+        "game",
+        "games",
+        "jogo",
+        "jogos",
+        "gameplay",
+        "godot",
+        "unity"
+      ],
+      "agents": [
+        "game developer",
+        "reviewer"
+      ],
+      "steps": [
+        "define mechanics",
+        "prototype gameplay",
+        "test behavior and performance"
+      ]
+    },
+    {
+      "name": "gis",
+      "keywords": [
+        "gis",
+        "geospatial",
+        "geoespacial",
+        "cartography",
+        "cartografia",
+        "qgis"
+      ],
+      "agents": [
+        "geospatial analyst",
+        "reviewer"
+      ],
+      "steps": [
+        "identify coordinate system and data provenance",
+        "check spatial transformations",
+        "validate output"
+      ]
+    },
+    {
+      "name": "spatial",
+      "keywords": [
+        "xr",
+        "arcore",
+        "arkit",
+        "spatial",
+        "imersivo",
+        "imersiva",
+        "immersive",
+        "3d"
+      ],
+      "agents": [
+        "spatial experience designer",
+        "reviewer"
+      ],
+      "steps": [
+        "define interaction and coordinate frame",
+        "prototype experience",
+        "check accessibility and performance"
+      ]
+    },
+    {
+      "name": "support",
+      "keywords": [
+        "support",
+        "suporte",
+        "troubleshooting",
+        "helpdesk",
+        "incident",
+        "incidente",
+        "network",
+        "rede"
+      ],
+      "agents": [
+        "support engineer",
+        "reviewer"
+      ],
+      "steps": [
+        "collect symptoms",
+        "isolate causes safely",
+        "verify recovery"
+      ]
+    }
+  ],
+  "agents": [
+    {
+      "role": "android engineer",
+      "focus": "Inspect Android build inputs and environment",
+      "output": "Build result with signature evidence and artifact digest"
+    },
+    {
+      "role": "code reviewer",
+      "focus": "Review every changed file, logic, names, responsibilities and error paths",
+      "output": "Byte-bound file coverage, findings and reproducible review evidence"
+    },
+    {
+      "role": "qa",
+      "focus": "Check acceptance criteria and regressions",
+      "output": "Verification results with commands, observations and gaps"
+    },
+    {
+      "role": "media engineer",
+      "focus": "Inspect streams, timing and encoding requirements",
+      "output": "Media measurements and a reproducible processing record"
+    },
+    {
+      "role": "editor",
+      "focus": "Plan and validate cuts, captions and synchronization",
+      "output": "Timecoded edit decisions and review observations"
+    },
+    {
+      "role": "software engineer",
+      "focus": "Understand existing interfaces and implement the scoped change",
+      "output": "Tested patch with behavioral evidence"
+    },
+    {
+      "role": "researcher",
+      "focus": "Resolve the question from relevant primary evidence",
+      "output": "Findings with provenance and unresolved questions"
+    },
+    {
+      "role": "reviewer",
+      "focus": "Check claims against their supporting evidence",
+      "output": "Corrections, uncertainty and coverage"
+    },
+    {
+      "role": "designer",
+      "focus": "Turn requirements into a usable visual hierarchy",
+      "output": "Prototype and interaction decisions"
+    },
+    {
+      "role": "accessibility reviewer",
+      "focus": "Check keyboard use, contrast and accessible names",
+      "output": "Observed failures and verification steps"
+    },
+    {
+      "role": "motion designer",
+      "focus": "Design bounded interaction motion, quiet resting states and meaningful feedback",
+      "output": "Motion recipes and frame-level review with reduced-motion behavior"
+    },
+    {
+      "role": "ui interaction tester",
+      "focus": "Test native semantics, keyboard, touch, responsive layout and motion preferences",
+      "output": "Browser evidence and explicit untested environments"
+    },
+    {
+      "role": "educator",
+      "focus": "Match examples and practice to the learner's goals",
+      "output": "Exercises with explanations and feedback"
+    },
+    {
+      "role": "security reviewer",
+      "focus": "Inspect permission boundaries and defensive controls",
+      "output": "Findings with evidence and mitigation"
+    },
+    {
+      "role": "automation engineer",
+      "focus": "Check prerequisites, permissions and failure recovery",
+      "output": "Workflow with verification and recovery behavior"
+    },
+    {
+      "role": "financial analyst",
+      "focus": "Analyze financial assumptions and calculations",
+      "output": "Calculation record and uncertainty"
+    },
+    {
+      "role": "health information reviewer",
+      "focus": "Review health information without replacing professional care",
+      "output": "Sourced information and safety caveats"
+    },
+    {
+      "role": "marketing strategist",
+      "focus": "Review audience, messaging and measurement",
+      "output": "Campaign plan and evaluation criteria"
+    },
+    {
+      "role": "sales analyst",
+      "focus": "Assess customer needs and ethical outreach",
+      "output": "Sales workflow and measurement"
+    },
+    {
+      "role": "product strategist",
+      "focus": "Evaluate product requirements and tradeoffs",
+      "output": "Prioritized scope and acceptance criteria"
+    },
+    {
+      "role": "project coordinator",
+      "focus": "Coordinate milestones, dependencies and risks",
+      "output": "Delivery plan and review checkpoints"
+    },
+    {
+      "role": "game developer",
+      "focus": "Design and test game mechanics",
+      "output": "Prototype plan and gameplay acceptance checks"
+    },
+    {
+      "role": "geospatial analyst",
+      "focus": "Review geospatial datasets and coordinate assumptions",
+      "output": "Spatial analysis plan and validation"
+    },
+    {
+      "role": "spatial experience designer",
+      "focus": "Design spatial interactions and evaluate constraints",
+      "output": "Spatial prototype plan and verification"
+    },
+    {
+      "role": "support engineer",
+      "focus": "Diagnose support issues within authorized boundaries",
+      "output": "Troubleshooting plan and recovery checks"
+    }
+  ],
+  "commands": [
+    {
+      "path": [
+        "plan"
+      ],
+      "arguments": [
+        {
+          "name": "task",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "agent_limit",
+          "flags": [
+            "--agent-limit"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "knowledge"
+      ],
+      "arguments": [
+        {
+          "name": "task",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "agent_limit",
+          "flags": [
+            "--agent-limit"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "chat"
+      ],
+      "arguments": [
+        {
+          "name": "locale",
+          "flags": [
+            "--locale"
+          ],
+          "required": false
+        },
+        {
+          "name": "messages",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "inventory"
+      ],
+      "arguments": [
+        {
+          "name": "path",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "context"
+      ],
+      "arguments": [
+        {
+          "name": "path",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "learn"
+      ],
+      "arguments": []
+    },
+    {
+      "path": [
+        "learn",
+        "add"
+      ],
+      "arguments": [
+        {
+          "name": "capability",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "technique",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "source",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "evidence",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "learn",
+        "list"
+      ],
+      "arguments": [
+        {
+          "name": "capability",
+          "flags": [
+            "--capability"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "learn",
+        "remove"
+      ],
+      "arguments": [
+        {
+          "name": "id",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "apk"
+      ],
+      "arguments": []
+    },
+    {
+      "path": [
+        "apk",
+        "verify"
+      ],
+      "arguments": [
+        {
+          "name": "file",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "abi",
+          "flags": [
+            "--abi"
+          ],
+          "required": false
+        },
+        {
+          "name": "sdk_root",
+          "flags": [
+            "--sdk-root"
+          ],
+          "required": false
+        },
+        {
+          "name": "build_tools",
+          "flags": [
+            "--build-tools"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "apk",
+        "fixture"
+      ],
+      "arguments": [
+        {
+          "name": "destination",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "api",
+          "flags": [
+            "--api"
+          ],
+          "required": false
+        },
+        {
+          "name": "sdk_root",
+          "flags": [
+            "--sdk-root"
+          ],
+          "required": false
+        },
+        {
+          "name": "build_tools",
+          "flags": [
+            "--build-tools"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "apk",
+        "build"
+      ],
+      "arguments": [
+        {
+          "name": "project",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "destination",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "module",
+          "flags": [
+            "--module"
+          ],
+          "required": false
+        },
+        {
+          "name": "variant",
+          "flags": [
+            "--variant"
+          ],
+          "required": false
+        },
+        {
+          "name": "abi",
+          "flags": [
+            "--abi"
+          ],
+          "required": false
+        },
+        {
+          "name": "trust_project",
+          "flags": [
+            "--trust-project"
+          ],
+          "required": false
+        },
+        {
+          "name": "offline",
+          "flags": [
+            "--offline"
+          ],
+          "required": false
+        },
+        {
+          "name": "lint",
+          "flags": [
+            "--lint"
+          ],
+          "required": false
+        },
+        {
+          "name": "pass_env",
+          "flags": [
+            "--pass-env"
+          ],
+          "required": false
+        },
+        {
+          "name": "timeout",
+          "flags": [
+            "--timeout"
+          ],
+          "required": false
+        },
+        {
+          "name": "sdk_root",
+          "flags": [
+            "--sdk-root"
+          ],
+          "required": false
+        },
+        {
+          "name": "build_tools",
+          "flags": [
+            "--build-tools"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "archive"
+      ],
+      "arguments": []
+    },
+    {
+      "path": [
+        "archive",
+        "extract"
+      ],
+      "arguments": [
+        {
+          "name": "path",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "max_entries",
+          "flags": [
+            "--max-entries"
+          ],
+          "required": false
+        },
+        {
+          "name": "max_bytes",
+          "flags": [
+            "--max-bytes"
+          ],
+          "required": false
+        },
+        {
+          "name": "destination",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "archive",
+        "repack"
+      ],
+      "arguments": [
+        {
+          "name": "path",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "max_entries",
+          "flags": [
+            "--max-entries"
+          ],
+          "required": false
+        },
+        {
+          "name": "max_bytes",
+          "flags": [
+            "--max-bytes"
+          ],
+          "required": false
+        },
+        {
+          "name": "output",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "replace",
+          "flags": [
+            "--replace"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "archive",
+        "videos"
+      ],
+      "arguments": [
+        {
+          "name": "path",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "max_entries",
+          "flags": [
+            "--max-entries"
+          ],
+          "required": false
+        },
+        {
+          "name": "max_bytes",
+          "flags": [
+            "--max-bytes"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "media"
+      ],
+      "arguments": []
+    },
+    {
+      "path": [
+        "media",
+        "batch"
+      ],
+      "arguments": [
+        {
+          "name": "source",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "output",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "interval",
+          "flags": [
+            "--interval"
+          ],
+          "required": false
+        },
+        {
+          "name": "max_frames",
+          "flags": [
+            "--max-frames"
+          ],
+          "required": false
+        },
+        {
+          "name": "model",
+          "flags": [
+            "--model"
+          ],
+          "required": false
+        },
+        {
+          "name": "language",
+          "flags": [
+            "--language"
+          ],
+          "required": false
+        },
+        {
+          "name": "ocr_language",
+          "flags": [
+            "--ocr-language"
+          ],
+          "required": false
+        },
+        {
+          "name": "max_entries",
+          "flags": [
+            "--max-entries"
+          ],
+          "required": false
+        },
+        {
+          "name": "max_bytes",
+          "flags": [
+            "--max-bytes"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "media",
+        "probe"
+      ],
+      "arguments": [
+        {
+          "name": "source",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "media",
+        "frames"
+      ],
+      "arguments": [
+        {
+          "name": "source",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "output",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "interval",
+          "flags": [
+            "--interval"
+          ],
+          "required": false
+        },
+        {
+          "name": "scene_threshold",
+          "flags": [
+            "--scene-threshold"
+          ],
+          "required": false
+        },
+        {
+          "name": "max_frames",
+          "flags": [
+            "--max-frames"
+          ],
+          "required": false
+        },
+        {
+          "name": "ocr_language",
+          "flags": [
+            "--ocr-language"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "media",
+        "qa"
+      ],
+      "arguments": [
+        {
+          "name": "source",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "fps",
+          "flags": [
+            "--fps"
+          ],
+          "required": false
+        },
+        {
+          "name": "orientation",
+          "flags": [
+            "--orientation"
+          ],
+          "required": false
+        },
+        {
+          "name": "allow_no_audio",
+          "flags": [
+            "--allow-no-audio"
+          ],
+          "required": false
+        },
+        {
+          "name": "subtitle",
+          "flags": [
+            "--subtitle"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "media",
+        "transcribe"
+      ],
+      "arguments": [
+        {
+          "name": "source",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "output",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "model",
+          "flags": [
+            "--model"
+          ],
+          "required": true
+        },
+        {
+          "name": "language",
+          "flags": [
+            "--language"
+          ],
+          "required": false
+        },
+        {
+          "name": "fps",
+          "flags": [
+            "--fps"
+          ],
+          "required": false
+        },
+        {
+          "name": "threads",
+          "flags": [
+            "--threads"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "media",
+        "bass"
+      ],
+      "arguments": [
+        {
+          "name": "source",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "fps",
+          "flags": [
+            "--fps"
+          ],
+          "required": false
+        },
+        {
+          "name": "max_seconds",
+          "flags": [
+            "--max-seconds"
+          ],
+          "required": false
+        },
+        {
+          "name": "min_gap",
+          "flags": [
+            "--min-gap"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "media",
+        "edit"
+      ],
+      "arguments": [
+        {
+          "name": "source",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "output",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "cut",
+          "flags": [
+            "--cut"
+          ],
+          "required": false
+        },
+        {
+          "name": "start",
+          "flags": [
+            "--start"
+          ],
+          "required": false
+        },
+        {
+          "name": "end",
+          "flags": [
+            "--end"
+          ],
+          "required": false
+        },
+        {
+          "name": "fps",
+          "flags": [
+            "--fps"
+          ],
+          "required": false
+        },
+        {
+          "name": "captions",
+          "flags": [
+            "--captions"
+          ],
+          "required": false
+        },
+        {
+          "name": "full_hd",
+          "flags": [
+            "--full-hd"
+          ],
+          "required": false
+        },
+        {
+          "name": "monochrome",
+          "flags": [
+            "--monochrome"
+          ],
+          "required": false
+        },
+        {
+          "name": "fade",
+          "flags": [
+            "--fade"
+          ],
+          "required": false
+        },
+        {
+          "name": "effect",
+          "flags": [
+            "--effect"
+          ],
+          "required": false
+        },
+        {
+          "name": "contrast",
+          "flags": [
+            "--contrast"
+          ],
+          "required": false
+        },
+        {
+          "name": "bass_flash",
+          "flags": [
+            "--bass-flash"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "design"
+      ],
+      "arguments": []
+    },
+    {
+      "path": [
+        "design",
+        "audit"
+      ],
+      "arguments": [
+        {
+          "name": "tokens",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "design",
+        "preview"
+      ],
+      "arguments": [
+        {
+          "name": "tokens",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "output",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "design",
+        "motion"
+      ],
+      "arguments": [
+        {
+          "name": "output",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "mode",
+          "flags": [
+            "--mode"
+          ],
+          "required": false
+        },
+        {
+          "name": "locale",
+          "flags": [
+            "--locale"
+          ],
+          "required": false
+        },
+        {
+          "name": "still",
+          "flags": [
+            "--still"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "research"
+      ],
+      "arguments": []
+    },
+    {
+      "path": [
+        "research",
+        "synthesize"
+      ],
+      "arguments": [
+        {
+          "name": "manifest",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "source_root",
+          "flags": [
+            "--source-root"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "engineering"
+      ],
+      "arguments": []
+    },
+    {
+      "path": [
+        "engineering",
+        "inspect"
+      ],
+      "arguments": [
+        {
+          "name": "project",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "engineering",
+        "rebuild"
+      ],
+      "arguments": [
+        {
+          "name": "spec",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "candidate",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "source_root",
+          "flags": [
+            "--source-root"
+          ],
+          "required": false
+        },
+        {
+          "name": "reference_source",
+          "flags": [
+            "--reference-source"
+          ],
+          "required": false
+        },
+        {
+          "name": "supplemental",
+          "flags": [
+            "--supplemental"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "automation"
+      ],
+      "arguments": []
+    },
+    {
+      "path": [
+        "automation",
+        "plan"
+      ],
+      "arguments": [
+        {
+          "name": "manifest",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "automation",
+        "run"
+      ],
+      "arguments": [
+        {
+          "name": "manifest_sha256",
+          "flags": [
+            "--manifest-sha256"
+          ],
+          "required": true
+        },
+        {
+          "name": "approve",
+          "flags": [
+            "--approve"
+          ],
+          "required": false
+        },
+        {
+          "name": "manifest",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "host"
+      ],
+      "arguments": [
+        {
+          "name": "provider",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "model",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "task",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "approve_network",
+          "flags": [
+            "--approve-network"
+          ],
+          "required": false
+        },
+        {
+          "name": "max_rounds",
+          "flags": [
+            "--max-rounds"
+          ],
+          "required": false
+        },
+        {
+          "name": "max_output_tokens",
+          "flags": [
+            "--max-output-tokens"
+          ],
+          "required": false
+        },
+        {
+          "name": "timeout",
+          "flags": [
+            "--timeout"
+          ],
+          "required": false
+        }
+      ]
+    },
+    {
+      "path": [
+        "security"
+      ],
+      "arguments": []
+    },
+    {
+      "path": [
+        "security",
+        "audit"
+      ],
+      "arguments": [
+        {
+          "name": "candidate",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "kind",
+          "flags": [
+            "--kind"
+          ],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "security",
+        "review"
+      ],
+      "arguments": [
+        {
+          "name": "candidate",
+          "flags": [],
+          "required": true
+        }
+      ]
+    },
+    {
+      "path": [
+        "security",
+        "publish"
+      ],
+      "arguments": [
+        {
+          "name": "candidate",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "kind",
+          "flags": [
+            "--kind"
+          ],
+          "required": true
+        },
+        {
+          "name": "output",
+          "flags": [],
+          "required": true
+        },
+        {
+          "name": "attestation",
+          "flags": [
+            "--attestation"
+          ],
+          "required": true
+        },
+        {
+          "name": "evidence_dir",
+          "flags": [
+            "--evidence-dir"
+          ],
+          "required": true
+        }
+      ]
+    }
+  ],
+  "execution": "host_binding_required",
+  "delivery_authorized": false
+}
