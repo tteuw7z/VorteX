@@ -16,7 +16,11 @@ class DisciplineTests(unittest.TestCase):
             roles = {p["role"] for p in result["selected_profiles"]}
             self.assertTrue({"code reviewer", "qa", "security reviewer"} <= roles)
             self.assertTrue(economy["task_preserved"])
-            self.assertGreater(economy["estimated_saved_tokens"], 0)
+            if task == "Obrigado":
+                self.assertEqual(economy["estimated_saved_tokens"], 0)
+                self.assertTrue(economy["conservative_fallback"])
+            else:
+                self.assertGreater(economy["estimated_saved_tokens"], 0)
             self.assertIsNone(economy["actual_provider_tokens"])
             self.assertEqual(economy["performance_equivalence"], "NOT_MEASURED")
             self.assertFalse(result["delivery_authorized"])

@@ -190,3 +190,5 @@ Fase 6.16 acrescenta dez testes de saudação exata, gatilho, isolamento por ses
 ## Phase 6.17 candidate
 
 New Spector regression cases and portable test invocation added. Results pending actual CI; no live provider baseline or independent artifact review claimed.
+
+Phase 6.17: CI 45906687959 at c99c059cfaa663c374d811a1a5d5a585723db643 completed successfully across all four jobs; 139 tests, 136 passed and 3 skipped. Phase 6.18 adds trusted callable checks, SQLite constraints and preflight timing; results pending.

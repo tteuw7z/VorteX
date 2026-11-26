@@ -51,6 +51,11 @@ jobs:
           mkdir "$RUNNER_TEMP/vortex-baseline"
           git archive "$baseline" | tar -x -C "$RUNNER_TEMP/vortex-baseline"
           python scripts/benchmark_planning.py "$RUNNER_TEMP/vortex-baseline" "$GITHUB_WORKSPACE"
+      - name: Compare Spector preflight against phase 6.16
+        run: |
+          mkdir "$RUNNER_TEMP/vortex-preflight-baseline"
+          git archive fe74039e2dc46656be63c71c129309aa5c33c0e2 | tar -x -C "$RUNNER_TEMP/vortex-preflight-baseline"
+          python scripts/benchmark_spectors.py "$RUNNER_TEMP/vortex-preflight-baseline" "$GITHUB_WORKSPACE"
       - run: vortex plan "compile APK Android"
   portable-core:
     strategy:

@@ -8,6 +8,8 @@ import io
 import json
 from pathlib import PurePosixPath
 import tokenize
+from statistics import median
+from time import perf_counter_ns
 
 
 class TokenSpector:
@@ -20,7 +22,8 @@ class TokenSpector:
 
         before, after = size(catalog), size(selected)
         # Keep the full context if the proposed reduction does not save tokens.
-        estimate = lambda n: (n + 3) // 4
+        def estimate(n):
+            return (n + 3) // 4
         if estimate(after) >= estimate(before):
             selected, after = catalog, before
         saved = estimate(before) - estimate(after)
@@ -90,7 +93,67 @@ class CodeSpector:
 
 
 class TestSpector:
-    """Validate separate evidence receipts for the same immutable candidate."""
+    """Run trusted checks and validate receipts for the same immutable candidate."""
+
+    @staticmethod
+    def run_checks(digest, checks):
+        """Execute trusted callables, not arbitrary candidate code.
+
+        A check must return True. No exception messages or candidate data are logged.
+        The host is responsible for external code isolation and time limits.
+        """
+        if not isinstance(checks, dict) or not 1 <= len(checks) <= 128:
+            raise ValueError("Provide 1 to 128 named trusted checks")
+        for name, check in checks.items():
+            if (not isinstance(name, str) or not name.isascii()
+                    or not 1 <= len(name) <= 80
+                    or not all(c.isalnum() or c in "_-" for c in name)
+                    or not callable(check)):
+                raise ValueError("Invalid trusted check")
+        passed = failed = 0
+        outcomes = []
+        for index, check in enumerate(checks.values(), 1):
+            try:
+                success = check() is True
+            except Exception:
+                success = False
+            passed += int(success)
+            failed += int(not success)
+            outcomes.append({"check": index, "passed": success})
+        log = json.dumps({"checks": outcomes}, separators=(",", ":")).encode("ascii")
+        return {"artifact_sha256": digest, "passed": passed, "failed": failed,
+                "skipped": 0, "log": log}
+
+    @staticmethod
+    def compare(baseline, candidate, inputs, *, repeats=5, max_ratio=1.1):
+        """Measure trusted equivalent computations, alternating execution order."""
+        if (not callable(baseline) or not callable(candidate)
+                or not isinstance(inputs, tuple) or not 1 <= len(inputs) <= 128
+                or type(repeats) is not int or not 3 <= repeats <= 31
+                or type(max_ratio) not in (int, float) or not 1 <= max_ratio <= 10):
+            raise ValueError("Invalid benchmark configuration")
+        from copy import deepcopy
+        expected = [deepcopy(baseline(deepcopy(item))) for item in inputs]
+        samples = {"baseline": [], "candidate": []}
+        runners = {"baseline": baseline, "candidate": candidate}
+        for index in range(repeats):
+            for name in (("baseline", "candidate") if index % 2 == 0
+                         else ("candidate", "baseline")):
+                args = deepcopy(inputs)
+                start = perf_counter_ns()
+                result = [runners[name](item) for item in args]
+                elapsed = perf_counter_ns() - start
+                if result != expected:
+                    return {"passed": False, "equivalent": False,
+                            "reason": "Output mismatch"}
+                samples[name].append(elapsed)
+        before, after = median(samples["baseline"]), median(samples["candidate"])
+        ratio = after / max(1, before)
+        return {"passed": ratio <= max_ratio, "equivalent": True,
+                "baseline_median_ns": before, "candidate_median_ns": after,
+                "candidate_over_baseline": ratio, "max_ratio": max_ratio,
+                "samples_ns": samples, "scope": "trusted local computations only"}
+
     @staticmethod
     def receipt(report, digest):
         if not isinstance(report, dict) or set(report) != {

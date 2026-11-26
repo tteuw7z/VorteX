@@ -1,5 +1,4 @@
 """Automatic preflight and review inventory; never treats a plan as execution."""
-from dataclasses import asdict
 from pathlib import Path
 import re
 
@@ -15,7 +14,10 @@ _STAGES = (
     ("algorithm", "Decompose and trace normal, boundary and invalid cases"),
     ("implementation", "Use clear names, small functions, purposeful comments and simple design"),
     ("code_review", "Separate reviewer checks all files and error paths against exact hashes"),
-    ("functional_tests", "Execute normal, boundary, invalid-input and regression cases"),
+    ("functional_tests", "Execute normal, boundary and invalid-input cases"),
+    ("integration_tests", "Verify interfaces and data flow across components"),
+    ("regression_tests", "Repeat previously verified behaviors"),
+    ("performance_tests", "Compare equivalent workloads using explicit thresholds"),
     ("security_tests", "Verify privacy, permissions, abuse cases and dependency integrity"),
     ("delivery", "Require independent signed evidence for the exact artifact; otherwise block"),
 )
@@ -31,7 +33,10 @@ def prepare_task(task, *, agent_limit=3, skills=None):
         raise ValueError("Planning task must contain 1 to 8192 characters")
     route = plan(task, agent_limit=agent_limit, skills=skills)
     engine = AgentEngine()
-    catalog = [asdict(profile) for profile in engine.catalog()]
+    def record(profile):
+        return {"role": profile.role, "focus": profile.focus, "output": profile.output}
+
+    catalog = [record(profile) for profile in engine.catalog()]
     words = set(re.findall(r"\w+", normalize(task)))
     is_development = bool(words & _DEVELOPMENT_WORDS)
     roles = tuple(route["agents"])
@@ -45,11 +50,16 @@ def prepare_task(task, *, agent_limit=3, skills=None):
     initial = tuple(dict.fromkeys((*roles, *_MANDATORY)))
     matched_roles = tuple(dict.fromkeys(role for skill in matched for role in skill.agents))
     chosen = tuple(dict.fromkeys((*initial, *matched_roles)))
-    selected = [asdict(profile) for profile in engine.load(chosen)]
+    selected = [record(profile) for profile in engine.load(chosen)]
     chosen_skills = {s["name"] for s in route["skills"]}
     deferred_skills = [s.name for s in matched if s.name not in chosen_skills]
     deferred_roles = [role for role in matched_roles if role not in initial]
     disabled_matches = [s.name for s in all_matches if s.name not in allowed]
+    if not matched:
+        # A keyword miss is not evidence that omitted roles are irrelevant.
+        allowed_roles = {role for skill in SKILLS if skill.name in allowed for role in skill.agents}
+        allowed_roles.update(initial)
+        selected = [profile for profile in catalog if profile["role"] in allowed_roles]
     selected, economy = TokenSpector.select(task, catalog, selected)
     selected_roles = {profile["role"] for profile in selected}
     omitted = [profile["role"] for profile in catalog if profile["role"] not in selected_roles]
@@ -57,7 +67,8 @@ def prepare_task(task, *, agent_limit=3, skills=None):
     return {"status": "PLAN_ONLY", "route": route,
             "economy": {"baseline": "full local profile catalog plus unchanged task",
                         "candidate": "selected profiles plus unchanged task",
-                        **economy, "omitted_profiles": omitted, "deferred_matching_skills": deferred_skills,
+                        **economy, "omitted_profiles": omitted,
+                        "conservative_fallback": not matched, "deferred_matching_skills": deferred_skills,
                         "deferred_matching_roles": deferred_roles,
                         "automatically_expanded_roles": deferred_roles,
                         "automatically_expanded_skills": deferred_skills,

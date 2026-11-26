@@ -5,3 +5,9 @@ The existing planner, development coordinator and authenticated publisher are th
 Design principles: isolate input/output from computation; favor cohesive functions and meaningful names; use classes only where state justifies them; validate inputs and exceptional cases; use parameterized SQL, transactions and integrity constraints where relevant; test failure paths and avoid redundant abstractions. Comments explain intent, not obvious syntax.
 
 Private instructional material is not included. No claim of exhaustive source study, deployed independent reviewer, execution sandbox, universal host enforcement, or zero defects. Failed checks require a fresh reviewed candidate; automatic repair adapters are not implemented. Existing direct capability commands remain outside this coordinator. 
+
+## Reference architecture and local testing
+
+The public [SkillSpector development guide](https://github.com/NVIDIA/SkillSpector/blob/main/docs/DEVELOPMENT.md) describes staged context construction, static and optional semantic analyzers, an inspection ledger and bounded reporting. Apply the separation of static checks, independent semantic evidence and fail-closed coverage here, with Python standard-library components and without copying its code or adding its dependencies. A separate custom SkillSpector implementation was not available for verification.
+
+TestSpector runs explicitly trusted callable checks and compares equivalent local computations with repeated, alternating timings. It is not a sandbox or general untrusted-code runner. Unmatched natural-language requests retain the enabled catalog rather than assuming irrelevant context. Performance and token quality equivalence are separate; benchmark evidence is scoped to the workload.
