@@ -29,6 +29,10 @@ class DisciplineTests(unittest.TestCase):
         result = prepare_task("Python Android finance marketing sales game", agent_limit=1)
         self.assertTrue(result["economy"]["deferred_matching_skills"])
         self.assertTrue(result["economy"]["deferred_matching_roles"])
+        roles = {p["role"] for p in result["selected_profiles"]}
+        self.assertTrue(set(result["economy"]["automatically_expanded_roles"]) <= roles)
+        self.assertFalse(roles.intersection(result["economy"]["omitted_profiles"]))
+        self.assertTrue({"financial analyst", "marketing strategist", "sales analyst", "game developer"} <= roles)
 
     def test_review_inventory_and_exact_coverage(self):
         with TemporaryDirectory() as directory:
@@ -55,3 +59,9 @@ class DisciplineTests(unittest.TestCase):
     def test_generic_website_has_developer_not_only_reviewers(self):
         result = prepare_task("Criar um site", agent_limit=1)
         self.assertIn("software engineer", {p["role"] for p in result["selected_profiles"]})
+
+    def test_explicit_config_disablement_is_not_overridden(self):
+        from vortex.skills import SkillEngine
+        result = prepare_task("Python Android finance", skills=SkillEngine(enabled=["android"]))
+        self.assertEqual(set(result["economy"]["explicitly_disabled_matching_skills"]), {"engineering", "finance"})
+        self.assertNotIn("financial analyst", {p["role"] for p in result["selected_profiles"]})

@@ -77,3 +77,5 @@ Fase 6.11: privacidade de arquivos de saída em POSIX reforçada; ACLs Windows e
 Fase 6.11 validada (110 aprovados). Fase 6.12 adiciona varredura de histórico e filtro limitado de credenciais remotas; CI pendente. Não substitui auditoria completa ou autorização de entrega.
 
 Fase 6.13 acrescenta preflight e perfil revisor (23 perfis), não execução autônoma de agentes. Política v3 requer revisão vinculada aos bytes. Ganho real de tokens e equivalência funcional ainda não comprovados.
+
+Fase 6.13 aprovada (118 testes). Fase 6.14 inclui expansão automática e contrato de host; CI pendente. Nenhuma garantia de economia real, execução sem falhas ou independência implantada.

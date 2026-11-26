@@ -46,15 +46,20 @@ def prepare_task(task, *, agent_limit=3, skills=None):
     roles = tuple(route["agents"])
     if not roles:
         roles = ("software engineer",) if is_development else ("reviewer",)
-    # Mandatory review roles are outside the specialist cap, not optional savings.
-    chosen = tuple(dict.fromkeys((*roles, *_MANDATORY)))
+    # Use the cap for the first route only. Keep every matching enabled role,
+    # even when doing so saves fewer tokens; review roles are non-negotiable.
+    allowed = skills.names if skills is not None else {s.name for s in SKILLS}
+    all_matches = [s for s in SKILLS if words.intersection(s.keywords)]
+    matched = [s for s in all_matches if s.name in allowed]
+    initial = tuple(dict.fromkeys((*roles, *_MANDATORY)))
+    matched_roles = tuple(dict.fromkeys(role for skill in matched for role in skill.agents))
+    chosen = tuple(dict.fromkeys((*initial, *matched_roles)))
     selected = [asdict(profile) for profile in engine.load(chosen)]
     omitted = [profile["role"] for profile in catalog if profile["role"] not in chosen]
-    allowed = skills.names if skills is not None else {s.name for s in SKILLS}
-    matched = [s for s in SKILLS if s.name in allowed and words.intersection(s.keywords)]
     chosen_skills = {s["name"] for s in route["skills"]}
     deferred_skills = [s.name for s in matched if s.name not in chosen_skills]
-    deferred_roles = sorted({role for s in matched for role in s.agents} - set(chosen))
+    deferred_roles = [role for role in matched_roles if role not in initial]
+    disabled_matches = [s.name for s in all_matches if s.name not in allowed]
     before = _bytes({"task": task, "profiles": catalog})
     after = _bytes({"task": task, "profiles": selected})
     # This compares two defined context payloads, not provider billing or latency.
@@ -68,13 +73,17 @@ def prepare_task(task, *, agent_limit=3, skills=None):
                         "estimated_saved_percent": round(100 * (1 - _estimate(after) / _estimate(before)), 2),
                         "omitted_profiles": omitted, "deferred_matching_skills": deferred_skills,
                         "deferred_matching_roles": deferred_roles,
+                        "automatically_expanded_roles": deferred_roles,
+                        "automatically_expanded_skills": deferred_skills,
+                        "explicitly_disabled_matching_skills": disabled_matches,
+                        "all_enabled_keyword_matches_covered": True,
                         "task_preserved": True, "mandatory_review_roles_preserved": True,
                         "actual_provider_tokens": None, "performance_equivalence": "NOT_MEASURED",
                         "method": "ceil(compact UTF-8 JSON bytes / 4); excludes report and other request overhead"},
             "selected_profiles": selected,
             "stages": [{"id": name, "instruction": instruction} for name, instruction in _STAGES],
             "development_detected": is_development,
-            "review_policy": "load deferred specialists automatically if needed; never drop required work",
+            "review_policy": "all enabled keyword matches expanded automatically; semantic coverage still requires review",
             "delivery_authorized": False}
 
 

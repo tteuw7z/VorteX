@@ -178,3 +178,5 @@ CI 45882770153, 2aaecf2: 113 testes descobertos, 110 aprovados, 3 ignorados; qua
 CI 45885353048: 117 descobertos, 114 aprovados, 3 ignorados. Scanner histórico: 494 objetos, 2.090.634 bytes, nenhum padrão conhecido. Fase 6.13 adiciona testes de economia estimada, preservação de revisores e cobertura exata de arquivos; CI pendente.
 
 Primeiro CI da fase 6.13 detectou duas incompatibilidades nos testes que exigiam o conjunto exato de quatro chaves da CLI. Preservadas as chaves e valores legados, testes atualizados para verificar esse subconjunto e os campos novos. Preflight remoto agora ocorre antes da primeira chamada de rede. Revalidação pendente.
+
+CI 45887940880, 631f8a8: 121 testes descobertos, 118 aprovados, 3 ignorados, quatro jobs aprovados. Fase 6.14 acrescenta regressões de expansão automática e respeito à configuração, separação da telemetria de fixtures, e instruções de host. Novo CI pendente.

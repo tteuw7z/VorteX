@@ -59,3 +59,5 @@ HEAD 2aaecf2 e CI 45882770153 reconfirmados: 110 aprovados, 3 ignorados, quatro 
 ## Fase 6.13 — disciplina de programação
 
 CI 45885353048 confirmou 114 aprovados, 3 ignorados, 494 objetos Git sem padrões conhecidos. Preflight automático de economia por seleção de perfis, preservando revisores obrigatórios e informando perfis adiados, estimativa separada de uso real. Roteamento CLI e ferramenta remota usam o preflight. Política v3 exige revisão por arquivo vinculada ao hash e cobertura declarada de todos os bytes. CI pendente. Nenhum verificador independente implantado, nenhuma economia faturada ou equivalência de desempenho demonstrada.
+
+Fase 6.13: CI 45887940880 aprovado (118 aprovados, 3 ignorados, quatro jobs). Fase 6.14 expande automaticamente todos os perfis de capacidades habilitadas que correspondem a palavras da tarefa, preserva restrições explícitas, contabiliza uso remoto separadamente e acrescenta AGENTS.md. CI novo pendente; sem prova de equivalência semântica, economia real ou execução independente.

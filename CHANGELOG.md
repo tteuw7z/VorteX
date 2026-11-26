@@ -110,3 +110,9 @@
 - Perfil dedicado de revisão de código e inventário por bytes; política v3 exige registro de cobertura integral.
 
 - Compatibilidade aditiva de campos de planejamento verificada por regressões; contexto de perfis selecionados preparado antes da primeira solicitação remota.
+
+## Fase 6.14 — candidato
+
+- Expansão automática de perfis habilitados correspondentes; explicitação de desabilitações.
+- Totais de uso remoto separados de estimativas e fixtures.
+- AGENTS.md com fluxo de desenvolvimento e critérios de segurança.

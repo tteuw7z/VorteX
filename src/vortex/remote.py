@@ -150,6 +150,18 @@ def run_remote_planner(provider: str, model: str, task: str, *, api_key: str | N
                   "usage_source": "provider_reported" if transport is None else "injected_test",
                   "usage_complete": len(usage) == attempted and attempted > 0 and
                   all("input_tokens" in row and "output_tokens" in row for row in usage)}
+        # Usage is measured only for actual provider calls, never inferred from fixtures.
+        fields = ("input_tokens", "output_tokens", "total_tokens", "cached_tokens",
+                  "reasoning_tokens", "cache_read_input_tokens", "cache_creation_input_tokens")
+        totals = {field: sum(row[field] for row in usage) for field in fields
+                  if usage and all(field in row for row in usage)}
+        report["token_accounting"] = {
+            "source": report["usage_source"], "complete": report["usage_complete"],
+            "observed_totals": totals,
+            "actual_provider_totals": totals if transport is None and report["usage_complete"] else None,
+            "actual_saved_tokens": None,
+            "reason": "Actual savings require a comparable baseline run with equivalent quality",
+        }
         if reason is not None:
             report["reason"] = reason
         if final is not None:

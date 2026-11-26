@@ -98,3 +98,6 @@
 
 - [x] Add automatic economical preflight, dedicated code review profile and exact file coverage requirement.
 - [ ] Validate CI and integrate independent stage execution and real provider usage comparison.
+
+- [x] Validar 6.13 em CI e implementar expansão automática, contrato AGENTS.md e separação da telemetria.
+- [ ] Validar 6.14, medir desempenho e qualidade em tarefas reais equivalentes e integrar execução obrigatória nos hosts.

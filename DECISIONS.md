@@ -94,3 +94,7 @@ Não repetir checkpoints comprovados. A varredura de histórico falha fechada se
 ## Fase 6.13 — disciplina
 
 Preferir decomposição, entrada/processamento/saída, teste de mesa, funções claras e comentários de intenção; POO somente quando justificada; integridade e minimização de dados. Não reduzir revisões para economizar tokens. Estimativa compara contexto de perfis, não cobrança real; perfis omitidos e capacidades adiadas são informados. Política v3 exige cobertura declarada e hashes de todos os arquivos, sem confundir declaração com revisão efetiva.
+
+## Fase 6.14 — economia sem redução silenciosa
+
+O limite inicial de seleção não deve remover perfis de capacidades habilitadas correspondentes. Expandir automaticamente a seleção, mesmo com economia menor; preservar desabilitações explícitas e reportá-las. Palavras-chave não garantem cobertura semântica. Telemetria real exige resposta real, e economia real exige baseline comparável e avaliação de qualidade.
