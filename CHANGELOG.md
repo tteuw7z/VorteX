@@ -132,3 +132,5 @@
 - Phase 6.17 validated: 136 passed, 3 skipped; Linux, macOS, Windows and synthetic Android CI succeeded (45906687959).
 - Phase 6.18 candidate: conservative fallback, trusted callable checks, preflight benchmark.
 - Phase 6.19 candidate: Engine/workflow economy reports and bounded repair with exact-byte revalidation; CI pending.
+
+- Phase 6.20: restore legacy plan descriptor compatibility following benchmark rejection; retain expanded generic software routing in preflight only. CI pending.

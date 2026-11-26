@@ -85,7 +85,7 @@
   "phase_4_implementation": "3d749ef75741ed6aae03f69eab67135b319513ab",
   "phase_5_baseline": "f7de4c57eb9a05425469f5948d3c1dfa442db1dd",
   "phase_5_implementation": "645baca9d860728eed56e79b2a7b0d4da2abd748",
-  "checkpoint": "6.19-spector-repair",
+  "checkpoint": "6.20-spector-compatibility",
   "review_4_1": {
     "status": "complete",
     "baseline": "f0daf2820e49fafc079e8bfd0f68704c675c7052",
@@ -236,7 +236,12 @@
       "actual_token_savings": null,
       "automatic_repair": "bounded trusted adapter; not autonomous host deployment",
       "previous_validated_ci": 45906687959,
-      "engine_workflow_economy": true
+      "engine_workflow_economy": true,
+      "rejected_ci": [
+        45906948347,
+        45907004303
+      ],
+      "compatibility_fix": "aliases in preflight, not legacy skill descriptors"
     }
   }
 }

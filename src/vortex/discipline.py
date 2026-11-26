@@ -45,7 +45,9 @@ def prepare_task(task, *, agent_limit=3, skills=None):
     # Use the cap for the first route only. Keep every matching enabled role,
     # even when doing so saves fewer tokens; review roles are non-negotiable.
     allowed = skills.names if skills is not None else {s.name for s in SKILLS}
-    all_matches = [s for s in SKILLS if words.intersection(s.keywords)]
+    # Expand generic software terms in preflight without changing legacy plan output.
+    match_words = words | {"python"} if is_development else words
+    all_matches = [s for s in SKILLS if match_words.intersection(s.keywords)]
     matched = [s for s in all_matches if s.name in allowed]
     initial = tuple(dict.fromkeys((*roles, *_MANDATORY)))
     matched_roles = tuple(dict.fromkeys(role for skill in matched for role in skill.agents))

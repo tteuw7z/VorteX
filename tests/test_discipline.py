@@ -69,3 +69,11 @@ class DisciplineTests(unittest.TestCase):
         result = prepare_task("Python Android finance", skills=SkillEngine(enabled=["android"]))
         self.assertEqual(set(result["economy"]["explicitly_disabled_matching_skills"]), {"engineering", "finance"})
         self.assertNotIn("financial analyst", {p["role"] for p in result["selected_profiles"]})
+
+    def test_generic_development_aliases_do_not_change_legacy_plan(self):
+        from vortex.core import plan
+        self.assertTrue(plan("Criar um site")["fallback"])
+        result = prepare_task("Criar um site")
+        self.assertIn("engineering", result["economy"]["automatically_expanded_skills"])
+        self.assertIn("software engineer", {p["role"] for p in result["selected_profiles"]})
+        self.assertGreater(result["economy"]["estimated_saved_tokens"], 0)
