@@ -1,11 +1,27 @@
 {
   "operation": "VORTEX",
-  "phase": 1,
+  "phase": 2,
   "status": "complete",
   "audit_date": "2026-11-26",
   "public_baseline": "88af0d61e2309984b14ae17d3cc53ce5fc2e0868",
   "python_tested": "3.15.2",
-  "inventory": {"reference_files": 361, "public_baseline_files": 12, "reference_skills": 28, "reference_catalog_profiles": 268},
-  "tests": {"reference_unit_passed": 50, "public_unit_passed": 4, "public_baseline_ci": "success"},
-  "next": {"phase": 2, "model": "Sol 6.2", "effort": "High", "trigger": "Continuar"}
+  "inventory": {
+    "reference_files": 361,
+    "public_baseline_files": 12,
+    "reference_skills": 28,
+    "reference_catalog_profiles": 268
+  },
+  "tests": {
+    "reference_unit_passed": 50,
+    "public_unit_passed": 4,
+    "public_baseline_ci": "success",
+    "phase_2_unit_passed": 15
+  },
+  "next": {
+    "phase": 3,
+    "model": "Sol 6.2",
+    "effort": "Max",
+    "trigger": "Continuar"
+  },
+  "phase_2_baseline": "decbafdacca3dadfd746e09905d0e30c4affc122"
 }

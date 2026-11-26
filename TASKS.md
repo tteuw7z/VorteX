@@ -9,14 +9,14 @@
 - [x] Reexecutar as suítes no CPython 3.15.2, checar pacote público e dependência opcional.
 - [x] Registrar matriz, decisões, testes e handoff neste commit.
 
-## Fase 2 — estrutura
+## Fase 2 — estrutura concluída
 
-- [ ] Reaproveitar o CLI, o planejador e o contrato de adaptadores existentes.
-- [ ] Core Engine: DAG validada, resultados tipados, dependências, aprovações e evidência.
-- [ ] Skill/Agent Engines: registro de capacidades, perfis autorizados, seleção limitada e carregamento sob demanda.
-- [ ] Context Engine: estimativas sinalizadas, checkpoints e compactação reversível.
-- [ ] Learning Engine: registro local opt-in, evidência, deduplicação por capacidade e exclusão de dados.
-- [ ] Configuração, estratégia de dependências e testes unitários no Python alvo.
+- [x] Reaproveitar o CLI, o planejador e o contrato de adaptadores existentes.
+- [x] Core Engine: DAG validada, resultados tipados, dependências, aprovações e evidência.
+- [x] Skill/Agent Engines: registro de capacidades, perfis autorizados, seleção limitada e carregamento sob demanda.
+- [x] Context Engine: estimativas sinalizadas, checkpoints e compactação reversível.
+- [x] Learning Engine: registro local opt-in, evidência, deduplicação por capacidade e exclusão de dados.
+- [x] Configuração, estratégia de dependências e testes unitários no Python alvo.
 
 ## Fases 3–6
 

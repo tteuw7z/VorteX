@@ -1,4 +1,20 @@
-# Testes e evidências — Fase 1
+# Testes e evidências
+
+## Fase 2
+
+Execução no Linux x86_64 com CPython 3.15.2, em ambiente virtual novo. O pacote foi construído e instalado a partir do código público, sem dependências de runtime.
+
+| Verificação | Resultado observado |
+| --- | --- |
+| `python -m unittest discover -s tests -v` | 15/15 testes passaram, incluindo os quatro da base. |
+| Core e integração local | DAG, ciclo, dependência ausente, aprovação, simulação, fallback condicionado, evidência obrigatória, proteção contra mutação dos artefatos e validação de JSON. Um workflow leu o inventário de um ZIP real de teste em uma etapa e verificou seu SHA-256 na seguinte. |
+| Agentes, skills e CLI | Filtragem e deduplicação de papéis, perfis selecionados, configuração inválida rejeitada, CLI instalado com versão 0.1.0 e conhecimento restrito à seleção. |
+| Contexto e aprendizagem | Restauração exata das observações, deduplicação em memória, SQLite reaberto com registros e proveniência, deduplicação com acentos/espaços e remoção de registro. |
+| Sintaxe e revisão | `python -m compileall -q src tests` e `git diff --cached --check` passaram. |
+
+O teste com ZIP mede operações de leitura e digest, a partir de uma fixture sintética. APK, render, ASR em CPython 3.15.2 e conexões externas seguem para a Fase 3.
+
+## Fase 1
 
 | Verificação | Resultado observado |
 | --- | --- |

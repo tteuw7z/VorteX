@@ -6,3 +6,10 @@
 4. **Dependências:** faster-whisper tem [MIT](https://github.com/SYSTRAN/faster-whisper/blob/master/LICENSE); dependências transitivas e pesos precisam de análise própria. FFmpeg tem [termos que variam com sua compilação](https://ffmpeg.org/legal.html). Confirmar licenças e disponibilidade do backend/SDK escolhido antes de distribuir binários. O core público não tem dependências de runtime no baseline; setuptools é de build.
 5. **Privacidade:** código, conteúdo e histórico privados, dados pessoais, credenciais, gravações, APKs, referências de trabalho e ativos sem autorização permanecem fora do Git público. A publicação contém apenas sínteses de capacidades, números de cobertura, decisões e resultados sanitizados.
 6. **Execução verificável:** planejamento, simulação, bloqueio e execução têm estados distintos. Preservar papéis apenas indicativos até um adaptador real produzir evidência. Testes com doubles provam contrato, não integração externa.
+
+## Fase 2
+
+7. **Um registro de capacidades.** O planner e as opções de configuração usam o mesmo catálogo. Os 12 perfis genéricos foram escritos para o VorteX em linguagem própria. Os prompts referenciados pelo catálogo privado permanecem de fora.
+8. **Execução estruturada.** DAG sequencial determinística, com dependências e aprovação explícita por estágio. O host registra adaptadores e escolhe se a etapa tolera tentativa alternativa após chamada. O despacho legado preserva seu contrato anterior.
+9. **Dados locais.** A compactação só reduz texto que o chamador colocou nas observações. A restauração depende da visão em memória. O SQLite só persiste técnicas por instrução explícita. A deduplicação é lexical por capacidade, com evidência preservada por fonte. O tokenizador real e a validação externa das fontes ficam para fases posteriores.
+10. **Empacotamento.** A lógica da Fase 2 usa apenas a biblioteca padrão. Setuptools permanece dependência de build e a versão do pacote segue em 0.1.0 até a etapa de release.
