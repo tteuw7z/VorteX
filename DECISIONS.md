@@ -102,3 +102,5 @@ O limite inicial de seleção não deve remover perfis de capacidades habilitada
 ## Fase 6.15 — coordenação executável
 
 O coordenador aceita somente callbacks de host confiável, não comandos arbitrários. Exige autorização e diretório novo. Bloqueia revisão incompleta, testes falhos/pulados, modificação de bytes e alertas estáticos. Não possui chave de assinatura, não publica nem comprova independência das conclusões de callbacks. Publicação permanece separada.
+
+- Phase 6.17: reuse existing coordinator and delivery gate rather than duplicating security or claiming autonomous agents. Fail closed on missing test classes; require separate authenticated evidence. Token estimates are not provider usage.

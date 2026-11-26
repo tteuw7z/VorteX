@@ -13,13 +13,14 @@ from html.parser import HTMLParser
 from dataclasses import dataclass
 from tempfile import TemporaryDirectory
 
-POLICY_VERSION = 3
+POLICY_VERSION = 4
 _MAX_FILE = 8 * 1024 * 1024
 _MAX_TOTAL = 32 * 1024 * 1024
 _MAX_FILES = 1000
 _MAX_AGE = 7 * 86400
 _COMMON = frozenset(("threat_model", "secret_scan", "dependency_review", "privacy_review",
-                     "functional_tests", "security_tests", "manual_review", "code_review"))
+                     "functional_tests", "integration_tests", "regression_tests", "performance_tests",
+                     "security_tests", "manual_review", "code_review"))
 _REQUIRED = {
     "script": _COMMON | {"input_validation", "least_privilege"},
     "website": _COMMON | {"access_control", "web_security", "deployment_config"},

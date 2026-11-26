@@ -39,3 +39,7 @@ CI checks Git objects reachable from checked-out refs and HEAD for known credent
 ### Programming review (policy version 3)
 
 Every kind adds the required check `code_review`. Its log is JSON with exactly `artifact_sha256` and `files`; each file row has `path`, `sha256`, `bytes_reviewed` (integer equal to file size), and `status` (`PASS`). All captured files must occur exactly once, including empty files. The independent reviewer must actually inspect the content and verify logic, readability, validation and error paths; a byte count is a signed coverage declaration, not proof of semantic correctness. Earlier attestations are rejected. Functional tests precede final security tests in the recommended workflow; security design starts at requirements. The host still needs to enforce execution, independent review and delivery.
+
+## Policy 4
+
+Integration, regression and performance checks now require separate authenticated evidence logs in addition to functional and security checks. Older attestations do not authorize a policy-4 release. The host must define meaningful acceptance thresholds, run checks in an isolated environment, and verify independent review; receipts are not proof of their own truth.

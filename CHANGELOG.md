@@ -126,3 +126,5 @@
 - Ativação explícita por Vortex ou 🇮🇪; saudação oficial uma vez por sessão, sem fala automática.
 - Menu de agentes, funcionalidades, segurança, ferramentas, configurações e ajuda; alternativa textual; perfis de planejamento separados de execução vinculada.
 - SKILL.md, CLI chat, preflight automático em pedidos diretos e dez testes de contrato; CI multiplataforma.
+
+- Phase 6.17 candidate: operational Spector helpers, structured pre-build logic/threat receipt, separate integration/regression/performance gates, Python lexical and compilation inventory, policy 4. CI pending.

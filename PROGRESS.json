@@ -85,7 +85,7 @@
   "phase_4_implementation": "3d749ef75741ed6aae03f69eab67135b319513ab",
   "phase_5_baseline": "f7de4c57eb9a05425469f5948d3c1dfa442db1dd",
   "phase_5_implementation": "645baca9d860728eed56e79b2a7b0d4da2abd748",
-  "checkpoint": "6.16-explicit-chat-activation",
+  "checkpoint": "6.17-spector-pipeline",
   "review_4_1": {
     "status": "complete",
     "baseline": "f0daf2820e49fafc079e8bfd0f68704c675c7052",
@@ -175,7 +175,7 @@
         "host_enforcement": false,
         "scope": "bounded static inspection and authenticated exact-byte publishing",
         "run": 45882770153,
-        "policy_version": 2,
+        "policy_version": 4,
         "evidence_logs_required": true,
         "atomic_staging": true
       },
@@ -227,6 +227,14 @@
         "en",
         "pt"
       ]
+    },
+    "spectors": {
+      "status": "implemented_pending_ci",
+      "policy_version": 4,
+      "baseline": "fe74039e2dc46656be63c71c129309aa5c33c0e2",
+      "independent_reviewer_deployed": false,
+      "actual_token_savings": null,
+      "automatic_repair": false
     }
   }
 }

@@ -186,3 +186,7 @@ Fase 6.15 adiciona testes de callbacks sintéticos para ordem de execução, blo
 CI 45888238562, 80de782: quatro jobs concluídos com sucesso; checkpoint 6.15 registrou 122 aprovados e 3 ignorados.
 
 Fase 6.16 acrescenta dez testes de saudação exata, gatilho, isolamento por sessão, navegação, escopo de execução, economia automática, validação e CLI. Execução adicionada aos jobs macOS e Windows. Integrações de chats externos não verificadas. Novo CI pendente.
+
+## Phase 6.17 candidate
+
+New Spector regression cases and portable test invocation added. Results pending actual CI; no live provider baseline or independent artifact review claimed.
