@@ -1,6 +1,8 @@
 """Explicit local persistence for reusable techniques and their evidence."""
 from contextlib import contextmanager
 from pathlib import Path
+import os
+import stat
 import sqlite3
 
 from .skills import normalize
@@ -8,14 +10,33 @@ from .skills import normalize
 
 class LearningEngine:
     def __init__(self, database: Path):
-        self.database = Path(database).resolve()
+        self.database = Path(database).absolute()
+        if self.database.is_symlink():
+            raise ValueError("Learning database cannot be a symlink")
+
+    def _private_file(self, write):
+        if write and not self.database.exists():
+            try:
+                fd = os.open(self.database, os.O_CREAT | os.O_EXCL | os.O_WRONLY, 0o600)
+            except FileExistsError:
+                pass
+            else:
+                os.close(fd)
+        metadata = self.database.lstat()
+        if not stat.S_ISREG(metadata.st_mode):
+            raise ValueError("Learning database must be a regular file")
+        if os.name == "posix" and metadata.st_mode & 0o077:
+            raise ValueError("Learning database permissions must be private (chmod 600)")
 
     @contextmanager
     def _connect(self, *, write=False):
+        self._private_file(write)
         uri = self.database.as_uri() + ("?mode=rwc" if write else "?mode=ro")
         connection = sqlite3.connect(uri, uri=True)
         try:
             connection.execute("PRAGMA foreign_keys = ON")
+            if write:
+                connection.execute("PRAGMA secure_delete = ON")
             with connection:
                 yield connection
         finally:

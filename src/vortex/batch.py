@@ -8,6 +8,7 @@ from tempfile import TemporaryDirectory
 from .archive import MAX_BYTES, MAX_ENTRIES, _publish, discover_videos, extract_archive
 from .media import extract_frames, probe
 from .transcription import transcribe
+from .private_io import private_open
 
 
 def _inspect(file, directory, *, interval, max_frames, model, language, ocr_language):
@@ -18,7 +19,7 @@ def _inspect(file, directory, *, interval, max_frames, model, language, ocr_lang
     except (ValueError, OSError) as exc:
         return {"status": "FAILED", "errors": {"probe": str(exc)}}
 
-    directory.mkdir()
+    directory.mkdir(mode=0o700)
     row = {"status": "SUCCESS", "metadata": metadata, "errors": {},
            "transcript": {"status": "NOT_REQUESTED" if model is None else "NO_AUDIO"}}
     try:
@@ -82,7 +83,7 @@ def inspect_batch(source: Path, output: Path, *, interval: float = 2, max_frames
         if not candidates:
             raise ValueError("No video candidates found in the source")
         prepared = Path(staging) / "result"
-        prepared.mkdir()
+        prepared.mkdir(mode=0o700)
         rows = []
         for index, candidate in enumerate(candidates, 1):
             relative = candidate["path"]
@@ -94,7 +95,7 @@ def inspect_batch(source: Path, output: Path, *, interval: float = 2, max_frames
                              "FAILED" if all(row["status"] == "FAILED" for row in rows) else "PARTIAL"),
                   "candidates": len(rows), "complete": total_success, "videos": rows}
         manifest = prepared / "batch.json"
-        with manifest.open("x", encoding="utf-8") as target:
+        with private_open(manifest, text=True) as target:
             json.dump(report, target, ensure_ascii=False, indent=2)
             target.write("\n")
         _publish(prepared, output)

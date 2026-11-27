@@ -55,10 +55,12 @@ def add_commands(subparsers, technical_registrars):
     def handle(args):
         simulate = args.operation == "plan"
         return execute_manifest(args.manifest, prepare, approvals=() if simulate else args.approve,
-                                simulate=simulate)
+                                simulate=simulate,
+                                expected_sha256=None if simulate else args.manifest_sha256)
 
     plan = commands.add_parser("plan", help="Validate a manifest without running tools")
     run = commands.add_parser("run", help="Execute stages whose approval labels were supplied")
+    run.add_argument("--manifest-sha256", required=True, help="Digest of the exact reviewed manifest bytes")
     run.add_argument("--approve", action="append", default=[], metavar="LABEL")
     for command in (plan, run):
         command.add_argument("manifest", type=Path)
