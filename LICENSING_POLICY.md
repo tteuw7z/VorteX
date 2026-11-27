@@ -1,4 +1,4 @@
-# VorteX licensing policy — proposed transition
+# VorteX licensing policy — component boundaries
 
 The existing public framework remains licensed under Apache-2.0. This policy does not revoke, narrow or replace rights already granted, including rights in previously released versions and third-party contributions.
 
@@ -23,4 +23,4 @@ This notice is a template, not a retroactive relicensing of this repository, and
 
 Public catalogs and integration clients should expose only explicitly approved information. Keep proprietary implementation private by default except for expressly authorized source-available components; credentials, personal context and confidential logs remain excluded from public repositories. A public repository may be viewed and forked under GitHub's terms; a proprietary notice is not a technical copy-prevention mechanism. Private hosting cannot recall existing copies.
 
-This proposal requires owner and legal review before adoption; it does not change the existing LICENSE or package metadata.
+The owner has authorized this public component boundary. The root LICENSE records scope; the unmodified Apache license is in LICENSES/Apache-2.0.txt and the framework package remains Apache-2.0. The studio/ notice is provisional pending ownership and legal review, particularly before commercial distribution. Do not rely on this policy as a legal clearance certificate.
