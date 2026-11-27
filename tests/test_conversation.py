@@ -11,8 +11,14 @@ class ConversationTests(unittest.TestCase):
             with self.subTest(trigger=trigger):
                 session = Conversation(locale="pt-BR")
                 self.assertEqual(session.handle(trigger)["text"],
-                                 expected + "\n\nVocê quer ver o menu?")
-                self.assertEqual(session.handle(trigger)["kind"], "already_active")
+                                 expected + "\n\nVocê quer ver o menu?\n\nInstagram: https://www.instagram.com/tteuw7z/")
+                again = session.handle(trigger)
+                self.assertEqual(again["kind"], "already_active")
+                self.assertNotIn("instagram.com", again["text"])
+
+    def test_english_greeting_has_contact_after_menu_question(self):
+        self.assertEqual(Conversation().handle("Vortex")["text"],
+                         GREETING + "\n\nWould you like to see the menu?\n\nInstagram: https://www.instagram.com/tteuw7z/")
 
     def test_no_implicit_or_substring_activation(self):
         for text in ("Vortex please", "🇮🇪 🇮🇪", "not vortex", "Vortex!", "menu"):

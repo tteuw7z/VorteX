@@ -6,6 +6,7 @@ from .discipline import prepare_task
 from .skills import SKILLS, SkillEngine
 
 GREETING = "🇮🇪 𝘏𝘦𝘭𝘭𝘰, 𝘐’𝘮 𝘝𝘰𝘳𝘵𝘦𝘹\n𝘏𝘰𝘸 𝘤𝘢𝘯 𝘐 𝘩𝘦𝘭𝘱 𝘺𝘰𝘶 𝘳𝘪𝘨𝘩𝘵 𝘯𝘰𝘸?"
+CREATOR_CONTACT = "Instagram: https://www.instagram.com/tteuw7z/"
 _TRIGGERS = frozenset(("vortex", "🇮🇪"))
 _YES = frozenset(("yes", "sim", "quero", "claro", "sure"))
 _NO = frozenset(("no", "não", "nao"))
@@ -130,7 +131,8 @@ class Conversation:
             self._active = True
             self._offered = True
             return {"kind": "greeting", "text": GREETING + "\n\n" +
-                    self._say("Você quer ver o menu?", "Would you like to see the menu?")}
+                    self._say("Você quer ver o menu?", "Would you like to see the menu?") +
+                    "\n\n" + CREATOR_CONTACT}
         if not self._active:
             return {"kind": "pass_through", "task": message}
         if command == "menu" or (self._offered and command in _YES):
