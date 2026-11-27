@@ -11,14 +11,14 @@ class ConversationTests(unittest.TestCase):
             with self.subTest(trigger=trigger):
                 session = Conversation(locale="pt-BR")
                 self.assertEqual(session.handle(trigger)["text"],
-                                 expected + "\n\nVocê quer ver o menu?\n\nInstagram: https://www.instagram.com/tteuw7z/")
+                                 expected + "\n\nInstagram: https://www.instagram.com/tteuw7z/")
                 again = session.handle(trigger)
                 self.assertEqual(again["kind"], "already_active")
                 self.assertNotIn("instagram.com", again["text"])
 
-    def test_english_greeting_has_contact_after_menu_question(self):
+    def test_english_greeting_has_only_contact(self):
         self.assertEqual(Conversation().handle("Vortex")["text"],
-                         GREETING + "\n\nWould you like to see the menu?\n\nInstagram: https://www.instagram.com/tteuw7z/")
+                         GREETING + "\n\nInstagram: https://www.instagram.com/tteuw7z/")
 
     def test_no_implicit_or_substring_activation(self):
         for text in ("Vortex please", "🇮🇪 🇮🇪", "not vortex", "Vortex!", "menu"):
@@ -33,7 +33,7 @@ class ConversationTests(unittest.TestCase):
     def test_menu_acceptance_navigation_and_fallback(self):
         session = Conversation(locale="pt")
         session.handle("🇮🇪")
-        menu = session.handle("sim")
+        menu = session.handle("menu")
         self.assertEqual(len(menu["entries"]), 6)
         self.assertFalse(menu["interactive_supported"])
         self.assertIn("1. Agentes", menu["text"])
@@ -71,10 +71,11 @@ class ConversationTests(unittest.TestCase):
         self.assertFalse(result["delivery_authorized"])
         self.assertEqual(session.handle("yes")["kind"], "task")
 
-    def test_decline_menu_and_request_later(self):
+    def test_menu_requires_explicit_request(self):
         session = Conversation()
         session.handle("Vortex")
-        self.assertEqual(session.handle("no")["kind"], "prompt")
+        self.assertEqual(session.handle("no")["kind"], "task")
+        self.assertEqual(session.handle("sim")["kind"], "task")
         self.assertEqual(session.handle("menu")["kind"], "menu")
 
     def test_invalid_inputs_and_host_claims_rejected(self):
@@ -94,7 +95,7 @@ class ConversationTests(unittest.TestCase):
 
         output = io.StringIO()
         with contextlib.redirect_stdout(output):
-            self.assertEqual(main(["chat", "--locale", "pt", "Vortex", "sim", "2"]), 0)
+            self.assertEqual(main(["chat", "--locale", "pt", "Vortex", "menu", "2"]), 0)
         events = json.loads(output.getvalue())
         self.assertEqual([event["kind"] for event in events], ["greeting", "menu", "menu"])
         self.assertEqual(events[-1]["section"], "functions")

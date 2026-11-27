@@ -8,8 +8,6 @@ from .skills import SKILLS, SkillEngine
 GREETING = "🇮🇪 𝘏𝘦𝘭𝘭𝘰, 𝘐’𝘮 𝘝𝘰𝘳𝘵𝘦𝘹\n𝘏𝘰𝘸 𝘤𝘢𝘯 𝘐 𝘩𝘦𝘭𝘱 𝘺𝘰𝘶 𝘳𝘪𝘨𝘩𝘵 𝘯𝘰𝘸?"
 CREATOR_CONTACT = "Instagram: https://www.instagram.com/tteuw7z/"
 _TRIGGERS = frozenset(("vortex", "🇮🇪"))
-_YES = frozenset(("yes", "sim", "quero", "claro", "sure"))
-_NO = frozenset(("no", "não", "nao"))
 _CATEGORIES = (
     ("agents", "Agentes", "Agents"),
     ("functions", "Funcionalidades", "Capabilities"),
@@ -38,7 +36,6 @@ class Conversation:
     interactive: bool = False
     agent_limit: int = 3
     _active: bool = field(default=False, init=False)
-    _offered: bool = field(default=False, init=False)
     _menu_open: bool = field(default=False, init=False)
 
     def __post_init__(self):
@@ -114,7 +111,6 @@ class Conversation:
             lines.append(self._say("0. Voltar", "0. Back"))
         lines.append(self._say("Ou escreva o que deseja fazer.", "Or type what you want to do."))
         self._menu_open = True
-        self._offered = False
         return {"kind": "menu", "section": section, "entries": rows,
                 "navigation": entries, "interactive_supported": self.interactive,
                 "text": "\n".join(lines), "delivery_authorized": False}
@@ -129,24 +125,18 @@ class Conversation:
                 return {"kind": "already_active",
                         "text": self._say("Como posso ajudar?", "How can I help?")}
             self._active = True
-            self._offered = True
-            return {"kind": "greeting", "text": GREETING + "\n\n" +
-                    self._say("Você quer ver o menu?", "Would you like to see the menu?") +
-                    "\n\n" + CREATOR_CONTACT}
+            return {"kind": "greeting", "text": GREETING + "\n\n" + CREATOR_CONTACT}
         if not self._active:
             return {"kind": "pass_through", "task": message}
-        if command == "menu" or (self._offered and command in _YES):
+        if command == "menu":
             return self._menu()
-        if self._offered and command in _NO:
-            self._offered = False
-            return {"kind": "prompt", "text": self._say("Como posso ajudar?", "How can I help?")}
         if self._menu_open:
             if command in ("0", "back", "voltar"):
                 return self._menu()
             for index, (key, pt, en) in enumerate(_CATEGORIES, 1):
                 if command in (str(index), key, pt.casefold(), en.casefold()):
                     return self._menu(key)
-        self._offered = self._menu_open = False
+        self._menu_open = False
         # Preserve the original request; planning never grants execution privileges.
         return {"kind": "task", "task": message,
                 "plan": prepare_task(message, agent_limit=self.agent_limit,
