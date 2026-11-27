@@ -1,0 +1,66 @@
+name: Studio and license verification
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  studio-license:
+    runs-on: ubuntu-latest
+    timeout-minutes: 12
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.15'
+      - name: Verify scope, license and package metadata
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import tomllib
+          root = Path('.')
+          scope = (root / 'LICENSE').read_text()
+          assert 'studio/LICENSE' in scope and 'LICENSES/Apache-2.0.txt' in scope
+          assert 'Apache License' in (root / 'LICENSES/Apache-2.0.txt').read_text()
+          assert 'All rights reserved' in (root / 'studio/LICENSE').read_text()
+          package = tomllib.loads((root / 'pyproject.toml').read_text())['project']
+          assert package['license'] == 'Apache-2.0'
+          assert package['license-files'] == ['LICENSES/Apache-2.0.txt']
+          assert 'prune studio' in (root / 'MANIFEST.in').read_text()
+          for p in (root / 'studio').rglob('*.py'):
+              assert p.read_text().startswith('# SPDX-License-Identifier: LicenseRef-VorteX-Proprietary'), p
+          assert (root / 'THIRD_PARTY_NOTICES.md').is_file()
+          print('License scope consistency checks passed; not a legal clearance.')
+          PY
+      - name: Install local test dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y ffmpeg
+          python -m pip install -r studio/requirements.txt build
+      - name: Verify package distribution boundary
+        run: |
+          python -m build
+          python - <<'PY'
+          from pathlib import Path
+          import tarfile, zipfile
+          sdist, = Path('dist').glob('*.tar.gz')
+          wheel, = Path('dist').glob('*.whl')
+          with tarfile.open(sdist) as f:
+              names = f.getnames()
+              assert not any('/studio/' in n or n.endswith('/studio') for n in names)
+              assert any(n.endswith('/LICENSES/Apache-2.0.txt') for n in names)
+          with zipfile.ZipFile(wheel) as f:
+              names = f.namelist()
+              assert not any('studio/' in n or 'vortex_studio.py' in n for n in names)
+              assert any(n.endswith('/LICENSES/Apache-2.0.txt') for n in names)
+          PY
+      - name: Run Studio tests including real video encode
+        working-directory: studio
+        run: |
+          ffmpeg -version
+          ffprobe -version
+          python -m unittest discover -s tests -v
