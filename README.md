@@ -2,7 +2,7 @@
 
 A public Python framework for capability-aware orchestration, automation, research, software engineering and multimedia workflows.
 
-Version 0.1.0. **Phase 3 local tool engines.** Python 3.15.2 or newer. Apache-2.0.
+Version 0.1.0. **Phase 3 local tool engines.** Python 3.15.2 or newer. The framework is Apache-2.0. The repository also contains a separately licensed Studio prototype. See [licensing scope](LICENSE), [Apache-2.0 text](LICENSES/Apache-2.0.txt), [Studio terms](studio/LICENSE), and [third-party inventory](THIRD_PARTY_NOTICES.md). The Studio is not part of the framework's Apache-licensed Python package.
 
 ## Quick start
 

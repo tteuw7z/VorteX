@@ -8,6 +8,7 @@ version = "0.1.0"
 description = "Capability-aware agent orchestration and automation framework"
 requires-python = ">=3.15.2"
 license = "Apache-2.0"
+license-files = ["LICENSES/Apache-2.0.txt"]
 dependencies = []
 
 [project.scripts]
