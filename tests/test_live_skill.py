@@ -60,3 +60,25 @@ class InstalledSkillTests(unittest.TestCase):
         from vortex.live_catalog import export
         data = adapter.validate(adapter.decode(__import__("json").dumps(export("a" * 40)).encode()))
         self.assertIn(["design", "motion"], [row["path"] for row in data["commands"]])
+
+    def test_phrase_routing_and_bounds(self):
+        data = catalog("a" * 40, True)
+        data["skills"][1]["keywords"] = ["motion design", "edição visual"]
+        self.assertEqual(adapter.route("Fazer EDIÇÃO visual", data)["skills"], ["motion"])
+        self.assertEqual(adapter.route("motion unrelated design", data)["skills"], [])
+        self.assertEqual(adapter.route("motion designer", data)["skills"], [])
+        with self.assertRaises(ValueError):
+            adapter.route("x" * 8193, data)
+
+    def test_malformed_refs_and_duplicate_arguments(self):
+        for ref in ([], {"object": None}, {"ref": "refs/heads/main", "object": {"type": "commit", "sha": "a" * 40}}):
+            with self.assertRaises(ValueError):
+                adapter.sync(lambda _: ref)
+        data = catalog("a" * 40)
+        data["commands"][0]["arguments"] = [
+            {"name": "a", "flags": ["--x"], "required": False},
+            {"name": "b", "flags": ["--x"], "required": False}]
+        with self.assertRaises(ValueError):
+            adapter.validate(data)
+        with self.assertRaises(ValueError):
+            adapter.decode(b'{"value":NaN}')
