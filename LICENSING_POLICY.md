@@ -4,7 +4,7 @@ The existing public framework remains licensed under Apache-2.0. This policy doe
 
 ## Future proprietary components
 
-New, independently authored components that the rights holder elects to keep proprietary should be developed in a separate private repository. Before distribution, each such component must carry an explicit license notice and a documented ownership and dependency review. Proposed default notice for wholly owned, separately identified material:
+New, independently authored components that the rights holder elects to keep proprietary should preferably be developed in a separate private repository. With explicit owner authorization, a separately identified source-available directory may instead be published publicly with its own license notice. Such publication permits viewing and forking through GitHub under its terms and cannot provide technical secrecy. The studio/ directory is the first such exception. Before distribution, each such component must carry an explicit license notice and a documented ownership and dependency review. Proposed default notice for wholly owned, separately identified material:
 
 > Copyright (c) 2026 the respective VorteX copyright holder(s). All rights reserved.
 > Except as expressly authorized in writing by the copyright holder or permitted by applicable law, no permission is granted to reproduce, modify, redistribute, sublicense or commercially exploit this proprietary material.
@@ -21,6 +21,6 @@ This notice is a template, not a retroactive relicensing of this repository, and
 
 ## Public/private boundary
 
-Public catalogs and integration clients should expose only explicitly approved information. Keep proprietary implementation, credentials, personal context, and confidential logs out of public repositories. A public repository may be viewed and forked under GitHub's terms; a proprietary notice is not a technical copy-prevention mechanism. Private hosting cannot recall existing copies.
+Public catalogs and integration clients should expose only explicitly approved information. Keep proprietary implementation private by default except for expressly authorized source-available components; credentials, personal context and confidential logs remain excluded from public repositories. A public repository may be viewed and forked under GitHub's terms; a proprietary notice is not a technical copy-prevention mechanism. Private hosting cannot recall existing copies.
 
 This proposal requires owner and legal review before adoption; it does not change the existing LICENSE or package metadata.
