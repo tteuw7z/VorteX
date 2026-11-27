@@ -5,7 +5,7 @@ from vortex.conversation import Conversation, GREETING
 
 class ConversationTests(unittest.TestCase):
     def test_exact_greeting_and_case_variants(self):
-        expected = "🇮🇪 𝘏𝘦𝘭𝘭𝘰, 𝘐’𝘮 𝘝𝘰𝘳𝘵𝘦𝘹\n𝘏𝘰𝘸 𝘤𝘢𝘯 𝘐 𝘩𝘦𝘭𝘱 𝘺𝘰𝘶 𝘳𝘪𝘨𝘩𝘵 𝘯𝘰𝘸?"
+        expected = "🇮🇪 𝘏𝘦𝘭𝘭𝘰, 𝘐’𝘮 𝘝𝘰𝘳𝘵𝘦𝘹\n\n𝘏𝘰𝘸 𝘤𝘢𝘯 𝘐 𝘩𝘦𝘭𝘱 𝘺𝘰𝘶 𝘳𝘪𝘨𝘩𝘵 𝘯𝘰𝘸?"
         self.assertEqual(GREETING, expected)
         for trigger in ("Vortex", "vorteX", "VORTEX", "🇮🇪", "  vortex  "):
             with self.subTest(trigger=trigger):

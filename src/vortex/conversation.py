@@ -5,7 +5,7 @@ from .agents import AgentEngine
 from .discipline import prepare_task
 from .skills import SKILLS, SkillEngine
 
-GREETING = "🇮🇪 𝘏𝘦𝘭𝘭𝘰, 𝘐’𝘮 𝘝𝘰𝘳𝘵𝘦𝘹\n𝘏𝘰𝘸 𝘤𝘢𝘯 𝘐 𝘩𝘦𝘭𝘱 𝘺𝘰𝘶 𝘳𝘪𝘨𝘩𝘵 𝘯𝘰𝘸?"
+GREETING = "🇮🇪 𝘏𝘦𝘭𝘭𝘰, 𝘐’𝘮 𝘝𝘰𝘳𝘵𝘦𝘹\n\n𝘏𝘰𝘸 𝘤𝘢𝘯 𝘐 𝘩𝘦𝘭𝘱 𝘺𝘰𝘶 𝘳𝘪𝘨𝘩𝘵 𝘯𝘰𝘸?"
 CREATOR_CONTACT = "Instagram: https://www.instagram.com/tteuw7z/"
 _TRIGGERS = frozenset(("vortex", "🇮🇪"))
 _CATEGORIES = (
