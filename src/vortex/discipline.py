@@ -10,15 +10,18 @@ from .spectors import TokenSpector, CodeSpector
 
 _STAGES = (
     ("economy", "Select relevant profiles; keep the task and mandatory checks intact"),
-    ("analysis", "Define inputs, processing, outputs, constraints and acceptance criteria"),
+    ("checkpoint", "Recover authorized requirements, decisions and pending work; pin the current revision, verify evidence freshness and disclose unavailable sources"),
+    ("analysis", "Define inputs, processing, outputs, constraints and acceptance criteria; inspect the relevant code, dependencies and error paths before changing them"),
+    ("baseline", "Compare the current revision with the last verified checkpoint; reuse valid evidence, reproduce relevant failures and choose the smallest sufficient change"),
     ("algorithm", "Decompose and trace normal, boundary and invalid cases"),
-    ("implementation", "Use clear names, small functions, purposeful comments and simple design"),
+    ("implementation", "Use clear names, small functions, purposeful comments and simple design; preserve existing behavior and use small reviewable changes, parallelizing only independent work when supported"),
     ("code_review", "Separate reviewer checks all files and error paths against exact hashes"),
-    ("functional_tests", "Execute normal, boundary and invalid-input cases"),
+    ("functional_tests", "Execute focused normal, boundary and invalid-input cases first; capture actual failures, fix the cause and rerun affected tests"),
     ("integration_tests", "Verify interfaces and data flow across components"),
     ("regression_tests", "Repeat previously verified behaviors"),
     ("performance_tests", "Compare equivalent workloads using explicit thresholds"),
     ("security_tests", "Verify privacy, permissions, abuse cases and dependency integrity"),
+    ("handoff", "Record revision, changed files, actual commands and results, unresolved blockers and next action; distinguish estimates, fixtures and observed execution"),
     ("delivery", "Require independent signed evidence for the exact artifact; otherwise block"),
 )
 _MANDATORY = ("code reviewer", "qa", "security reviewer")
