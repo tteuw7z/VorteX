@@ -8,6 +8,8 @@ jobs:
   tests:
     runs-on: ubuntu-latest
     timeout-minutes: 15
+    outputs:
+      catalog_sha256: ${{ steps.catalog.outputs.sha256 }}
     steps:
       - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
@@ -34,8 +36,13 @@ jobs:
       - run: python -m pip install .
       - run: python -m compileall -q src tests
       - run: python -m unittest discover -s tests -v
-      - name: Export live ChatGPT catalog
-        run: python -m vortex.live_catalog "$GITHUB_SHA" > "$RUNNER_TEMP/catalog.json"
+      - name: Export and validate the catalog with the consumer schema
+        id: catalog
+        run: |
+          manifest="$RUNNER_TEMP/catalog.json"
+          python -m vortex.live_catalog "$GITHUB_SHA" > "$manifest"
+          python scripts/route.py --catalog "$manifest" > /dev/null
+          echo "sha256=$(sha256sum "$manifest" | cut -d' ' -f1)" >> "$GITHUB_OUTPUT"
       - uses: actions/upload-artifact@ea165f8d65b6e75b540449e92b4886f43607fa02 # v4
         with:
           name: chatgpt-live-catalog
@@ -149,9 +156,14 @@ jobs:
           if-no-files-found: error
           retention-days: 7
 
+  studio-license:
+    uses: ./.github/workflows/studio-license.yml
+    permissions:
+      contents: read
+
   publish-chatgpt-catalog:
-    needs: [tests, portable-core, android-fixture]
-    if: github.event_name == 'push' && github.repository == 'tteuw7z/VorteX' && (github.ref == 'refs/heads/main' || github.ref == 'refs/heads/phase-6/catalog-reconciliation')
+    needs: [tests, portable-core, android-fixture, studio-license]
+    if: github.event_name == 'push' && github.repository == 'tteuw7z/VorteX' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-latest
     timeout-minutes: 5
     permissions:
@@ -169,16 +181,20 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           SOURCE_SHA: ${{ github.sha }}
           SOURCE_REF: ${{ github.ref }}
+          CATALOG_SHA256: ${{ needs.tests.outputs.catalog_sha256 }}
         run: |
           set -euo pipefail
           manifest="$RUNNER_TEMP/live-catalog/catalog.json"
           python - "$manifest" <<'PY'
-          import json, os, re, sys
+          import hashlib, json, os, re, sys
           from pathlib import Path
           p = Path(sys.argv[1])
           if p.is_symlink() or not p.is_file() or p.stat().st_size > 262144:
               raise SystemExit("Invalid catalog file")
-          obj = json.loads(p.read_bytes())
+          data = p.read_bytes()
+          if hashlib.sha256(data).hexdigest() != os.environ['CATALOG_SHA256']:
+              raise SystemExit('Catalog differs from the validated consumer input')
+          obj = json.loads(data)
           if (obj.get("schema") != 1 or obj.get("source_sha") != os.environ["SOURCE_SHA"]
               or not re.fullmatch("[0-9a-f]{40}", obj["source_sha"])
               or obj.get("execution") != "host_binding_required"
