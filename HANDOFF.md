@@ -76,3 +76,8 @@ Continue from code commit 6938dc52d581dcbba7bd86d52a35822cd43dacb7 or its docume
 ## Motion UI checkpoint 6.28
 
 Continue from 97ea53fe569d6452b83b9e9f9b5d99f070d51b85 or its documentation-only successor. CI 45909540313: 153 passed, 3 skipped, all four jobs passed including headless Chromium. Python generates script-free native HTML/CSS menu and ten control examples. Five bounded motion presets and five fixed vector motifs, escaped text, private candidate outputs and CSP. Added motion designer and UI interaction tester planning profiles; no runtime JS or new Python runtime dependencies. The interface is an offline read-only candidate, not an installed ChatGPT interface, not a released product. Keep independent gate and all prior security requirements intact.
+
+
+## Candidato — continuidade de engenharia
+
+O preflight propõe recuperação de checkpoint autorizado, comparação de revisão e evidências, mudanças pequenas, testes focados antes da integração e handoff explícito. Mantém o status PLAN_ONLY e o bloqueio de entrega. Não altera o mecanismo de Context Intelligence nem sua condição de pesquisa na issue #4. A mudança inclui um teste de ordem dos estágios; aguarda execução da suíte no Python alvo, revisão independente e integração. Nenhum dado de conversa é necessário para usar o protocolo.
