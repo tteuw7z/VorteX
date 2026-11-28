@@ -21,6 +21,26 @@ SKILLS = (
     Skill("learning", ("study", "estudo", "estudar", "quiz", "aprender"), ("educator",), ("identify source", "explain", "practice", "review errors")),
     Skill("security", ("security", "seguranca", "audit", "auditoria"), ("security reviewer",), ("scope authorization", "inspect", "verify", "report")),
     Skill("automation", ("workflow", "automacao", "automation"), ("automation engineer",), ("map steps", "check permissions", "execute", "verify")),
+    Skill("finance", ("finance", "financas", "orcamento", "budget", "contabilidade", "accounting"), ("financial analyst", "reviewer"),
+          ("identify scope and assumptions", "check calculations and sources", "report risks and uncertainty")),
+    Skill("healthcare", ("healthcare", "saude", "clinical", "clinico", "medico", "medical"), ("health information reviewer", "reviewer"),
+          ("identify information need", "consult authoritative evidence", "flag uncertainty and need for professional review")),
+    Skill("marketing", ("marketing", "campaign", "campanha", "seo", "branding", "advertising", "publicidade"), ("marketing strategist", "reviewer"),
+          ("identify audience", "define campaign objectives", "measure results")),
+    Skill("sales", ("sales", "vendas", "prospecting", "prospeccao", "crm"), ("sales analyst", "reviewer"),
+          ("identify customer needs", "plan outreach with consent", "review outcomes")),
+    Skill("product", ("product", "produto", "roadmap", "backlog", "discovery"), ("product strategist", "reviewer"),
+          ("identify user needs", "prioritize requirements", "define acceptance criteria")),
+    Skill("project", ("project", "projeto", "cronograma", "milestones", "milestone", "sprint"), ("project coordinator", "reviewer"),
+          ("define scope", "map dependencies and milestones", "review delivery risks")),
+    Skill("game", ("game", "games", "jogo", "jogos", "gameplay", "godot", "unity"), ("game developer", "reviewer"),
+          ("define mechanics", "prototype gameplay", "test behavior and performance")),
+    Skill("gis", ("gis", "geospatial", "geoespacial", "cartography", "cartografia", "qgis"), ("geospatial analyst", "reviewer"),
+          ("identify coordinate system and data provenance", "check spatial transformations", "validate output")),
+    Skill("spatial", ("xr", "arcore", "arkit", "spatial", "imersivo", "imersiva", "immersive", "3d"), ("spatial experience designer", "reviewer"),
+          ("define interaction and coordinate frame", "prototype experience", "check accessibility and performance")),
+    Skill("support", ("support", "suporte", "troubleshooting", "helpdesk", "incident", "incidente", "network", "rede"), ("support engineer", "reviewer"),
+          ("collect symptoms", "isolate causes safely", "verify recovery")),
 )
 
 def normalize(value: str) -> str:
@@ -40,11 +60,19 @@ class SkillEngine:
             raise ValueError(f"Unknown skills: {', '.join(sorted(unknown))}")
         self.names = frozenset(selected)
         self._skills = tuple(skill for skill in source if skill.name in selected)
+        index: dict[str, list[int]] = {}
+        for position, skill in enumerate(self._skills):
+            for keyword in set(skill.keywords):
+                index.setdefault(keyword, []).append(position)
+        self._keyword_index = {keyword: tuple(positions) for keyword, positions in index.items()}
 
     def select(self, task: str, *, limit: int = 3) -> tuple[Skill, ...]:
         if not task.strip() or type(limit) is not int or limit < 1:
             raise ValueError("Nonempty task and positive skill limit required")
         tokens = set(re.findall(r"\w+", normalize(task)))
-        scores = [(len(tokens.intersection(s.keywords)), s) for s in self._skills]
-        ranked = sorted(scores, key=lambda match: -match[0])
-        return tuple(s for score, s in ranked if score > 0)[:limit]
+        scores: dict[int, int] = {}
+        for token in tokens:
+            for position in self._keyword_index.get(token, ()):
+                scores[position] = scores.get(position, 0) + 1
+        ranked = sorted(scores, key=lambda position: (-scores[position], position))
+        return tuple(self._skills[position] for position in ranked[:limit])

@@ -1,9 +1,7 @@
 name: Studio and license verification
 
 on:
-  pull_request:
-  push:
-    branches: [main]
+  workflow_call:
 
 permissions:
   contents: read
@@ -13,10 +11,12 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 12
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-python@v5
+      - uses: actions/checkout@11d5960a326750d5838078e36cf38b85af677262 # v4
         with:
-          python-version: '3.15'
+          persist-credentials: false
+      - uses: actions/setup-python@a26af69be951a213d495a4c3e4e4022e16d87065 # v5
+        with:
+          python-version: '3.15.2'
       - name: Verify scope, license and package metadata
         run: |
           python - <<'PY'
@@ -58,6 +58,7 @@ jobs:
               assert not any('studio/' in n or 'vortex_studio.py' in n for n in names)
               assert any(n.endswith('/LICENSES/Apache-2.0.txt') for n in names)
           PY
+          python -m pip install --no-deps dist/*.whl
       - name: Run Studio tests including real video encode
         working-directory: studio
         run: |

@@ -45,3 +45,72 @@
 - [ ] Validar em contas autorizadas os dois ciclos de chamada remota e registrar uso real fornecido pelos serviços.
 - [ ] Fase 6. Auditar arquitetura, segurança, privacidade e licenças. Validar builds e mídia finais e preparar release.
 - [ ] Registrar separadamente as capacidades ainda parciais, incluindo interpretação semântica de cenas, render de efeitos avançados, provedores externos, testes Android em aparelho e casos de ASR multilingue.
+
+## Fase 6 — checkpoint 6.1
+
+- [x] Confirmar baseline e acesso de leitura à referência privada.
+- [x] Implementar dez rotas de planejamento originais e perfis correspondentes, sem publicar arquivos privados.
+- [x] Rejeitar argumentos JSON duplicados e validar limites de chamadas de planejamento.
+- [ ] Verificar CI do candidato e reconciliar capacidades restantes em detalhe.
+- [ ] Implementar e medir lacunas técnicas ainda abertas; manter validações externas separadas.
+
+- [x] Implementar cache opt-in, limitado à execução e a adaptadores puros sem contexto.
+- [ ] Validar cache, medir ganho em tarefas equivalentes e auditar demais componentes.
+
+- [x] Validar catálogo e cache em CI (a622fb4).
+- [x] Implementar índice invertido e benchmark pareado para tarefas comuns.
+- [ ] Validar otimização e registrar medição.
+
+- [x] Implementar transporte HTTPS e ciclo limitado de planejamento com aprovação explícita.
+- [ ] Validar contratos e fronteiras HTTPS em CI; executar validação autenticada somente com autorização e credenciais adequadas.
+
+- [x] Validar índice e transporte em CI, sem alegar chamadas autenticadas.
+- [x] Implementar flash, shake rotacional, blur e contraste por intervalos explícitos de saída.
+- [ ] Validar renderização dos efeitos, detecção de graves e demais lacunas.
+
+- [x] Validar efeitos reais por pixels e cadência em CI.
+- [x] Implementar detecção heurística de graves e flash automático por cortes.
+- [ ] Validar detecção e render em CI e corpus musical real autorizado.
+
+- [x] Validar transientes sintéticos e flash automático em CI.
+- [x] Recontar inventário privado por árvore Git não truncada e examinar padrões de credenciais no snapshot candidato.
+- [x] Fixar referências das Actions em commits observados no CI aprovado.
+- [ ] Revalidar workflow fixado, auditar histórico e licenças de distribuição e concluir reconciliação granular.
+
+- [x] Implementar política de entrega fail-closed e verificação de atestado associado ao hash dos bytes.
+- [x] Exigir aprovação de confiança Gradle, isolar permissões de aprendizagem POSIX e impedir colisões de aprovação/JSON duplicado.
+- [ ] Validar CI, integrar verificador independente e obrigar gate nos hosts; concluir auditoria de histórico, dependências e demais superfícies.
+
+- [x] Validar gate e proteções internas em CI 45882300851.
+- [x] Vincular aprovações ao digest do manifesto e minimizar ambiente de ferramentas.
+- [x] Reforçar caminhos portáveis e scanner HTML.
+- [ ] Revalidar 6.9, implantar verificador independente e integrar gate a todos os caminhos de entrega.
+
+- [x] Exigir logs reais vinculados a cada atestado e publicação em staging privado.
+- [ ] Validar política v2 em CI e implementar verificador independente/integrações reais.
+
+- [x] Definir permissões privadas em arquivos e diretórios de saída dos módulos principais.
+- [ ] Validar CI da revisão de privacidade e configurar ACLs Windows em ambiente real.
+
+- [x] Recuperar checkpoint 6.11 e confirmar CI sem repetir implementação.
+- [x] Adicionar scanner de histórico alcançável e bloqueio de credenciais conhecidas em tráfego remoto.
+- [ ] Validar 6.12 e revisar evidências de histórico; implantar verificador e gate obrigatório nos hosts.
+
+- [x] Add automatic economical preflight, dedicated code review profile and exact file coverage requirement.
+- [ ] Validate CI and integrate independent stage execution and real provider usage comparison.
+
+- [x] Validar 6.13 em CI e implementar expansão automática, contrato AGENTS.md e separação da telemetria.
+- [ ] Validar 6.14, medir desempenho e qualidade em tarefas reais equivalentes e integrar execução obrigatória nos hosts.
+
+- [x] Implementar coordenador ordenado para integração de hosts com callbacks confiáveis.
+- [ ] Validar CI e integrar adapters reais independentes, isolamento e publicação obrigatória nos hosts.
+
+- [x] Implementar ativação explícita, saudação, menu estruturado e textual, preflight para pedidos diretos e contrato de skill portátil.
+- [ ] Validar CI e integrar menus nativos, localização e bindings confiáveis em sessões reais dos hosts.
+
+- [x] Validate phase 6.17 Spector pipeline and policy 4 (CI 45906687959).
+- [x] Validate phase 6.18–6.21 trusted checks, repair loop, compatibility and database/API gates (CI 45907237193).
+- [ ] Deploy independent reviewer, execution isolation and universal host enforcement; verify live provider token savings, complete source coverage and broader parity.
+
+- [x] Build Motion UI, reusable controls, vector accents, planning profiles and headless browser checks (phase 6.28, CI 45909540313).
+- [ ] Verify on physical phone, Safari/Firefox, assistive technology and trusted chat host; independently authorize delivery before production use.

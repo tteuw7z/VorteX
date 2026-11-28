@@ -49,3 +49,35 @@
 - Editor, voz e QA de mídia compartilham ativos e tempo em uma timeline única. Transcrição e legendas são etapas da mesma cadeia. Manter status distintos por etapa.
 - Design, pesquisa e engenharia compartilham evidências e revisão. Usar um contrato de verificação em vez de um runtime por especialidade.
 - Adaptadores e estados de aprovação devem passar por um único Core; perfis, ferramentas e serviços externos entram sob demanda.
+
+## Fase 6 — ampliação inicial
+
+19 capacidades de planejamento, 22 perfis originais. Finanças, informações de saúde, marketing, vendas, produto, projetos, jogos, GIS, experiências espaciais e suporte ganham rotas bilíngues limitadas. São descritores e perfis de planejamento; não equivalem a execução de ferramentas especializadas ou a cobertura integral das fichas da referência. Testes do candidato ainda aguardam CI. A paridade integral permanece aberta.
+
+Fase 6.2: cache em processo agora implementado para adaptadores puros explicitamente habilitados, limitado a 128 resultados bem-sucedidos por workflow. Não reutiliza falhas, arquivos mutáveis ou operações externas por padrão. Validação e ganho medido ainda pendentes.
+
+Fase 6.3: catálogo e cache passaram no CI 45868236196 (77 aprovados, 3 ignorados). Otimização por índice invertido implementada; ganho exige comparação pareada no CI. Nenhuma telemetria de tokens reais foi coletada.
+
+Fase 6.4: transporte de OpenAI Responses/Anthropic Messages e coleta de uso por resposta implementados no código. Somente testes locais de protocolo e fronteira HTTPS previstos neste commit. Zero chamadas autenticadas; integração real e economia faturada permanecem não comprovadas.
+
+Fase 6.3/6.4: CI aprovou o índice e contratos locais HTTPS; mediana pareada de 14,63 para 10,88 µs/tarefa com planos iguais. Fase 6.5 adiciona efeitos explícitos de flash, shake rotacional, blur e contraste, ainda pendentes de validação. Sincronização automática musical, transições avançadas e descrição semântica continuam abertas.
+
+Fase 6.5: efeitos explícitos aprovados em render sintético e comparação de pixels (CI 45868881805). Fase 6.6 implementa onsets locais de 35–160 Hz e remapeamento de flash para cortes; ainda exige CI e validação musical real. Não equivale a reconhecimento semântico ou classificação perfeita de batidas.
+
+Fase 6.6: detecção de graves e flash automático passaram em áudio sintético real e render a 60 fps (CI 45869077696). Fase 6.7 reconfirmou inventário privado e verificou padrões comuns de credenciais em 57 arquivos públicos do candidato; nenhum match. Isso não comprova privacidade integral nem substitui revisão de histórico/licenças. Paridade e validações externas seguem abertas.
+
+Fase 6.8: segurança de entrega ganha gate executável local, scanner heurístico e atestado autenticado independente. Não há verificador implantado ou integração obrigatória de todos os hosts. Controles de Gradle, aprendizagem e automação reforçados. CI pendente; cobertura e auditoria integral ainda abertas.
+
+Fase 6.8 validada em CI (102 aprovados). Fase 6.9 fortalece aprovação por digest, ambiente de subprocessos e scanner. Sem validação independente de toda a segurança, sandbox real ou gate obrigatório no host.
+
+Fase 6.10: política v2 implementada com evidência real e staging privado; CI pendente. Atestado independente e integração real continuam bloqueios.
+
+Fase 6.11: privacidade de arquivos de saída em POSIX reforçada; ACLs Windows e proteção em repouso por criptografia permanecem dependentes da configuração e dos requisitos do host.
+
+Fase 6.11 validada (110 aprovados). Fase 6.12 adiciona varredura de histórico e filtro limitado de credenciais remotas; CI pendente. Não substitui auditoria completa ou autorização de entrega.
+
+Fase 6.13 acrescenta preflight e perfil revisor (23 perfis), não execução autônoma de agentes. Política v3 requer revisão vinculada aos bytes. Ganho real de tokens e equivalência funcional ainda não comprovados.
+
+Fase 6.13 aprovada (118 testes). Fase 6.14 inclui expansão automática e contrato de host; CI pendente. Nenhuma garantia de economia real, execução sem falhas ou independência implantada.
+
+Fase 6.15 oferece coordenação executável para adapters confiáveis; sem geração autônoma integrada, independência implantada ou publicação automática. CI pendente.

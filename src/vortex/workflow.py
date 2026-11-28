@@ -49,6 +49,8 @@ class StageResult:
     reason: str | None = None
     attempted: tuple[str, ...] = ()
     previous: tuple["StageResult", ...] = ()
+    cache_hit: bool = False
+    economy: dict = field(default_factory=dict)
 
 
 @dataclass(frozen=True, slots=True, init=False)
@@ -82,6 +84,9 @@ class Workflow:
             access = (stage.capability, *stage.alternatives)
             if any(not name.strip() for name in access) or len(access) != len(set(access)):
                 raise ValueError("Alternatives must be distinct nonempty capabilities")
+        labels = [stage.approval or stage.id for stage in entries]
+        if len(labels) != len(set(labels)):
+            raise ValueError("Each stage must have a distinct approval label")
         graph = {stage.id: stage.depends_on for stage in entries}
         ordered = tuple(index[stage_id] for stage_id in TopologicalSorter(graph).static_order())
         object.__setattr__(self, "stages", ordered)

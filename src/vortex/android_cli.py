@@ -12,7 +12,8 @@ def _execute(args):
         return build_fixture(args.destination, tools, api=args.api)
     return build_apk(args.project, args.destination, tools, module=args.module,
                      variant=args.variant, required_abi=args.abi, offline=args.offline,
-                     lint=args.lint, timeout=args.timeout, pass_env=args.pass_env)
+                     lint=args.lint, timeout=args.timeout, pass_env=args.pass_env,
+                     trusted_project=args.trust_project)
 
 
 def add_commands(subparsers):
@@ -33,6 +34,8 @@ def add_commands(subparsers):
     build.add_argument("--module", default="app")
     build.add_argument("--variant", choices=("debug", "release"), default="debug")
     build.add_argument("--abi")
+    build.add_argument("--trust-project", action="store_true",
+                       help="Explicitly authorize execution of reviewed Gradle code (not a sandbox)")
     build.add_argument("--offline", action="store_true")
     build.add_argument("--lint", action="store_true")
     build.add_argument("--pass-env", action="append", default=[], metavar="NAME",

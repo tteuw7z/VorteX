@@ -2,7 +2,7 @@
 
 This is a preliminary inventory, not a clearance certificate. The public baseline remains Apache-2.0 (see LICENSE and pyproject.toml). Existing grants are preserved. No new external source or asset is incorporated by this inventory.
 
-Studio separately uses Pillow (HPND; check exact installed release and notices) and invokes system FFmpeg/FFprobe. Neither dependency is vendored.
+Studio uses Pillow 13.x for image decoding and comparison under the upstream [MIT-CMU license](https://pillow.readthedocs.io/en/stable/about.html#license). Its lower bound includes the upstream [13.0.0 decoder security fixes](https://pillow.readthedocs.io/en/stable/releasenotes/13.0.0.html#security). Studio invokes system FFmpeg/FFprobe. None of these binaries is bundled with the framework.
 
 | Component | Role | License evidence / obligations | Status |
 | --- | --- | --- | --- |

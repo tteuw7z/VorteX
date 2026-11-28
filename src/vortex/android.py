@@ -12,6 +12,8 @@ from tempfile import TemporaryDirectory
 from zipfile import ZipFile
 
 from .evidence import file_sha256
+from .process_env import tool_environment
+from .private_io import private_open
 
 
 _ELF_BY_ABI = {
@@ -56,7 +58,7 @@ class AndroidTools:
 
 def _run(program, args, *, step, cwd=None, env=None, timeout=120):
     try:
-        result = subprocess.run([program, *map(str, args)], cwd=cwd, env=env,
+        result = subprocess.run([program, *map(str, args)], cwd=cwd, env=tool_environment() if env is None else env,
                                 capture_output=True, text=True, errors="replace", check=False,
                                 stdin=subprocess.DEVNULL, timeout=timeout)
     except subprocess.TimeoutExpired as exc:
@@ -126,16 +128,16 @@ def _publish(artifacts, dest: Path, tools: AndroidTools, *, mode: str, required_
         reports.append(row)
     report = {"mode": mode, "apks": reports, "report": str(dest / "report.json")}
     dest.parent.mkdir(parents=True, exist_ok=True)
-    dest.mkdir()
+    dest.mkdir(mode=0o700)
     created = []
     try:
         for file, row in zip(artifacts, reports, strict=True):
             target = Path(row["path"])
-            with file.open("rb") as source, target.open("xb") as output:
+            with file.open("rb") as source, private_open(target) as output:
                 created.append(target)
                 shutil.copyfileobj(source, output)
         manifest = Path(report["report"])
-        with manifest.open("x", encoding="utf-8") as output:
+        with private_open(manifest, text=True) as output:
             created.append(manifest)
             json.dump(report, output, ensure_ascii=False, indent=2)
             output.write("\n")
@@ -169,7 +171,7 @@ def _ignore_project(_directory, names):
 
 def build_apk(project: Path, destination: Path, tools: AndroidTools, *, module="app",
               variant="debug", required_abi=None, lint=False, offline=False, timeout=900,
-              pass_env: Iterable[str] = ()) -> dict:
+              pass_env: Iterable[str] = (), trusted_project: bool = False) -> dict:
     """Build a trusted, self-contained Gradle checkout in a private working copy."""
     if os.name == "nt":
         raise ValueError("Gradle builds currently require a POSIX host")
@@ -185,6 +187,10 @@ def build_apk(project: Path, destination: Path, tools: AndroidTools, *, module="
             raise ValueError("Forwarded environment arguments must be variable names")
         if name not in os.environ:
             raise ValueError(f"Requested environment variable is unset: {name}")
+    if trusted_project is not True:
+        raise ValueError("Gradle executes project code; explicit trusted_project approval is required")
+    # Validate that requested variables cannot expose reserved credentials.
+    tool_environment(extra=forwarded)
     project = project.resolve(strict=True)
     if not any((project / name).is_file() for name in ("settings.gradle", "settings.gradle.kts")):
         raise ValueError("Expected an Android Gradle project with settings.gradle or settings.gradle.kts")
@@ -210,8 +216,7 @@ def build_apk(project: Path, destination: Path, tools: AndroidTools, *, module="
         if not gradle:
             raise FileNotFoundError("No Gradle executable or usable Gradle wrapper is available")
 
-        env_keys = ("PATH", "HOME", "JAVA_HOME", "GRADLE_USER_HOME", "TMPDIR", "LANG", "LC_ALL")
-        environ = {key: os.environ[key] for key in (*env_keys, *forwarded) if key in os.environ}
+        environ = tool_environment(extra=(*forwarded, "GRADLE_USER_HOME"))
         environ.update(ANDROID_HOME=str(tools.sdk), ANDROID_SDK_ROOT=str(tools.sdk))
         capitalized = variant.capitalize()
         tasks = [f":{module}:assemble{capitalized}"]
@@ -262,7 +267,7 @@ def build_fixture(destination: Path, tools: AndroidTools, *, api: int = 35) -> d
         _run(aligner, ["4", unsigned, aligned], step="APK alignment")
         key = root / "fixture.p12"
         pass_var = "VORTEX_EPHEMERAL_APK_PASS"
-        signing_env = dict(os.environ)
+        signing_env = tool_environment()
         signing_env[pass_var] = secrets.token_urlsafe(32)
         _run(keytool, ["-genkeypair", "-noprompt", "-keystore", key, "-storetype", "PKCS12",
                        "-alias", "vortex-fixture", "-keyalg", "RSA", "-keysize", 2048,

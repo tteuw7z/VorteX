@@ -38,3 +38,120 @@
 - Inventário e matriz de equivalência dos snapshots privado e público.
 - Decisões de licença, Python e dependências, evidências e handoff.
 - Mantida a versão do pacote 0.1.0. Esta etapa acrescenta os registros da auditoria.
+
+## Fase 6.1 — candidato em desenvolvimento
+
+- Dez novas capacidades de planejamento e dez perfis originais, com roteamento PT/EN.
+- Validação de entradas duplicadas e limites nos contratos de planejamento.
+- Testes de seleção, restrições de configuração e ausência de execução implícita.
+- CI pendente; sem alteração na versão pública.
+
+- Corrigido alias PT de experiências imersivas detectado em CI; suíte de catálogo adicionada aos jobs macOS e Windows.
+
+## Fase 6.2 — candidato
+
+- Cache explícito por workflow, com marcação de reutilização e isolamento de artefatos.
+- Testes de aprovações, falhas, ausência de opt-in, escopo e limites de registro.
+
+## Fase 6.3 — candidato
+
+- Catálogo padrão reutilizável e índice invertido de palavras-chave.
+- Benchmark pareado com baseline fixado e validação de equivalência nas tarefas comuns.
+
+## Fase 6.4 — candidato
+
+- Transporte HTTPS para OpenAI Responses e Anthropic Messages, com aprovação explícita, limite de execução e telemetria por resposta.
+- Testes de protocolo injetado, fronteira HTTPS simulada, bloqueio de ferramentas não autorizadas e ausência de retries.
+
+## Fase 6.5 — candidato
+
+- Flash, shake rotacional, blur e contraste em timeline explícita, com validação de limites e relatório de quadros.
+- Testes de renderização comparando pixels decodificados e cadência; CI pendente.
+
+## Fase 6.6 — candidato
+
+- Análise local de transientes de graves e flash automático opcional remapeado pelos cortes.
+- Testes com áudio sintético pulsado, renderização e remapeamento de cortes.
+
+## Fase 6.7 — candidato
+
+- Actions fixadas em hashes completos usados no CI validado.
+- Evidência de varredura limitada de padrões de credenciais e reconciliação de contagens do inventário.
+
+## Fase 6.8 — candidato
+
+- Gate local fail-closed de artefatos com inspeção estática limitada e atestado independente.
+- Proteções de execução Gradle, aprovações, manifesto e armazenamento de aprendizagem.
+- Política de entrega e testes adversariais; CI pendente.
+
+## Fase 6.9 — candidato
+
+- Aprovação de automação ligada aos bytes exatos do manifesto; opção obrigatória --manifest-sha256.
+- Ambiente mínimo para ferramentas locais e proteção de chaves reservadas.
+- Caminhos portáveis e scanner HTML reforçados; testes adversariais adicionados.
+
+## Fase 6.10 — candidato
+
+- Política de entrega v2: logs reais exigidos e verificados por hash, staging privado, publicação final atômica em filesystem confiável.
+
+## Fase 6.11 — candidato
+
+- Permissões privadas nas saídas POSIX de mídia, ZIP, lotes, Android e HTML.
+
+## Fase 6.12 — candidato
+
+- Varredura limitada de objetos Git alcançáveis, sem revelar conteúdo dos achados.
+- Checkout sem credenciais persistentes; barreira de padrões de credenciais na comunicação remota.
+- Reconciliação do estado de 6.11 com CI real.
+
+## Fase 6.13 — candidato
+
+- Preflight automático de economia e transparência de perfis adiados.
+- Perfil dedicado de revisão de código e inventário por bytes; política v3 exige registro de cobertura integral.
+
+- Compatibilidade aditiva de campos de planejamento verificada por regressões; contexto de perfis selecionados preparado antes da primeira solicitação remota.
+
+## Fase 6.14 — candidato
+
+- Expansão automática de perfis habilitados correspondentes; explicitação de desabilitações.
+- Totais de uso remoto separados de estimativas e fixtures.
+- AGENTS.md com fluxo de desenvolvimento e critérios de segurança.
+
+## Fase 6.15 — candidato
+
+- Coordenador Python para preflight, build, revisão por bytes, barreira estática, testes funcionais e segurança em ordem, com bloqueio antes de entrega.
+
+## Fase 6.16 — candidato
+
+- Ativação explícita por Vortex ou 🇮🇪; saudação oficial uma vez por sessão, sem fala automática.
+- Menu de agentes, funcionalidades, segurança, ferramentas, configurações e ajuda; alternativa textual; perfis de planejamento separados de execução vinculada.
+- SKILL.md, CLI chat, preflight automático em pedidos diretos e dez testes de contrato; CI multiplataforma.
+
+- Phase 6.17 candidate: operational Spector helpers, structured pre-build logic/threat receipt, separate integration/regression/performance gates, Python lexical and compilation inventory, policy 4. CI pending.
+
+- Phase 6.17 validated: 136 passed, 3 skipped; Linux, macOS, Windows and synthetic Android CI succeeded (45906687959).
+- Phase 6.18 candidate: conservative fallback, trusted callable checks, preflight benchmark.
+- Phase 6.19 candidate: Engine/workflow economy reports and bounded repair with exact-byte revalidation; CI pending.
+
+- Phase 6.20: restore legacy plan descriptor compatibility following benchmark rejection; retain expanded generic software routing in preflight only. CI pending.
+
+- Phase 6.21 candidate: database/API evidence types and conservative Python checks for direct SQL interpolation, insecure temporary names and unsafe YAML loading.
+
+- Phase 6.20 and 6.21 validated in CI 45907175134 and 45907237193 respectively. Latest code checkpoint: 144 passed, 3 skipped; all four jobs successful. Document-only checkpoint records verified evidence.
+
+- Phase 6.22 candidate: original Python motion presets, native offline menu and control gallery, reduced motion, CSP, contrast validation, two planning profiles and regression tests. No production authorization.
+
+- Phase 6.23 candidate: headless Chromium keyboard, emulated-touch, viewport, motion preference and CSP tests; synthetic screenshot evidence. CI pending.
+
+- Phase 6.24 candidate: reusable safe native-control factories, ten gallery examples, unique IDs, checked bounds and original violet switch styling. CI pending.
+
+- Phase 6.25 candidate: correct Chromium keyboard event sequence after CI 45909017606 rejection; extend browser coverage and stepped animation evidence. CI pending.
+
+- Phase 6.25 validated: 151 passed, 3 skipped; actual headless Chromium interactions, no horizontal overflow at tested widths, zero page network requests, no logged browser errors (45909213133).
+- Phase 6.26 candidate: five original vector accents, shared effect labels and centralized motion durations; added vector safety and integration tests.
+
+- Phase 6.27 candidate: quiet initial state, centralized contrast palette, localized gallery, accurate still control and browser motion assertions.
+
+- Phase 6.28 candidate: bridge immutable palette to existing dictionary-only audit API; allow 20 seconds for Chromium startup after a transient push-run startup failure. Earlier phase 6.26 passed PR CI 45909352447 (152 passed, 3 skipped, browser PASS).
+
+- Phase 6.28 validated: CI 45909540313, 153 passed, 3 skipped, all four jobs successful. Native browser tests passed at 1280 and 390 CSS pixels; quiet resting state, vector effects, keyboard, mouse, emulated touch and reduced motion. No page network requests or logged browser errors. No release authorization.

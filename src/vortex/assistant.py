@@ -1,11 +1,20 @@
 """Host-side tool contract for the local, read-only planner."""
 import json
 
-from .core import plan
+from .discipline import prepare_task
 
 _MAX_TASK_CHARS = 8192
 # JSON can encode one non-BMP character as two six-character escapes.
 _MAX_ARGUMENT_CHARS = _MAX_TASK_CHARS * 12 + 1024
+
+
+def _unique_object(pairs: list[tuple[str, object]]) -> dict:
+    result = {}
+    for key, value in pairs:
+        if key in result:
+            raise ValueError("Duplicate JSON argument key")
+        result[key] = value
+    return result
 
 
 def planner_tool(provider: str) -> dict:
@@ -30,7 +39,7 @@ def answer_planner_call(provider: str, call: dict) -> dict:
         raw = call.get("arguments")
         if not isinstance(raw, str) or len(raw) > _MAX_ARGUMENT_CHARS:
             raise ValueError("Invalid function arguments")
-        args = json.loads(raw)
+        args = json.loads(raw, object_pairs_hook=_unique_object)
     elif provider == "anthropic" and call.get("type") == "tool_use":
         identifier = call.get("id")
         args = call.get("input")
@@ -42,7 +51,12 @@ def answer_planner_call(provider: str, call: dict) -> dict:
         raise ValueError("Expected task and agent_limit")
     if not isinstance(args["task"], str) or len(args["task"]) > _MAX_TASK_CHARS:
         raise ValueError("Invalid planning task")
-    output = json.dumps(plan(**args), ensure_ascii=False)
+    if type(args["agent_limit"]) is not int or not 1 <= args["agent_limit"] <= 4:
+        raise ValueError("Invalid agent limit")
+    if not args["task"].strip():
+        raise ValueError("Empty planning task")
+    prepared = prepare_task(**args)
+    output = json.dumps({**prepared['route'], **{key: value for key, value in prepared.items() if key != 'route'}}, ensure_ascii=False)
     if provider == "openai":
         return {"type": "function_call_output", "call_id": identifier, "output": output}
     return {"type": "tool_result", "tool_use_id": identifier, "content": output}
