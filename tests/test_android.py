@@ -37,6 +37,15 @@ class AndroidValidationTests(unittest.TestCase):
                 build_apk(root, root / "new" / "dest", tools)
             self.assertFalse((root / "new").exists())
 
+    def test_untrusted_project_blocked_before_tools(self):
+        with TemporaryDirectory() as directory:
+            root = Path(directory)
+            (root / "settings.gradle").write_text("untrusted build script")
+            for flag in (False, "true", 1):
+                with self.assertRaisesRegex(ValueError, "explicit trusted_project"):
+                    build_apk(root, root / "out", AndroidTools(root, root), trusted_project=flag)
+            self.assertFalse((root / "out").exists())
+
     def test_manifest_and_abi_requirements_precede_signature_check(self):
         with TemporaryDirectory() as directory:
             root = Path(directory)
@@ -124,7 +133,7 @@ class GradleIntegrationTests(unittest.TestCase):
         with TemporaryDirectory() as directory:
             root = Path(directory)
             project = _gradle_project(root / "project")
-            result = build_apk(project, root / "out", tools)
+            result = build_apk(project, root / "out", tools, trusted_project=True)
             self.assertEqual(result["mode"], "gradle-debug")
             [apk] = result["apks"]
             self.assertTrue(apk["verified"])

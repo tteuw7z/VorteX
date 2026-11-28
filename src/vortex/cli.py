@@ -14,8 +14,11 @@ from .automation_cli import add_commands as add_automation_commands
 from .archive import inventory
 from .config import Config
 from .context import ContextEngine
-from .core import plan
+from .conversation import Conversation
+from .discipline import prepare_task
 from .learning import LearningEngine
+from .remote import add_commands as add_remote_commands
+from .security_cli import add_commands as add_security_commands
 from .media_cli import add_commands as add_media_commands
 from .methods_cli import add_commands as add_methods_commands
 from .skills import SkillEngine
@@ -45,7 +48,8 @@ def _dispatch(args, config):
     match args.command:
         case "plan" | "knowledge":
             limit = config.agent_limit if args.agent_limit is None else args.agent_limit
-            result = plan(args.task, agent_limit=limit, skills=SkillEngine(enabled=config.skills))
+            prepared = prepare_task(args.task, agent_limit=limit, skills=SkillEngine(enabled=config.skills))
+            result = {**prepared["route"], **{key: value for key, value in prepared.items() if key != "route"}}
             if args.command == "knowledge":
                 result["profiles"] = [asdict(profile)
                                       for profile in AgentEngine().load(result["agents"])]
@@ -54,6 +58,10 @@ def _dispatch(args, config):
                     result["learned"] = [entry for skill in result["skills"]
                                          for entry in learning.recall(skill["name"])]
             return result
+        case "chat":
+            session = Conversation(locale=args.locale, enabled=config.skills,
+                                   agent_limit=config.agent_limit)
+            return [session.handle(message) for message in args.messages]
         case "inventory":
             return inventory(args.path)
         case "context":
@@ -65,7 +73,7 @@ def _dispatch(args, config):
             return _learning(args, config)
 
 
-def main(argv=None):
+def build_parser():
     parser = argparse.ArgumentParser(prog="vortex")
     parser.add_argument("--version", action="version", version=__version__)
     parser.add_argument("--config", type=Path, help="Read settings from an explicit TOML file")
@@ -74,6 +82,9 @@ def main(argv=None):
         route = commands.add_parser(name)
         route.add_argument("task")
         route.add_argument("--agent-limit", type=int)
+    chat = commands.add_parser("chat", help="Inspect explicit chat activation and menu events")
+    chat.add_argument("--locale", default="en")
+    chat.add_argument("messages", nargs="+")
     commands.add_parser("inventory").add_argument("path", type=Path)
     commands.add_parser("context").add_argument("path", type=Path)
     learn = commands.add_parser("learn").add_subparsers(dest="operation", required=True)
@@ -85,6 +96,13 @@ def main(argv=None):
     for register in _TECHNICAL_COMMANDS:
         register(commands)
     add_automation_commands(commands, _TECHNICAL_COMMANDS)
+    add_remote_commands(commands)
+    add_security_commands(commands)
+    return parser
+
+
+def main(argv=None):
+    parser = build_parser()
     args = parser.parse_args(argv)
     try:
         config = Config.load(args.config) if args.config else Config()

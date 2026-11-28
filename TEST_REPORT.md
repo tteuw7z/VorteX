@@ -122,3 +122,85 @@ O teste com ZIP mede operações de leitura e digest, a partir de uma fixture si
 | Privacidade | Comparação do pacote publicado com a árvore pública de base: somente os sete arquivos de continuidade novos, sem dados de commit, trechos de código ou ativos da fonte privada. |
 
 Reprodução pública: em ambiente Python 3.15.2, instale o pacote local, rode `python -m unittest discover -s tests -v` e execute `vortex --version` e `vortex plan "compile APK Android"`. Os testes do projeto de referência rodam apenas em checkout autorizado. Esta fase não estabelece equivalência integral nem desempenho medido.
+
+## Fase 6.1 — testes adicionados (a executar)
+
+Casos bilíngues para dez novas capacidades, integridade de perfis, limite de agentes, configuração restrita e ausência de adaptador de execução; argumentos duplicados, limites inválidos e tarefas vazias nos contratos de host. Nenhum resultado do candidato é declarado aprovado antes de CI.
+
+CI 45868049061, commit 06cb01b: 77 testes descobertos, 73 aprovados, 1 erro no caso PT `Experiência imersiva`, 3 ignorados. macOS, Windows e fixture Android aprovados. Corrigida a ausência do alias feminino; novos testes incluídos também no CI portátil. Revalidação pendente.
+
+## Fase 6.2 — testes adicionados (a executar)
+
+Testes de contagem real de chamadas, isolamento de artefatos, aprovação de cada estágio, reinicialização de cache por workflow, não reutilização de falhas e validação de opt-in. Não implica medição de tokens faturados.
+
+## Validação Fase 6.2
+
+CI 45868236196, a622fb4: 80 testes descobertos, 77 aprovados, 3 ignorados; todos os quatro jobs aprovados. Mediana do planejamento 30,27 µs/tarefa no job Linux. Fase 6.3 adiciona regressão de equivalência de pontuação e comparação pareada no mesmo runner; resultado pendente.
+
+## Fase 6.4 — testes adicionados (a executar)
+
+Ciclos locais de ferramenta nos dois protocolos, preservação de IDs e itens, uso por resposta, aprovação, credencial, limites, falhas, endpoints fixos e rejeição de redirects/JSON duplicado. Respostas injetadas e HTTPS mockado não comprovam transporte autenticado ao vivo.
+
+## Validação Fase 6.4
+
+CI 45868607929, 612afce: 89 testes descobertos, 86 aprovados, 3 ignorados; quatro jobs aprovados. Benchmark pareado: 14,6327 → 10,8773 µs/tarefa, planos comuns iguais. Oito testes de transporte/protocolo passaram, sem chamadas autenticadas.
+
+## Fase 6.5 — testes adicionados
+
+Render sintético a 60 fps com efeitos e áudio, comparação de pixels em quadros ativos/inativos, cadência, limites e rejeição de intervalos inválidos. Nenhum resultado do candidato declarado aprovado antes de CI.
+
+## Validação Fase 6.5
+
+CI 45868881805, 434bc0b: 93 testes descobertos, 90 aprovados, 3 ignorados; quatro jobs aprovados. Render a 60 fps, comparação de pixels em quadros ativos/inativos, limites e integridade de mídia passaram. Fase 6.6 acrescenta transientes de graves e flash automático; CI pendente.
+
+## Validação Fase 6.6
+
+CI 45869077696, 0da86f8: 95 testes descobertos, 92 aprovados, 3 ignorados; quatro jobs aprovados. Dois transientes sintéticos de 80 Hz detectados, dois flashes renderizados, remapeamento de cortes e cadência aprovados. Benchmark pareado: 15,5032 → 11,3740 µs/tarefa; planos comuns iguais. Nenhuma medição de tokens faturados ou corpus musical real.
+
+## Revisão de segurança Fase 6.7
+
+Snapshot 0da86f8: 57/57 arquivos rastreados de texto examinados para formatos comuns de chaves de OpenAI/Anthropic, GitHub, Google, AWS, Slack e chaves privadas PEM; 0 correspondências, 0 erros de leitura. Não equivale a auditoria de histórico, análise semântica de dados pessoais ou revisão de dependências externas. SHAs das quatro Actions extraídos dos logs do CI aprovado; revalidação após pinning pendente.
+
+## Fase 6.8 — testes adicionados
+
+Casos de bloqueio sem atestado, assinatura errada, evidência faltante, expiração, alteração de bytes, tipo incorreto, credenciais sem reprodução, symlink/Git, artefato não analisado, publicação exata e sem sobrescrita; Gradle sem aprovação, permissões POSIX e colisão de aprovação/JSON. CI pendente; sem garantia de segurança integral.
+
+CI 45882300851 (3f3e9e9): 105 testes descobertos, 102 aprovados, 3 ignorados, quatro jobs aprovados. Fase 6.9 adiciona testes de troca do manifesto, não herança de credenciais, URL de script, nome contendo credencial e caminhos reservados; novo CI pendente.
+
+Fase 6.10 adiciona teste de logs ausentes/adulterados, não inclusão de evidências na entrega e falha de rename sem diretório final. CI pendente; testes usam registros e chave sintéticos, não auditoria externa real.
+
+CI 45882508405 (bb98add): 109 testes encontrados, 106 aprovados, 3 ignorados, quatro jobs aprovados. Fase 6.11 testa criação privada, não sobrescrita, publicação de mídia e extração ZIP sob umask permissivo. CI pendente.
+
+## Recuperação 6.11 / candidato 6.12
+
+CI 45882770153, 2aaecf2: 113 testes descobertos, 110 aprovados, 3 ignorados; quatro jobs aprovados. Novos testes de histórico com credencial sintética removida em commit posterior, clone shallow e bloqueio de credenciais em entrada/resposta remota aguardam CI. Nenhum resultado do scanner de histórico real declarado antes de execução.
+
+CI 45885353048: 117 descobertos, 114 aprovados, 3 ignorados. Scanner histórico: 494 objetos, 2.090.634 bytes, nenhum padrão conhecido. Fase 6.13 adiciona testes de economia estimada, preservação de revisores e cobertura exata de arquivos; CI pendente.
+
+Primeiro CI da fase 6.13 detectou duas incompatibilidades nos testes que exigiam o conjunto exato de quatro chaves da CLI. Preservadas as chaves e valores legados, testes atualizados para verificar esse subconjunto e os campos novos. Preflight remoto agora ocorre antes da primeira chamada de rede. Revalidação pendente.
+
+CI 45887940880, 631f8a8: 121 testes descobertos, 118 aprovados, 3 ignorados, quatro jobs aprovados. Fase 6.14 acrescenta regressões de expansão automática e respeito à configuração, separação da telemetria de fixtures, e instruções de host. Novo CI pendente.
+
+Fase 6.15 adiciona testes de callbacks sintéticos para ordem de execução, bloqueio por falhas e alteração de bytes, ausência de aprovação/adaptadores e ausência de autoaprovação de entrega. CI pendente; não são testes de geração autônoma externa.
+
+CI 45888238562, 80de782: quatro jobs concluídos com sucesso; checkpoint 6.15 registrou 122 aprovados e 3 ignorados.
+
+Fase 6.16 acrescenta dez testes de saudação exata, gatilho, isolamento por sessão, navegação, escopo de execução, economia automática, validação e CLI. Execução adicionada aos jobs macOS e Windows. Integrações de chats externos não verificadas. Novo CI pendente.
+
+## Phase 6.17 candidate
+
+New Spector regression cases and portable test invocation added. Results pending actual CI; no live provider baseline or independent artifact review claimed.
+
+Phase 6.17: CI 45906687959 at c99c059cfaa663c374d811a1a5d5a585723db643 completed successfully across all four jobs; 139 tests, 136 passed and 3 skipped. Phase 6.18 adds trusted callable checks, SQLite constraints and preflight timing; results pending.
+
+Phase 6.18 and 6.19 CI runs 45906948347 and 45907004303 failed the exact legacy planning comparison after generic keywords changed serialized Skill descriptors; portable and Android jobs passed. Phase 6.20 restores the legacy catalog and limits software alias expansion to preflight. Revalidation pending.
+
+## Phase 6.20–6.21 validated checkpoints
+
+- 6.20 (8400aa36700f13a5c59420604b9b0c6f5472128e): CI 45907175134, 145 tests, 142 passed, 3 skipped. Legacy common plans equal; preflight median 92.305 to 64.266 microseconds/task against 6.16.
+- 6.21 (6938dc52d581dcbba7bd86d52a35822cd43dacb7): CI 45907237193, all four jobs successful (Linux, macOS, Windows, synthetic Android APK). 147 tests, 144 passed, 3 skipped. Git history scan: 675 reachable objects, 3,106,124 bytes, zero known credential pattern matches. Legacy common planning benchmark: 11.709 to 8.692 microseconds/task, unchanged plans. Preflight benchmark: 89.547 to 68.047 microseconds/task vs 6.16; previous selected roles preserved in all six synthetic cases. Token counts are local estimates; provider savings and generated-output quality equivalence were not measured.
+- Remaining: independent semantic reviewer, isolated host execution, universal delivery enforcement, complete private-source study and full parity. No production authorization or absolute security certification.
+
+## Motion UI phase 6.28
+
+Code commit 97ea53fe569d6452b83b9e9f9b5d99f070d51b85, push CI 45909540313: 156 discovered, 153 passed and 3 skipped, all four jobs succeeded. Chromium 157 verified native interactions at 1280 and 390 CSS px; keyboard, mouse, emulated touch, range, text, segmented, rating, select, notice, reduced motion and local motion switch. Quiet rest and vector animation asserted; stepped frames 0/80/180/420 ms captured. Zero page HTTP requests and zero logged browser errors. History scan covered 776 objects and 3,564,787 bytes with zero known pattern matches. Preflight latency 93.142 to 70.165 µs vs 6.16; previous selected roles preserved. Token estimates are not provider usage. Earlier failures: incomplete keyboard event, transient Chromium startup, immutable palette interface mismatch; all corrected or bounded, not suppressed. Visual review of phases 6.25 and 6.26 screenshots confirmed readable native menus and stronger vector accents. No Safari, Firefox, physical phone, screen reader, independent release verifier or host chat integration tested.

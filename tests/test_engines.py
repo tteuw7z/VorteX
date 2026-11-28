@@ -42,6 +42,8 @@ class WorkflowTests(unittest.TestCase):
         self.assertEqual(list(result), ["work", "review"])
         self.assertEqual(result["work"].artifacts, {"item": ["prepare result"]})
         self.assertEqual(result["review"].evidence, "fixture checked")
+        self.assertTrue(result["work"].economy["task_preserved"])
+        self.assertTrue(result["review"].economy["mandatory_review_roles_preserved"])
 
     def test_retry_keeps_evidence_isolated_from_downstream(self):
         engine = Engine()
@@ -195,7 +197,10 @@ class KnowledgeTests(unittest.TestCase):
             result = plan(task, agent_limit=2)
             process = subprocess.run([sys.executable, "-m", "vortex", "plan", task,
                                       "--agent-limit", "2"], capture_output=True, text=True, check=True)
-            self.assertEqual(json.loads(process.stdout), json.loads(json.dumps(result)))
+            actual = json.loads(process.stdout)
+            self.assertEqual({key: actual[key] for key in result}, json.loads(json.dumps(result)))
+            self.assertIn("economy", actual)
+            self.assertFalse(actual["delivery_authorized"])
             self.assertEqual(result["agents"], ["media engineer", "software engineer"])
 
     def test_routes_representative_tasks_and_keeps_fast_fallback(self):
@@ -268,7 +273,9 @@ class CliTests(unittest.TestCase):
             config.write_text('agent_limit = 1\nskills = ["android"]\nlearning_db = "learn.db"\n')
             common = ("--config", str(config))
             legacy = self.invoke(*common, "plan", "Android código")
-            self.assertEqual(set(legacy), {"status", "skills", "agents", "fallback"})
+            self.assertTrue({"status", "skills", "agents", "fallback"} <= set(legacy))
+            self.assertIn("economy", legacy)
+            self.assertTrue(legacy["economy"]["mandatory_review_roles_preserved"])
             self.assertEqual(len(legacy["agents"]), 1)
             added = self.invoke(*common, "learn", "add", "android", "verify signature",
                                 "fixture", "signature read")
@@ -293,3 +300,50 @@ class CliTests(unittest.TestCase):
                 config.write_text(invalid)
                 with self.assertRaises(ValueError):
                     Config.load(config)
+
+
+class WorkflowCacheTests(unittest.TestCase):
+    def test_explicit_pure_cache_is_scoped_to_approved_stages_and_run(self):
+        calls = []
+        engine = Engine()
+        def pure(task):
+            calls.append(task)
+            return {"status": "SUCCESS", "evidence": "computed from task",
+                    "artifacts": {"values": [task]}}
+        engine.register("engineering", pure, cacheable=True)
+        graph = Workflow([Stage("first", "engineering", "same"),
+                          Stage("second", "engineering", "same", depends_on=("first",)),
+                          Stage("third", "engineering", "same", depends_on=("second",)),
+                          Stage("other", "engineering", "different")])
+        approvals = {"first", "second", "other"}
+        result = engine.run_workflow(graph, approvals=approvals)
+        self.assertEqual(calls.count("same"), 1)
+        self.assertEqual(calls.count("different"), 1)
+        self.assertFalse(result["first"].cache_hit)
+        self.assertTrue(result["second"].cache_hit)
+        self.assertEqual(result["third"].status, Status.BLOCKED)
+        self.assertFalse(result["third"].cache_hit)
+        result["first"].artifacts["values"].clear()
+        self.assertEqual(result["second"].artifacts["values"], ["same"])
+        again = engine.run_workflow(graph, approvals=approvals)
+        self.assertFalse(again["first"].cache_hit)
+        self.assertEqual(calls.count("same"), 2)
+
+    def test_uncached_and_failed_adapters_are_never_reused(self):
+        for cacheable, status in ((False, "SUCCESS"), (True, "FAILED")):
+            calls = []
+            engine = Engine()
+            def adapter(task):
+                calls.append(task)
+                return {"status": status, "evidence": "computed"}
+            engine.register("engineering", adapter, cacheable=cacheable)
+            flow = Workflow([Stage("a", "engineering", "same"),
+                             Stage("b", "engineering", "same")])
+            result = engine.run_workflow(flow, approvals={"a", "b"})
+            self.assertEqual(calls, ["same", "same"])
+            self.assertFalse(any(value.cache_hit for value in result.values()))
+
+    def test_cache_opt_in_requires_noncontextual_adapter_and_boolean(self):
+        for flags in ({"with_context": True, "cacheable": True}, {"cacheable": "yes"}):
+            with self.assertRaises(ValueError):
+                Engine().register("engineering", lambda _: {}, **flags)

@@ -1,0 +1,2 @@
+# Referência offline — não é a versão atual
+Use apenas se o canal vivo estiver indisponível. Estas categorias de planejamento não comprovam execução: archive, android, media, engineering, research, design, learning, security, automation, finance, healthcare, marketing, sales, product, project, game, gis, spatial, support. Confirme ferramentas e permissões reais. Não alegue quantidade atual de agentes, funções, implementação de motores ou autorização de entrega. Retome a sincronização na próxima tarefa.

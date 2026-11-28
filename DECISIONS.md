@@ -42,3 +42,67 @@
 25. O OCR é ativado por idioma e lê somente quadros amostrados. Usa Tesseract e dados já instalados no host. O relatório separa texto visível de reconhecimento de fala. O modelo Whisper conserva sinalização de revisão e não trata o marcador [BLANK_AUDIO] como fala.
 26. MacOS e Windows executam regressões de Core, ZIP, CLI, DAG e envelopes. No Windows, a fixture de ZIP grava o nome literal para testar a mesma entrada do Linux. O motor Android continua dependente de SDK e host compatíveis.
 27. A verificação ARM64 confirma cabeçalho ELF e assinatura do pacote. O aceite da execução nativa requer um aparelho ou emulador ARM64 e uma aplicação de teste que invoque a biblioteca. Tesseract, SDK, compiladores, Whisper e pesos permanecem externos ao pacote. [Tesseract](https://github.com/tesseract-ocr/tesseract/blob/main/LICENSE) · [Android ABIs](https://developer.android.com/ndk/guides/abis)
+
+## Fase 6 — expansão inicial
+
+Usar descritores próprios, genéricos e compactos em vez de copiar fichas privadas. Distinguir cobertura de planejamento de execução real. Rejeitar chaves duplicadas em JSON recebido pelo planejador e aplicar validação explícita de limites antes de planejar.
+
+## Fase 6.2 — cache restrito
+
+Cache não persistente, desabilitado por padrão; apenas adaptadores puros sem contexto podem optar. Cada estágio continua sujeito a aprovação e dependências. Apenas sucesso validado em JSON entra no cache, com cópias independentes e limite de 128 entradas por execução. Não reutilizar resultados de operações externas ou arquivos mutáveis. `cache_hit` identifica reutilização.
+
+## Fase 6.3 — roteamento eficiente
+
+Indexar palavras por capacidade e reutilizar o catálogo padrão evita percorrer e reconstruir todo o catálogo por solicitação. Preservar desempate pela ordem original e provar igualdade de planos em tarefas comuns antes de comparar latência. Não confundir latência com economia de tokens.
+
+## Fase 6.4 — transporte remoto
+
+Usar biblioteca padrão http.client com endpoints HTTPS fixos, sem redirecionamento ou retries automáticos. Exigir aprovação explícita e credencial do processo. O modelo pode executar apenas o planejador de leitura; a CLI remota não entra na automação técnica. Limitar tamanho, tempo, rodadas e tokens de saída. Uso vem das respostas, separado de transporte injetado. Sem armazenar respostas no cliente; OpenAI store=false não implica garantia de retenção zero pelo provedor.
+
+## Fase 6.5 — efeitos por quadros
+
+Aceitar apenas efeitos conhecidos com intervalos numéricos de saída, força limitada e duração de 3 quadros a 2 s. Flash triangular e shake rotacional leve; não permitir sobreposição de efeitos do mesmo tipo nem flashes com início a menos de 1/3 s de distância. O limite não é garantia clínica de segurança. Efeitos antecedem fades e legendas. Sem detecção automática de batidas neste checkpoint.
+
+## Fase 6.6 — transientes graves
+
+Extrair PCM local de banda 35–160 Hz, medir energia RMS por quadro e selecionar aumentos locais com distância mínima. Limitar análise a 600 s e 128 eventos. Mapear ao tempo de saída através dos cortes e aplicar até 32 efeitos, sem sobrescrever arquivos. Flash automático é opt-in e incompatível com flash manual simultâneo. Não alegar acurácia musical sem corpus real.
+
+## Fase 6.7 — revisão de cadeia de fornecimento
+
+Fixar Actions em hashes completos que foram observados no CI 45869077696. Atualizações futuras exigem revisão explícita; pinning não garante ausência de vulnerabilidades. A varredura de credenciais cobre apenas padrões conhecidos no snapshot de 57 arquivos, não histórico ou dados pessoais sem formato detectável. Não copiar fichas privadas: licença da referência não foi identificada por arquivo de licença na árvore auditada. O pacote público declara Apache-2.0 e zero dependências Python de runtime; licenças dos binários externos devem ser verificadas se distribuídos.
+
+## Fase 6.8 — segurança antes de entrega
+
+Default deny. Separar candidato de entrega autorizada e exigir evidência independente ligada ao digest de bytes, escopo, política e validade. HMAC exige chave fora do gerador; não há CLI de autoassinatura. Não confundir ausência de alertas com aprovação. Gate não substitui sandbox, análise dinâmica ou revisão especializada. Mudanças deliberadas de compatibilidade: Gradle requer confiança explícita; rótulos de aprovação distintos; banco POSIX com permissões privadas.
+
+## Fase 6.9 — fronteiras de execução
+
+Exigir digest do manifesto revisado antes de preparar comandos, inclusive na API Python. Expor argv no plano. Reduzir ambiente de subprocessos por allowlist e bloquear encaminhamento das credenciais reservadas; não alegar sandbox. Rejeitar caminhos de dispositivos, colisões Unicode e credenciais em nomes. HTMLParser para atributos perigosos e limite de volume de alertas.
+
+## Fase 6.10 — evidências reais e publicação atômica
+
+Política 2 rejeita hashes desacompanhados de logs reais. Evidências ficam fora do artefato e da entrega. Assinatura autentica as conclusões do verificador, não a verdade das conclusões. Staging privado, revalidação e rename final sob lock cooperativo; requer filesystem confiável, sem escritores não autorizados. Não liberar versão final antes de validar integração do gate.
+
+## Fase 6.11 — privacidade das saídas
+
+Arquivos novos com criação exclusiva 0600, diretórios privados 0700 e restrição antes de publicar mídia via hardlink. Não alterar ACL de Windows sem suporte específico. Permissões não substituem criptografia, autorização ou sandbox.
+
+## Fase 6.12 — recuperação
+
+Não repetir checkpoints comprovados. A varredura de histórico falha fechada se houver limites ou cobertura incompleta, verifica objetos Git localmente alcançáveis e não imprime valores. Checkout sem persistência de credenciais. Bloquear padrões conhecidos e a chave de API exata no texto remoto; não alegar DLP completa. Texto do modelo não autoriza execução nem entrega.
+
+## Fase 6.13 — disciplina
+
+Preferir decomposição, entrada/processamento/saída, teste de mesa, funções claras e comentários de intenção; POO somente quando justificada; integridade e minimização de dados. Não reduzir revisões para economizar tokens. Estimativa compara contexto de perfis, não cobrança real; perfis omitidos e capacidades adiadas são informados. Política v3 exige cobertura declarada e hashes de todos os arquivos, sem confundir declaração com revisão efetiva.
+
+## Fase 6.14 — economia sem redução silenciosa
+
+O limite inicial de seleção não deve remover perfis de capacidades habilitadas correspondentes. Expandir automaticamente a seleção, mesmo com economia menor; preservar desabilitações explícitas e reportá-las. Palavras-chave não garantem cobertura semântica. Telemetria real exige resposta real, e economia real exige baseline comparável e avaliação de qualidade.
+
+## Fase 6.15 — coordenação executável
+
+O coordenador aceita somente callbacks de host confiável, não comandos arbitrários. Exige autorização e diretório novo. Bloqueia revisão incompleta, testes falhos/pulados, modificação de bytes e alertas estáticos. Não possui chave de assinatura, não publica nem comprova independência das conclusões de callbacks. Publicação permanece separada.
+
+- Phase 6.17: reuse existing coordinator and delivery gate rather than duplicating security or claiming autonomous agents. Fail closed on missing test classes; require separate authenticated evidence. Token estimates are not provider usage.
+
+- Phase 6.18–6.19: fail conservatively on uncertain routing; allow bounded repairs only through an explicitly trusted adapter, with exact-byte revalidation; no new dependencies or automatic execution of untrusted Python.

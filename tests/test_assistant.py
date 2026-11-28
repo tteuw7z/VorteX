@@ -37,3 +37,20 @@ class PlannerHostTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 answer_planner_call("anthropic", {"type": "tool_use", "id": "A", "name": name,
                                     "input": {"task": "build APK", "agent_limit": 1, **extra}})
+
+    def test_duplicate_json_keys_are_rejected(self):
+        for raw in ('{"task":"APK","task":"finance","agent_limit":1}',
+                    '{"task":"APK","agent_limit":1,"agent_limit":2}'):
+            with self.subTest(raw=raw), self.assertRaises(ValueError):
+                answer_planner_call("openai", {"type": "function_call", "name": "vortex_plan",
+                                    "call_id": "A", "arguments": raw})
+
+    def test_invalid_limits_and_empty_tasks_are_rejected_by_both_hosts(self):
+        for args in ({"task": "APK", "agent_limit": True}, {"task": "APK", "agent_limit": 0},
+                     {"task": "APK", "agent_limit": 5}, {"task": " ", "agent_limit": 1}):
+            for provider, call in (
+                ("openai", {"type": "function_call", "call_id": "A", "arguments": json.dumps(args)}),
+                ("anthropic", {"type": "tool_use", "id": "A", "input": args}),
+            ):
+                with self.subTest(args=args, provider=provider), self.assertRaises(ValueError):
+                    answer_planner_call(provider, {"name": "vortex_plan", **call})

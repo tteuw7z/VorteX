@@ -3,6 +3,7 @@
 from html import escape
 from pathlib import Path
 import re
+from .private_io import private_open
 
 
 _TOKEN = re.compile(r"[a-zA-Z][a-zA-Z0-9_-]{0,63}")
@@ -171,6 +172,6 @@ p {{ margin:.4rem 0 0 }}
 <body><main><h1>{title}</h1>{"".join(sections)}</main></body>
 </html>
 """
-    with output.open("x", encoding="utf-8") as target:
+    with private_open(output, text=True) as target:
         target.write(page)
     return {**result, "output": str(output)}

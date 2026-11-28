@@ -36,10 +36,10 @@ class AutomationTests(unittest.TestCase):
             self.assertEqual([step["id"] for step in plan["steps"]], ["extract", "videos"])
             self.assertFalse(destination.exists())
 
-            code, blocked = self.run_cli("automation", "run", str(spec), "--approve", "videos")
+            code, blocked = self.run_cli("automation", "run", str(spec), "--manifest-sha256", plan["manifest_sha256"], "--approve", "videos")
             self.assertEqual((code, blocked["status"]), (1, "BLOCKED"))
             self.assertFalse(destination.exists())
-            code, result = self.run_cli("automation", "run", str(spec), "--approve", "write",
+            code, result = self.run_cli("automation", "run", str(spec), "--manifest-sha256", plan["manifest_sha256"], "--approve", "write",
                                         "--approve", "videos")
             self.assertEqual((code, result["status"]), (0, "SUCCESS"))
             payload = result["steps"][1]["artifacts"]["output"]
@@ -57,7 +57,7 @@ class AutomationTests(unittest.TestCase):
                 {"id": "after", "argv": ["archive", "videos"], "needs": ["invalid"]},
             ]}), encoding="utf-8")
             result = execute_manifest(spec, lambda _: ("archive", lambda: None),
-                                      approvals=("invalid", "after"))
+                                      approvals=("invalid", "after"), expected_sha256=hashlib.sha256(spec.read_bytes()).hexdigest())
             self.assertEqual([item["status"] for item in result["steps"]], ["FAILED", "BLOCKED"])
 
     def test_invalid_step_prevents_all_effects(self):
@@ -75,7 +75,7 @@ class AutomationTests(unittest.TestCase):
                         {"id": "next", "argv": argv},
                     ]}), encoding="utf-8")
                     with redirect_stderr(io.StringIO()), self.assertRaises(SystemExit) as error:
-                        main(("automation", "run", str(spec), "--approve", "extract"))
+                        main(("automation", "run", str(spec), "--manifest-sha256", hashlib.sha256(spec.read_bytes()).hexdigest(), "--approve", "extract"))
                     self.assertEqual(error.exception.code, 2)
                     self.assertFalse(destination.exists())
 
@@ -91,7 +91,7 @@ class AutomationTests(unittest.TestCase):
                 {"id": "review", "argv": args},
                 {"id": "later", "argv": args, "needs": ["review"]},
             ]}), encoding="utf-8")
-            code, run = self.run_cli("automation", "run", str(spec), "--approve", "review",
+            code, run = self.run_cli("automation", "run", str(spec), "--manifest-sha256", hashlib.sha256(spec.read_bytes()).hexdigest(), "--approve", "review",
                                      "--approve", "later")
             first, later = run["steps"]
             self.assertEqual((code, run["status"], first["reason"]), (1, "BLOCKED", "REVIEW_REQUIRED"))
