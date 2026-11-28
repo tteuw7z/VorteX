@@ -1,0 +1,501 @@
+{
+  "schema": 1,
+  "source_sha": "f848c3e2779f2c05aab2c554fd57b67819e33ac9",
+  "channel_sha": "004c6b8abcd2bb102f688a7ec239b852b8b051b3",
+  "scope": "catalog inventory; host invocation not verified",
+  "commands": [
+    {
+      "path": [
+        "plan"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "task",
+        "agent_limit"
+      ]
+    },
+    {
+      "path": [
+        "knowledge"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "task",
+        "agent_limit"
+      ]
+    },
+    {
+      "path": [
+        "chat"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "locale",
+        "messages"
+      ]
+    },
+    {
+      "path": [
+        "inventory"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "path"
+      ]
+    },
+    {
+      "path": [
+        "context"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "path"
+      ]
+    },
+    {
+      "path": [
+        "learn"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": []
+    },
+    {
+      "path": [
+        "learn",
+        "add"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "capability",
+        "technique",
+        "source",
+        "evidence"
+      ]
+    },
+    {
+      "path": [
+        "learn",
+        "list"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "capability"
+      ]
+    },
+    {
+      "path": [
+        "learn",
+        "remove"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "id"
+      ]
+    },
+    {
+      "path": [
+        "apk"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": []
+    },
+    {
+      "path": [
+        "apk",
+        "verify"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "file",
+        "abi",
+        "sdk_root",
+        "build_tools"
+      ]
+    },
+    {
+      "path": [
+        "apk",
+        "fixture"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "destination",
+        "api",
+        "sdk_root",
+        "build_tools"
+      ]
+    },
+    {
+      "path": [
+        "apk",
+        "build"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "project",
+        "destination",
+        "module",
+        "variant",
+        "abi",
+        "trust_project",
+        "offline",
+        "lint",
+        "pass_env",
+        "timeout",
+        "sdk_root",
+        "build_tools"
+      ]
+    },
+    {
+      "path": [
+        "archive"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": []
+    },
+    {
+      "path": [
+        "archive",
+        "extract"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "path",
+        "max_entries",
+        "max_bytes",
+        "destination"
+      ]
+    },
+    {
+      "path": [
+        "archive",
+        "repack"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "path",
+        "max_entries",
+        "max_bytes",
+        "output",
+        "replace"
+      ]
+    },
+    {
+      "path": [
+        "archive",
+        "videos"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "path",
+        "max_entries",
+        "max_bytes"
+      ]
+    },
+    {
+      "path": [
+        "media"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": []
+    },
+    {
+      "path": [
+        "media",
+        "batch"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "source",
+        "output",
+        "interval",
+        "max_frames",
+        "model",
+        "language",
+        "ocr_language",
+        "max_entries",
+        "max_bytes"
+      ]
+    },
+    {
+      "path": [
+        "media",
+        "probe"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "source"
+      ]
+    },
+    {
+      "path": [
+        "media",
+        "frames"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "source",
+        "output",
+        "interval",
+        "scene_threshold",
+        "max_frames",
+        "ocr_language"
+      ]
+    },
+    {
+      "path": [
+        "media",
+        "qa"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "source",
+        "fps",
+        "orientation",
+        "allow_no_audio",
+        "subtitle"
+      ]
+    },
+    {
+      "path": [
+        "media",
+        "transcribe"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "source",
+        "output",
+        "model",
+        "language",
+        "fps",
+        "threads"
+      ]
+    },
+    {
+      "path": [
+        "media",
+        "bass"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "source",
+        "fps",
+        "max_seconds",
+        "min_gap"
+      ]
+    },
+    {
+      "path": [
+        "media",
+        "edit"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "source",
+        "output",
+        "cut",
+        "start",
+        "end",
+        "fps",
+        "captions",
+        "full_hd",
+        "monochrome",
+        "fade",
+        "effect",
+        "contrast",
+        "bass_flash"
+      ]
+    },
+    {
+      "path": [
+        "design"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": []
+    },
+    {
+      "path": [
+        "design",
+        "audit"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "tokens"
+      ]
+    },
+    {
+      "path": [
+        "design",
+        "preview"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "tokens",
+        "output"
+      ]
+    },
+    {
+      "path": [
+        "design",
+        "motion"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "output",
+        "mode",
+        "locale",
+        "still"
+      ]
+    },
+    {
+      "path": [
+        "research"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": []
+    },
+    {
+      "path": [
+        "research",
+        "synthesize"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "manifest",
+        "source_root"
+      ]
+    },
+    {
+      "path": [
+        "engineering"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": []
+    },
+    {
+      "path": [
+        "engineering",
+        "inspect"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "project"
+      ]
+    },
+    {
+      "path": [
+        "engineering",
+        "rebuild"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "spec",
+        "candidate",
+        "source_root",
+        "reference_source",
+        "supplemental"
+      ]
+    },
+    {
+      "path": [
+        "automation"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": []
+    },
+    {
+      "path": [
+        "automation",
+        "plan"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "manifest"
+      ]
+    },
+    {
+      "path": [
+        "automation",
+        "run"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "manifest_sha256",
+        "approve",
+        "manifest"
+      ]
+    },
+    {
+      "path": [
+        "host"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "provider",
+        "model",
+        "task",
+        "approve_network",
+        "max_rounds",
+        "max_output_tokens",
+        "timeout"
+      ]
+    },
+    {
+      "path": [
+        "security"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": []
+    },
+    {
+      "path": [
+        "security",
+        "audit"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "candidate",
+        "kind"
+      ]
+    },
+    {
+      "path": [
+        "security",
+        "review"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "candidate"
+      ]
+    },
+    {
+      "path": [
+        "security",
+        "publish"
+      ],
+      "status": "host_binding_unverified",
+      "arguments": [
+        "candidate",
+        "kind",
+        "output",
+        "attestation",
+        "evidence_dir"
+      ]
+    }
+  ],
+  "candidate_gateway_operations": [
+    {
+      "operation": "capabilities",
+      "scope": "local discovery"
+    },
+    {
+      "operation": "plan",
+      "scope": "planning only"
+    },
+    {
+      "operation": "design.audit",
+      "scope": "local deterministic read-only audit"
+    }
+  ],
+  "delivery_authorized": false
+}
