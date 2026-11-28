@@ -77,3 +77,14 @@ class DisciplineTests(unittest.TestCase):
         self.assertIn("engineering", result["economy"]["automatically_expanded_skills"])
         self.assertIn("software engineer", {p["role"] for p in result["selected_profiles"]})
         self.assertGreater(result["economy"]["estimated_saved_tokens"], 0)
+
+    def test_continuity_preflight_keeps_evidence_and_review_order(self):
+        result = prepare_task("Corrigir código Python e continuar projeto")
+        stages = [stage["id"] for stage in result["stages"]]
+        expected = ("economy", "checkpoint", "analysis", "baseline", "algorithm",
+                    "implementation", "code_review", "functional_tests",
+                    "integration_tests", "regression_tests", "performance_tests",
+                    "security_tests", "handoff", "delivery")
+        self.assertEqual(stages, list(expected))
+        self.assertEqual(result["status"], "PLAN_ONLY")
+        self.assertFalse(result["delivery_authorized"])
